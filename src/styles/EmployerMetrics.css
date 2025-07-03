@@ -1,0 +1,260 @@
+/* Employer Metrics - Modern Admin Design */
+.employer-metrics-container {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark, #0b1e3d) 0%,
+    var(--secondary-blue, #475777) 100%
+  );
+  padding: 2rem;
+  position: relative;
+  font-family: var(--font-family, "Inter", sans-serif);
+}
+
+.back-button {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-light, #f0f4f8);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.employer-metrics-container h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-light, #f0f4f8);
+  text-align: center;
+  margin: 4rem 0 3rem 0;
+}
+
+/* Table Container */
+.table-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.employer-metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.employer-metrics-table th {
+  background: var(--primary-dark, #0b1e3d);
+  color: var(--text-light, #f0f4f8);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.employer-metrics-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-200, #e5e5e5);
+  color: var(--primary-dark, #0b1e3d);
+  font-weight: 500;
+}
+
+.employer-metrics-table tr:hover {
+  background: rgba(255, 111, 97, 0.05);
+}
+
+.employer-metrics-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Employer name styling */
+.employer-metrics-table td:first-child {
+  font-weight: 600;
+  color: var(--accent-coral, #ff6f61);
+}
+
+/* Metrics styling with color coding */
+.employer-metrics-table td:nth-child(2) {
+  color: var(--info, #3b82f6);
+  font-weight: 600;
+}
+
+.employer-metrics-table td:nth-child(3) {
+  color: var(--warning, #f59e0b);
+  font-weight: 600;
+}
+
+.employer-metrics-table td:nth-child(4) {
+  color: var(--secondary-blue, #475777);
+  font-weight: 600;
+}
+
+.employer-metrics-table td:nth-child(5) {
+  color: var(--success, #10b981);
+  font-weight: 600;
+}
+
+/* Add performance indicators */
+.employer-metrics-table tbody tr:hover td:nth-child(2),
+.employer-metrics-table tbody tr:hover td:nth-child(3),
+.employer-metrics-table tbody tr:hover td:nth-child(4),
+.employer-metrics-table tbody tr:hover td:nth-child(5) {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* High-performance highlighting */
+.employer-metrics-table tr[data-performance="high"] {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.employer-metrics-table tr[data-performance="medium"] {
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.employer-metrics-table tr[data-performance="low"] {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Summary Stats */
+.metrics-summary {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.summary-item {
+  text-align: center;
+  color: var(--text-light, #f0f4f8);
+}
+
+.summary-item h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-coral, #ff6f61);
+  margin-bottom: 0.5rem;
+}
+
+.summary-item p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .employer-metrics-container {
+    padding: 1.5rem;
+  }
+
+  .employer-metrics-container h1 {
+    font-size: 2rem;
+    margin: 3rem 0 2rem 0;
+  }
+
+  .metrics-summary {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .employer-metrics-container {
+    padding: 1rem;
+  }
+
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .employer-metrics-container h1 {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem 0;
+  }
+
+  .metrics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-item h3 {
+    font-size: 1.5rem;
+  }
+
+  .employer-metrics-table {
+    font-size: 0.875rem;
+  }
+
+  .employer-metrics-table th,
+  .employer-metrics-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-container {
+    overflow-x: auto;
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+
+  .employer-metrics-table {
+    min-width: 600px;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.employer-metrics-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.metrics-summary {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.table-container {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}

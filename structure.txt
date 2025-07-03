@@ -1,0 +1,88 @@
+ public
+│   ├── Images
+│   │   └── CAPACITI-LOGO.jpg
+│   └── vite.svg
+│   └── _redirects
+├── src
+│   ├── assets
+│   │   └── react.svg
+│   ├── components
+│   │   ├── common
+│   │   │   └── Calendar.tsx
+│   │   │   └── DataTable.tsx
+│   │   │   └── Dropdown.tsx
+│   │   │   └── FileUpload.tsx
+│   │   │   └── FormInput.tsx
+│   │   │   └── Modal.tsx
+│   │   │   └── Navbar.tsx
+│   │   │   └── Sidebar.tsx
+│   ├── pages
+│   │   ├── Admin
+│   │   │   └── AdminAuth.tsx
+│   │   │   └── AdminDashboard.tsx
+│   │   │   └── EmployerMetrics.tsx
+│   │   │   └── ManageUsers.tsx
+│   │   │   └── PlacementAnalytics.tsx
+│   │   │   └── PlacementTracker.tsx
+│   │   ├── Employer
+│   │   │   └── EmployerAuth.tsx
+│   │   │   └── EmployerDashboard.tsx
+│   │   │   └── MatchedCandidates.tsx
+│   │   │   └── PostJob.tsx
+│   │   │   └── ScheduleInterviews.tsx
+│   │   ├── Graduate
+│   │   │   └── ApplyJob.tsx
+│   │   │   └── GraduateAuth.tsx
+│   │   │   └── GraduateDashboard.tsx
+│   │   │   └── GraduateProfile.tsx
+│   │   │   └── ViewJobs.tsx
+│   │   └── ForgotPassword.tsx
+│   │   └── Welcome.jsx
+│   ├── routes
+│   │   └── AppRoutes.tsx
+│   ├── services
+│   │   └── authService.ts
+│   │   └── interviewService.ts
+│   │   └── jobService.ts
+│   │   └── matchService.ts
+│   ├── styles
+│   │   └── AdminAuth.css
+│   │   └── EmployerAuth.css
+│   │   └── GraduateAuth.css
+│   │   └── Profile.css
+│   │   └── Welcome.css
+│   └── App.css
+│   └── App.jsx
+│   └── firebase.js
+│   └── index.css
+│   └── main.jsx
+└── .gitignore
+└── eslint.config.js
+└── index.html
+└── package-lock.json
+└── package.json
+└── README.md
+└── vite.config.js
+
+✅ PowerShell Script for Clean Project Structure (Only Folders & Files, No node_modules, .git, etc.)
+Copy and paste this into your PowerShell terminal:
+
+powershell
+Copy
+Edit
+$excluded = @("node_modules", ".git", "dist", "build", "coverage", "out", ".next", "obj", "bin")
+
+function Show-Tree($path, $indent = "") {
+    $items = Get-ChildItem -LiteralPath $path | Where-Object { $excluded -notcontains $_.Name }
+
+    foreach ($item in $items) {
+        if ($item.PSIsContainer) {
+            Write-Host "$indent├── $($item.Name)"
+            Show-Tree $item.FullName "$indent│   "
+        } else {
+            Write-Host "$indent└── $($item.Name)"
+        }
+    }
+}
+
+Show-Tree "."

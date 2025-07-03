@@ -1,0 +1,220 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark, #0b1e3d) 0%,
+    var(--secondary-blue, #475777) 100%
+  );
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-light, #f0f4f8);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.formWrapper {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-dark, #0b1e3d);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.formInput,
+.formTextarea,
+.formDate {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--white, #ffffff);
+  border: 2px solid var(--gray-200, #e5e5e5);
+  border-radius: 0.75rem;
+  color: var(--primary-dark, #0b1e3d);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.formInput:focus,
+.formTextarea:focus,
+.formDate:focus {
+  outline: none;
+  border-color: var(--accent-coral, #ff6f61);
+  background: var(--white, #ffffff);
+  box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+  color: var(--gray-500, #737373);
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.skillsWrapper {
+  margin-bottom: 2rem;
+}
+
+.skillsLabel {
+  display: block;
+  color: var(--primary-dark, #0b1e3d);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.skillRow {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skillRow .formInput {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.removeSkillButton {
+  background: var(--error, #ef4444);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  min-width: 2.5rem;
+}
+
+.removeSkillButton:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.removeSkillButton:disabled {
+  background: var(--gray-400, #a3a3a3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.addSkillButton {
+  background: var(--secondary-blue, #475777);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addSkillButton:hover {
+  background: var(--primary-dark, #0b1e3d);
+  transform: translateY(-2px);
+}
+
+.addSkillButton:disabled {
+  background: var(--gray-400, #a3a3a3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submitButton {
+  width: 100%;
+  background: var(--accent-coral, #ff6f61);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent-coral-hover, #e65a4f);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 111, 97, 0.3);
+}
+
+.submitButton:disabled {
+  background: var(--gray-400, #a3a3a3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .formWrapper {
+    padding: 2rem;
+  }
+
+  .backButton {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .skillRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .removeSkillButton {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+}

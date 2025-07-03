@@ -1,0 +1,400 @@
+/* Admin Dashboard - Modern Executive Design */
+.admin-dashboard-container {
+  padding: var(--spacing-3xl);
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background pattern */
+.admin-dashboard-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(255, 111, 97, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(29, 67, 104, 0.02) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.admin-dashboard-container h1 {
+  font-size: var(--font-size-5xl);
+  font-weight: 900;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--text-dark);
+  text-align: center;
+  background: linear-gradient(135deg, var(--text-dark) 0%, #2d4f7d 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: var(--leading-tight);
+  text-shadow: 0 4px 12px rgba(29, 67, 104, 0.1);
+  position: relative;
+  z-index: 1;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Metric Cards */
+.metric-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-2xl);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.metric-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.metric-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.metric-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.metric-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.metric-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.metric-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+/* Hover effects */
+.metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 111, 97, 0.05),
+    transparent
+  );
+  transition: left 0.8s ease;
+}
+
+.metric-card:hover::before {
+  left: 100%;
+}
+
+.metric-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(255, 111, 97, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Enhanced card styling with gradients */
+.metric-card:nth-child(odd) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 111, 97, 0.02) 100%
+  );
+}
+
+.metric-card:nth-child(even) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(29, 67, 104, 0.02) 100%
+  );
+}
+
+.metric-card:hover:nth-child(odd) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 111, 97, 0.04) 100%
+  );
+}
+
+.metric-card:hover:nth-child(even) {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(29, 67, 104, 0.04) 100%
+  );
+}
+
+/* Metric numbers */
+.metric-card h2 {
+  font-size: var(--font-size-5xl);
+  font-weight: 900;
+  color: var(--accent-coral);
+  margin-bottom: var(--spacing-md);
+  line-height: var(--leading-tight);
+  text-shadow: 0 4px 12px rgba(255, 111, 97, 0.2);
+  position: relative;
+}
+
+/* Add subtle background to numbers */
+.metric-card h2::before {
+  content: attr(data-value);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: var(--accent-coral);
+  opacity: 0.1;
+  font-size: 1.2em;
+  transform: scale(1.5);
+  z-index: -1;
+  filter: blur(8px);
+}
+
+/* Metric labels */
+.metric-card p {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0;
+  line-height: var(--leading-relaxed);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Add icons to metrics */
+.metric-card::after {
+  content: "";
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-coral) 0%,
+    var(--accent-coral-hover) 100%
+  );
+  border-radius: 50%;
+  opacity: 0.1;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover::after {
+  opacity: 0.2;
+  transform: scale(1.2);
+}
+
+/* Special styling for different metric types */
+.metric-card:nth-child(1)::after {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.metric-card:nth-child(2)::after {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.metric-card:nth-child(3)::after {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.metric-card:nth-child(4)::after {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+/* Enhanced responsive design */
+@media (max-width: 1400px) {
+  .admin-dashboard-container {
+    max-width: 100%;
+    padding: var(--spacing-2xl);
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-container {
+    padding: var(--spacing-xl);
+  }
+
+  .admin-dashboard-container h1 {
+    font-size: var(--font-size-4xl);
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .metric-card {
+    padding: var(--spacing-xl);
+  }
+
+  .metric-card h2 {
+    font-size: var(--font-size-4xl);
+  }
+
+  .metric-card p {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: var(--spacing-lg);
+  }
+
+  .admin-dashboard-container h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .metric-card {
+    padding: var(--spacing-lg);
+  }
+
+  .metric-card h2 {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-dashboard-container {
+    padding: var(--spacing-md);
+  }
+
+  .admin-dashboard-container h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .metric-card {
+    padding: var(--spacing-md);
+  }
+
+  .metric-card h2 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .metric-card p {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Loading state animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.metric-card.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card.loading::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Accessibility improvements */
+.metric-card:focus {
+  outline: 2px solid var(--accent-coral);
+  outline-offset: 4px;
+}
+
+.metric-card[tabindex="0"] {
+  cursor: pointer;
+}
+
+/* Print styles */
+@media print {
+  .admin-dashboard-container {
+    background: white;
+    box-shadow: none;
+  }
+
+  .metric-card {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    break-inside: avoid;
+  }
+
+  .metric-card::before,
+  .metric-card::after {
+    display: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .admin-dashboard-container {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+
+  .metric-card {
+    background: rgba(30, 41, 59, 0.8);
+    color: #f1f5f9;
+  }
+
+  .metric-card p {
+    color: #cbd5e1;
+  }
+}

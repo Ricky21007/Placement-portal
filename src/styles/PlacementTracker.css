@@ -1,0 +1,262 @@
+/* Placement Tracker - Modern Admin Design */
+.placement-tracker-container {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark, #0b1e3d) 0%,
+    var(--secondary-blue, #475777) 100%
+  );
+  padding: 2rem;
+  position: relative;
+  font-family: var(--font-family, "Inter", sans-serif);
+}
+
+.back-button {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  color: var(--text-light, #f0f4f8);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.placement-tracker-container h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-light, #f0f4f8);
+  text-align: center;
+  margin: 4rem 0 3rem 0;
+}
+
+/* Filters Section */
+.filters {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+
+.filters select {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-200, #e5e5e5);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: white;
+  color: var(--primary-dark, #0b1e3d);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.filters select:focus {
+  outline: none;
+  border-color: var(--accent-coral, #ff6f61);
+  box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
+}
+
+.export-button {
+  background: var(--accent-coral, #ff6f61);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.export-button:hover {
+  background: var(--accent-coral-hover, #e65a4f);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 111, 97, 0.3);
+}
+
+/* Table Container */
+.table-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.placement-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.placement-table th {
+  background: var(--primary-dark, #0b1e3d);
+  color: var(--text-light, #f0f4f8);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.placement-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-200, #e5e5e5);
+  color: var(--primary-dark, #0b1e3d);
+  font-weight: 500;
+}
+
+.placement-table tr:hover {
+  background: rgba(255, 111, 97, 0.05);
+}
+
+.placement-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status badges */
+.placement-table td:last-child {
+  font-weight: 600;
+}
+
+.placement-table tr:has(td:last-child:contains("Placed")) {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.placement-table tr:has(td:last-child:contains("Interviewing")) {
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.placement-table tr:has(td:last-child:contains("Not Placed")) {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .placement-tracker-container {
+    padding: 1.5rem;
+  }
+
+  .placement-tracker-container h1 {
+    font-size: 2rem;
+    margin: 3rem 0 2rem 0;
+  }
+
+  .filters {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .filters select {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .placement-tracker-container {
+    padding: 1rem;
+  }
+
+  .back-button {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .placement-tracker-container h1 {
+    font-size: 1.8rem;
+    margin: 2.5rem 0 1.5rem 0;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .filters select {
+    min-width: auto;
+  }
+
+  .export-button {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .placement-table {
+    font-size: 0.875rem;
+  }
+
+  .placement-table th,
+  .placement-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-container {
+    overflow-x: auto;
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+
+  .placement-table {
+    min-width: 600px;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.placement-tracker-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.filters {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.table-container {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
