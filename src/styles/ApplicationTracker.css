@@ -8,7 +8,7 @@
   overflow-x: hidden;
   position: relative;
 }
-
+ 
 /* Background pattern */
 .application-tracker-page::before {
   content: "";
@@ -31,7 +31,7 @@
   pointer-events: none;
   z-index: 0;
 }
-
+ 
 .application-tracker-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -40,14 +40,14 @@
   z-index: 1;
   animation: fadeInUp 0.8s ease-out;
 }
-
+ 
 /* Header */
 .page-header {
   text-align: center;
   margin-bottom: var(--spacing-3xl);
   animation: fadeInDown 0.8s ease-out;
 }
-
+ 
 .back-button {
   display: inline-flex;
   align-items: center;
@@ -66,12 +66,12 @@
   box-shadow: 0 8px 24px rgba(255, 111, 97, 0.2);
   margin-bottom: var(--spacing-xl);
 }
-
+ 
 .back-button:hover {
   transform: translateX(-4px) translateY(-2px);
   box-shadow: 0 12px 32px rgba(255, 111, 97, 0.3);
 }
-
+ 
 .page-title {
   font-size: var(--font-size-4xl);
   font-weight: 800;
@@ -83,7 +83,7 @@
   -webkit-text-fill-color: transparent;
   line-height: var(--leading-tight);
 }
-
+ 
 .page-subtitle {
   font-size: var(--font-size-lg);
   color: var(--gray-600);
@@ -92,7 +92,7 @@
   margin: 0 auto;
   line-height: var(--leading-relaxed);
 }
-
+ 
 /* Status Filter Tabs */
 .status-tabs {
   display: flex;
@@ -109,7 +109,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   animation: fadeInUp 0.6s ease-out 0.2s both;
 }
-
+ 
 .status-tab {
   background: transparent;
   border: none;
@@ -125,7 +125,7 @@
   color: var(--gray-600);
   position: relative;
 }
-
+ 
 .status-tab.active {
   background: linear-gradient(
     135deg,
@@ -135,16 +135,16 @@
   color: var(--white);
   box-shadow: 0 8px 24px rgba(255, 111, 97, 0.3);
 }
-
+ 
 .status-tab:hover:not(.active) {
   background: rgba(255, 111, 97, 0.1);
   color: var(--accent-coral);
 }
-
+ 
 .tab-label {
   font-size: var(--font-size-base);
 }
-
+ 
 .tab-count {
   background: rgba(255, 255, 255, 0.2);
   color: inherit;
@@ -155,11 +155,11 @@
   min-width: 24px;
   text-align: center;
 }
-
+ 
 .status-tab.active .tab-count {
   background: rgba(255, 255, 255, 0.3);
 }
-
+ 
 /* Applications Grid */
 .applications-grid {
   display: grid;
@@ -167,7 +167,7 @@
   gap: var(--spacing-2xl);
   animation: fadeInUp 0.6s ease-out 0.4s both;
 }
-
+ 
 /* Application Cards */
 .application-card {
   background: rgba(255, 255, 255, 0.95);
@@ -183,7 +183,7 @@
   overflow: hidden;
   animation: fadeInUp 0.6s ease-out both;
 }
-
+ 
 .application-card:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -196,7 +196,7 @@
 .application-card:nth-child(4) {
   animation-delay: 0.4s;
 }
-
+ 
 .application-card::before {
   content: "";
   position: absolute;
@@ -212,11 +212,11 @@
   );
   transition: left 0.8s ease;
 }
-
+ 
 .application-card:hover::before {
   left: 100%;
 }
-
+ 
 .application-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow:
@@ -224,7 +224,7 @@
     0 0 0 2px rgba(255, 111, 97, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
-
+ 
 /* Application Header */
 .application-header {
   display: flex;
@@ -233,11 +233,11 @@
   margin-bottom: var(--spacing-lg);
   gap: var(--spacing-md);
 }
-
+ 
 .job-info {
   flex: 1;
 }
-
+ 
 .job-title {
   font-size: var(--font-size-xl);
   font-weight: 700;
@@ -245,13 +245,13 @@
   margin-bottom: var(--spacing-xs);
   line-height: var(--leading-tight);
 }
-
+ 
 .company-name {
   font-size: var(--font-size-base);
   color: var(--gray-600);
   font-weight: 500;
 }
-
+ 
 /* Status Badge */
 .status-badge {
   padding: var(--spacing-xs) var(--spacing-md);
@@ -265,27 +265,27 @@
   letter-spacing: 0.05em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
+ 
 .status-accepted {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: var(--white);
 }
-
+ 
 .status-declined {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: var(--white);
 }
-
+ 
 .status-pending {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: var(--white);
 }
-
+ 
 /* Application Details */
 .application-details {
   margin: var(--spacing-lg) 0;
 }
-
+ 
 .detail-item {
   display: flex;
   align-items: center;
@@ -295,12 +295,12 @@
   color: var(--gray-600);
   font-weight: 500;
 }
-
+ 
 .detail-item svg {
   color: var(--accent-coral);
   flex-shrink: 0;
 }
-
+ 
 /* Interview Section */
 .interview-section {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
@@ -309,35 +309,35 @@
   padding: var(--spacing-lg);
   margin-top: var(--spacing-lg);
 }
-
+ 
 .interview-header {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-md);
 }
-
+ 
 .interview-header svg {
   color: #3b82f6;
 }
-
+ 
 .interview-header h4 {
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: #1e40af;
   margin: 0;
 }
-
+ 
 .interview-details {
   font-size: var(--font-size-sm);
   color: #1e40af;
 }
-
+ 
 .interview-date {
   margin-bottom: var(--spacing-sm);
   font-weight: 500;
 }
-
+ 
 .interview-link {
   display: inline-flex;
   align-items: center;
@@ -350,12 +350,12 @@
   background: rgba(59, 130, 246, 0.1);
   transition: var(--transition-all);
 }
-
+ 
 .interview-link:hover {
   background: rgba(59, 130, 246, 0.2);
   transform: translateY(-1px);
 }
-
+ 
 /* Declined Section */
 .declined-section {
   background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
@@ -364,7 +364,7 @@
   padding: var(--spacing-lg);
   margin-top: var(--spacing-lg);
 }
-
+ 
 .declined-message {
   font-size: var(--font-size-sm);
   color: #991b1b;
@@ -372,7 +372,7 @@
   margin: 0;
   line-height: var(--leading-relaxed);
 }
-
+ 
 /* Pending Section */
 .pending-section {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
@@ -381,7 +381,7 @@
   padding: var(--spacing-lg);
   margin-top: var(--spacing-lg);
 }
-
+ 
 .pending-message {
   font-size: var(--font-size-sm);
   color: #92400e;
@@ -389,7 +389,7 @@
   margin: 0;
   line-height: var(--leading-relaxed);
 }
-
+ 
 /* Loading State */
 .loading-container {
   display: flex;
@@ -399,7 +399,7 @@
   min-height: 400px;
   text-align: center;
 }
-
+ 
 .loading-spinner {
   width: 60px;
   height: 60px;
@@ -409,7 +409,7 @@
   animation: spin 1s linear infinite;
   margin-bottom: var(--spacing-lg);
 }
-
+ 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -418,13 +418,13 @@
     transform: rotate(360deg);
   }
 }
-
+ 
 .loading-text {
   font-size: var(--font-size-lg);
   color: var(--gray-600);
   font-weight: 500;
 }
-
+ 
 /* Empty State */
 .empty-state {
   text-align: center;
@@ -437,19 +437,19 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
+ 
 .empty-icon {
   color: var(--gray-300);
   margin-bottom: var(--spacing-lg);
 }
-
+ 
 .empty-title {
   font-size: var(--font-size-2xl);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
   color: var(--gray-600);
 }
-
+ 
 .empty-text {
   font-size: var(--font-size-lg);
   color: var(--gray-500);
@@ -457,7 +457,7 @@
   margin: 0 auto var(--spacing-xl);
   line-height: var(--leading-relaxed);
 }
-
+ 
 .btn-primary {
   background: linear-gradient(
     135deg,
@@ -476,94 +476,94 @@
   text-decoration: none;
   display: inline-block;
 }
-
+ 
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(255, 111, 97, 0.3);
 }
-
+ 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .application-tracker-container {
     padding: var(--spacing-2xl);
   }
-
+ 
   .applications-grid {
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: var(--spacing-xl);
   }
-
+ 
   .status-tabs {
     flex-wrap: wrap;
     gap: var(--spacing-sm);
   }
 }
-
+ 
 @media (max-width: 768px) {
   .application-tracker-container {
     padding: var(--spacing-xl);
   }
-
+ 
   .applications-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
   }
-
+ 
   .application-card {
     padding: var(--spacing-xl);
   }
-
+ 
   .page-title {
     font-size: var(--font-size-3xl);
   }
-
+ 
   .application-header {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-md);
   }
-
+ 
   .status-badge {
     align-self: flex-start;
   }
-
+ 
   .status-tabs {
     flex-direction: column;
     align-items: center;
   }
-
+ 
   .status-tab {
     width: 100%;
     justify-content: center;
   }
 }
-
+ 
 @media (max-width: 480px) {
   .application-tracker-container {
     padding: var(--spacing-lg);
   }
-
+ 
   .application-card {
     padding: var(--spacing-lg);
   }
-
+ 
   .page-title {
     font-size: var(--font-size-2xl);
   }
-
+ 
   .job-title {
     font-size: var(--font-size-lg);
   }
-
+ 
   .status-tabs {
     padding: var(--spacing-sm);
   }
-
+ 
   .status-tab {
     padding: var(--spacing-sm) var(--spacing-md);
   }
 }
-
+ 
 /* Animations */
 @keyframes fadeInUp {
   from {
@@ -575,7 +575,7 @@
     transform: translateY(0);
   }
 }
-
+ 
 @keyframes fadeInDown {
   from {
     opacity: 0;
@@ -586,7 +586,7 @@
     transform: translateY(0);
   }
 }
-
+ 
 /* Focus states for accessibility */
 .status-tab:focus-visible,
 .btn-primary:focus-visible,
@@ -594,3 +594,5 @@
   outline: 2px solid var(--accent-coral);
   outline-offset: 2px;
 }
+ 
+ 

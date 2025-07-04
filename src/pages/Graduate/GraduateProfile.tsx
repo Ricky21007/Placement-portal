@@ -204,6 +204,49 @@ const GraduateProfile = () => {
     }
   };
 
+  const handleUpload = async (file: File, bucket: string, field: "cvUrl" | "profilePicUrl") => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const token = await user.getIdToken();
+      await supabase.auth.setSession({
+        access_token: token,
+        refresh_token: token
+      });
+
+      const filePath = `${user.uid}/${field}-${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: field === "profilePicUrl"
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath);
+
+      const publicUrl = publicData?.publicUrl;
+      if (!publicUrl) throw new Error("Failed to get public URL");
+
+      if (field === "cvUrl") {
+        setCvUrl(publicUrl);
+        setCvFileName(file.name);
+      }
+
+      await setDoc(doc(db, "graduates", user.uid), { [field]: publicUrl }, { merge: true });
+
+      alert(`${field === "cvUrl" ? "CV" : "Profile picture"} uploaded successfully!`);
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      alert("Upload failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const saveSection = async (section: Section) => {
     if (!user) return;
     setLoading(true);
@@ -700,12 +743,7 @@ const GraduateProfile = () => {
           <div className="section-header">
             <h2 className="section-title">
               <div className="section-icon">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                 </svg>
               </div>
@@ -715,12 +753,7 @@ const GraduateProfile = () => {
 
           <div className="file-upload-area">
             <div className="upload-icon">
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
               </svg>
             </div>
@@ -729,9 +762,7 @@ const GraduateProfile = () => {
               <div className="file-uploaded">
                 <p className="upload-text">CV Uploaded Successfully!</p>
                 <p className="upload-subtext">{cvFileName}</p>
-                <div
-                  style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}
-                >
+                <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
                   <a
                     href={cvUrl}
                     target="_blank"
@@ -747,7 +778,7 @@ const GraduateProfile = () => {
                       className="file-input"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleCvUpload(file);
+                        if (file) handleUpload(file, "cv-uploads", "cvUrl");
                       }}
                     />
                     Upload New CV
@@ -773,6 +804,7 @@ const GraduateProfile = () => {
             )}
           </div>
         </div>
+
       </div>
 
       {/* Loading Overlay */}

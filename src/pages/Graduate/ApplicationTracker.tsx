@@ -1,4 +1,3 @@
-// src/pages/Graduate/ApplicationTracker.tsx
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../firebase";
 import {
@@ -9,6 +8,7 @@ import {
   doc,
   getDoc,
   Timestamp,
+  onSnapshot,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "../../styles/ApplicationTracker.css";
@@ -23,20 +23,35 @@ interface Application {
   companyName?: string;
   jobType?: string;
   location?: string;
+  jobId?: string;
+}
+
+interface Placement {
+  id: string;
+  graduateId: string;
+  jobId: string;
+  jobTitle: string;
+  placedAt: Timestamp;
+  employerId: string;
+  companyName?: string; // Added companyName to Placement interface
 }
 
 export const ApplicationTracker: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
+  const [placements, setPlacements] = useState<Placement[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
   useEffect(() => {
+    let unsubscribePlacements: (() => void) | null = null;
+
     const fetchApplications = async () => {
       setLoading(true);
       try {
         const user = auth.currentUser;
         if (!user) return;
 
+        // Fetch applications
         const appsRef = collection(db, "applications");
         const q = query(appsRef, where("graduateId", "==", user.uid));
         const appSnap = await getDocs(q);
@@ -73,7 +88,7 @@ export const ApplicationTracker: React.FC = () => {
             const interviewQuery = query(
               interviewsRef,
               where("graduateId", "==", appData.graduateId),
-              where("jobId", "==", appData.jobId),
+              where("jobId", "==", appData.jobId)
             );
             const interviewSnap = await getDocs(interviewQuery);
 
@@ -93,6 +108,7 @@ export const ApplicationTracker: React.FC = () => {
             createdAt: appData.createdAt,
             interviewDate,
             interviewLink,
+            jobId: appData.jobId,
           });
         }
 
@@ -105,15 +121,71 @@ export const ApplicationTracker: React.FC = () => {
         });
 
         setApplications(appsData);
+
+        // Listen for placements for this graduate
+        const placementRef = collection(db, "placements");
+        const placementsQuery = query(
+          placementRef,
+          where("graduateId", "==", user.uid)
+        );
+        unsubscribePlacements = onSnapshot(placementsQuery, async (snapshot) => {
+          const placementArr: Placement[] = [];
+          for (const docSnap of snapshot.docs) {
+            const data = docSnap.data() as Placement;
+
+            // Fetch job info for companyName
+            const jobRef = doc(db, "jobs", data.jobId);
+            const jobSnap = await getDoc(jobRef);
+
+            const companyName =
+              jobSnap.exists() && jobSnap.data().companyName
+                ? jobSnap.data().companyName
+                : "Unknown Company";
+
+            placementArr.push({ ...data, companyName, id: docSnap.id });
+          }
+          setPlacements(placementArr);
+        });
       } catch (error) {
-        console.error("Error fetching applications:", error);
+        console.error("Error fetching applications or placements:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchApplications();
+
+    return () => {
+      if (unsubscribePlacements) unsubscribePlacements();
+    };
   }, []);
+
+  // Map applications with placement info
+  const applicationsWithPlacement = applications.map((app) => {
+    const placed = placements.find((p) => p.jobId === app.jobId);
+    return {
+      ...app,
+      isPlaced: !!placed,
+      placement: placed,
+      companyName: placed?.companyName || app.companyName,
+    };
+  });
+
+  // Filter by status
+  const filteredApplications =
+    selectedStatus === "all"
+      ? applicationsWithPlacement
+      : applicationsWithPlacement.filter((app) => app.status === selectedStatus);
+
+  const statusCounts = {
+    all: applicationsWithPlacement.length,
+    pending: applicationsWithPlacement.filter((app) => app.status === "pending")
+      .length,
+    accepted: applicationsWithPlacement.filter((app) => app.status === "accepted")
+      .length,
+    declined: applicationsWithPlacement.filter((app) => app.status === "declined")
+      .length,
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -139,7 +211,8 @@ export const ApplicationTracker: React.FC = () => {
     }
   };
 
-  const getStatusClass = (status: string): string => {
+  const getStatusClass = (status: string, isPlaced: boolean): string => {
+    if (isPlaced) return "status-placed";
     switch (status) {
       case "accepted":
         return "status-accepted";
@@ -149,18 +222,6 @@ export const ApplicationTracker: React.FC = () => {
       default:
         return "status-pending";
     }
-  };
-
-  const filteredApplications =
-    selectedStatus === "all"
-      ? applications
-      : applications.filter((app) => app.status === selectedStatus);
-
-  const statusCounts = {
-    all: applications.length,
-    pending: applications.filter((app) => app.status === "pending").length,
-    accepted: applications.filter((app) => app.status === "accepted").length,
-    declined: applications.filter((app) => app.status === "declined").length,
   };
 
   if (loading) {
@@ -245,114 +306,38 @@ export const ApplicationTracker: React.FC = () => {
                     <h3 className="job-title">{app.jobTitle}</h3>
                     <p className="company-name">{app.companyName}</p>
                   </div>
-                  <div className={`status-badge ${getStatusClass(app.status)}`}>
-                    {getStatusIcon(app.status)}
-                    <span>{app.status.toUpperCase()}</span>
-                  </div>
-                </div>
-
-                <div className="application-details">
-                  <div className="detail-item">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
-                    </svg>
-                    <span>
-                      Applied:{" "}
-                      {app.createdAt?.toDate().toLocaleDateString("en-ZA")}
-                    </span>
-                  </div>
-
-                  <div className="detail-item">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
-                    <span>{app.location}</span>
-                  </div>
-
-                  <div className="detail-item">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10 2 10 2 10 2 9 2.54 8.5 3.34l-.5.68-.5-.67C7.18 2.54 6.22 2 5.5 2 4.67 2 4 2.67 4 3.5c0 .35.07.69.18 1H2c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z" />
-                    </svg>
-                    <span>{app.jobType}</span>
-                  </div>
-                </div>
-
-                {app.status === "accepted" && app.interviewDate && (
-                  <div className="interview-section">
-                    <div className="interview-header">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
-                      </svg>
-                      <h4>Interview Scheduled</h4>
-                    </div>
-                    <div className="interview-details">
-                      <p className="interview-date">
-                        <strong>Date & Time:</strong> {app.interviewDate}
-                      </p>
-                      {app.interviewLink && (
-                        <a
-                          href={app.interviewLink}
-                          className="interview-link"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                  <div
+                    className={`status-badge ${getStatusClass(
+                      app.status,
+                      app.isPlaced
+                    )}`}
+                  >
+                    {app.isPlaced ? (
+                      <>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
                         >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
-                          </svg>
-                          Join Interview
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {app.status === "declined" && (
-                  <div className="declined-section">
-                    <p className="declined-message">
-                      Unfortunately, your application was not successful this
-                      time. Keep applying and improving your profile!
-                    </p>
-                  </div>
-                )}
-
-                {app.status === "pending" && (
-                  <div className="pending-section">
-                    <p className="pending-message">
-                      Your application is being reviewed. We'll notify you once
-                      there's an update.
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z" />
+                        </svg>
+                        <span>PLACED</span>
+                      </>
+                    ) : (
+                                          <>
+                                            {getStatusIcon(app.status)}
+                                            <span>{app.status.toUpperCase()}</span>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                    {/* You may have more content for each application card here */}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    };

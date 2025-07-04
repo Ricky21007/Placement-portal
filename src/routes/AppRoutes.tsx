@@ -23,6 +23,7 @@ import EditProfile from '../pages/Employer/EditProfile';
 import EmployerSignup from '../pages/Employer/EmployerSignup';
 import ViewJobsGraduate from '../pages/Graduate/ViewJobsGraduate';
 import ApplyJob from '../pages/Graduate/ApplyJob';
+import MyPlacement from '../pages/Graduate/MyPlacement';
 
 
 function AppRoutes() {
@@ -61,6 +62,9 @@ function AppRoutes() {
       <Route path="/graduate/jobs" element={<JobMatchingFeed />} />
       <Route path="/graduate/applications" element={<ApplicationTracker />} />
       <Route path="/graduate/view-jobs" element={<ViewJobsGraduate />} />
+import MyPlacement from '../pages/Graduate/MyPlacement';
+
+      <Route path="/graduate/my-placement" element={<MyPlacement />} />
       <Route path="/apply-job/:jobId" element={<ApplyJob />} />
     </Routes>
   );
