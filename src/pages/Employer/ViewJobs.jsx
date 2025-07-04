@@ -50,7 +50,7 @@ const ViewJobs = () => {
     <div className={styles.container}>
       <button
         className={styles.backButton}
-        onClick={() => navigate("/employer-dashboard")}
+        onClick={() => navigate("/employer/dashboard")}
       >
         ← Back to Dashboard
       </button>

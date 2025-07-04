@@ -1,52 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './EmployerDashboard.module.css';
 import { useNavigate } from 'react-router-dom';
- 
+import { auth, db } from '../../firebase';
+import { doc, getDoc, DocumentData } from 'firebase/firestore';
+
+interface EmployerData {
+  companyName?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+}
+
 const EmployerDashboard = () => {
-  const userName = "Mkhuseli Mditshwa";
+  const [employerData, setEmployerData] = useState<EmployerData | null>(null);
   const navigate = useNavigate();
- 
+
   const [stats, setStats] = useState({
     activeJobs: 5,
     applicants: 12,
     interviews: 3,
   });
- 
-  const [recentActivity, setRecentActivity] = useState([
+
+  const [recentActivity, setRecentActivity] = useState<string[]>([
     "Job posting 'Frontend Developer' approved",
     "New applicant for 'Backend Engineer'",
     "Interview scheduled for 'Project Manager'",
   ]);
- 
+
+  useEffect(() => {
+    const fetchEmployerData = async () => {
+      if (auth.currentUser) {
+        console.log('Fetching employer data for UID:', auth.currentUser.uid);
+        const docRef = doc(db, 'employers', auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        console.log('Document exists:', docSnap.exists());
+        if (docSnap.exists()) {
+          setEmployerData(docSnap.data() as EmployerData);
+        } else {
+          console.log('No employer data found!');
+        }
+      } else {
+        console.log('No authenticated user found');
+      }
+    };
+    fetchEmployerData();
+  }, []);
+
+  // Added button click handlers for navigation
   const handlePostJob = () => {
-    navigate('/employer/post-job');
+    navigate('/employer/postjob');
   };
- 
+
   const handleViewJobs = () => {
-    navigate('/employer/view-jobs');
+    navigate('/employer/viewjobs');
   };
- 
+
   const handleApplicants = () => {
     navigate('/employer/applicants');
   };
- 
+
   const handleEditProfile = () => {
-    navigate('/employer/edit-profile');
+    navigate('/employer/editprofile');
   };
- 
-  const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      // Implement logout logic here, e.g., clear auth tokens, redirect to login
-      console.log('Logout clicked');
-      navigate('/login');
-    }
-  };
- 
+
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
         <h2 className={styles.title}>Employer Portal</h2>
-        <button className={styles.logoutButton} aria-label="Logout" onClick={handleLogout} title="Logout">
+        <button className={styles.logoutButton} aria-label="Logout" onClick={() => {
+          if (window.confirm("Are you sure you want to logout?")) {
+            console.log('Logout clicked');
+            navigate('/login');
+          }
+        }} title="Logout">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -65,11 +91,11 @@ const EmployerDashboard = () => {
           </svg>
         </button>
       </header>
- 
+
       <p className={styles.welcomeMessage}>
-        Welcome back, {userName} <span role="img" aria-label="waving hand">👋</span>
+        Welcome back, {employerData?.companyName ?? 'Employer'} <span role="img" aria-label="waving hand">👋</span>
       </p>
- 
+
       <div className={styles.buttonGrid}>
         <button className={styles.actionButton} onClick={handlePostJob} title="Post a new job">
           <svg
@@ -127,7 +153,17 @@ const EmployerDashboard = () => {
           Edit Profile
         </button>
       </div>
- 
+
+      {employerData && (
+        <div className={styles.dashboardContainer}>
+          <h3>Company Details</h3>
+          <p><strong>Company Name:</strong> {employerData.companyName}</p>
+          <p><strong>Email:</strong> {employerData.email}</p>
+          <p><strong>Phone:</strong> {employerData.phone || 'N/A'}</p>
+          <p><strong>Website:</strong> {employerData.website || 'N/A'}</p>
+        </div>
+      )}
+
       <div className={styles.statsContainer}>
         <div className={styles.statCard}>
           <div className={styles.statNumber}>{stats.activeJobs}</div>
@@ -142,7 +178,7 @@ const EmployerDashboard = () => {
           <div className={styles.statLabel}>Interviews</div>
         </div>
       </div>
- 
+
       <section className={styles.recentActivity}>
         <h3 className={styles.sectionTitle}>Recent Activity</h3>
         {recentActivity.length === 0 ? (
@@ -158,7 +194,5 @@ const EmployerDashboard = () => {
     </div>
   );
 };
- 
+
 export default EmployerDashboard;
- 
- 

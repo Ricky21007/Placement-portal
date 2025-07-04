@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "./PostJob.module.css";
 import { db, auth } from "../../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -64,12 +64,9 @@ const PostJob = () => {
 
   return (
     <div className={styles.container}>
-      <button
-        className={styles.backButton}
-        onClick={() => navigate("/employer-dashboard")}
-      >
+      <Link to="/employer/dashboard" className={styles.backToDashboardBtn}>
         ← Back to Dashboard
-      </button>
+      </Link>
       <div className={styles.formWrapper}>
         <h2 className={styles.title}>Post a New Job</h2>
         <form onSubmit={handleSubmit}>
@@ -130,7 +127,18 @@ const PostJob = () => {
 
           {/* Skills Section */}
           <div className={styles.skillsWrapper}>
-            <label className={styles.skillsLabel}>Required Skills</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <label className={styles.skillsLabel}>Required Skills</label>
+              <button
+                type="button"
+                className={styles.addSkillButton}
+                onClick={handleAddSkill}
+                disabled={loading}
+                title="Add another skill"
+              >
+                + Add Skill
+              </button>
+            </div>
             {skills.map((skill, index) => (
               <div className={styles.skillRow} key={index}>
                 <input
@@ -154,15 +162,6 @@ const PostJob = () => {
                 )}
               </div>
             ))}
-            <button
-              type="button"
-              className={styles.addSkillButton}
-              onClick={handleAddSkill}
-              disabled={loading}
-              title="Add another skill"
-            >
-              + Add Skill
-            </button>
           </div>
 
           <button

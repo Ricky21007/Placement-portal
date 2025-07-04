@@ -1,70 +1,80 @@
 .container {
+  position: relative;
   min-height: 100vh;
-  background: linear-gradient(
+   background: linear-gradient(
     135deg,
-    var(--primary-dark, #0b1e3d) 0%,
-    var(--secondary-blue, #475777) 100%
+    var(--color-primary-dark, #0b1e3d) 0%,
+    var(--color-secondary-blue, #475777) 100%
   );
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 60px;
+}
+
+/* Enhanced styling for the back button */
+.backToDashboardBtn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  gap: 8px;
+  background: #fff;
+  color: #ff6f61;
+  border: 2px solid #ff6f61;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  z-index: 100;
 }
 
-.backButton {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.25rem;
-  color: var(--text-light, #f0f4f8);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
+.backToDashboardBtn:hover,
+.backToDashboardBtn:focus {
+  background: #ff6f61;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,111,97,0.15);
+  outline: none;
 }
-
-.backButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
 .formWrapper {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 1.5rem;
-  padding: 3rem;
+  padding: 2.5rem 2rem;
   max-width: 600px;
   width: 100%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(20px);
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-dark, #0b1e3d);
-  text-align: center;
-  margin-bottom: 2rem;
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
 .formInput,
 .formTextarea,
 .formDate {
-  width: 100%;
   padding: 1rem;
-  margin-bottom: 1.5rem;
-  background: var(--white, #ffffff);
+  background: #f3f4f6; /* light gray background */
   border: 2px solid var(--gray-200, #e5e5e5);
   border-radius: 0.75rem;
-  color: var(--primary-dark, #0b1e3d);
+  color: #22223b; /* dark blue-gray text */
   font-size: 1rem;
   font-weight: 500;
   transition: all 0.3s ease;
+  font-family: inherit;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -73,13 +83,14 @@
 .formDate:focus {
   outline: none;
   border-color: var(--accent-coral, #ff6f61);
-  background: var(--white, #ffffff);
+  background: #fff; /* white background on focus */
+  color: #0b1e3d;   /* even darker text on focus */
   box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
 }
 
 .formInput::placeholder,
 .formTextarea::placeholder {
-  color: var(--gray-500, #737373);
+  color: #a0aec0; /* lighter gray for placeholder */
 }
 
 .formTextarea {
@@ -89,21 +100,59 @@
 
 .skillsWrapper {
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.skillsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .skillsLabel {
-  display: block;
   color: var(--primary-dark, #0b1e3d);
   font-weight: 600;
-  margin-bottom: 1rem;
   font-size: 1.1rem;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.addSkillButton {
+  background: var(--secondary-blue, #475777);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.addSkillButton:hover {
+  background: var(--primary-dark, #0b1e3d);
+  transform: translateY(-2px);
+}
+
+.addSkillButton:disabled {
+  background: var(--gray-400, #a3a3a3);
+  cursor: not-allowed;
+  transform: none;
 }
 
 .skillRow {
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .skillRow .formInput {
@@ -139,32 +188,6 @@
   transform: none;
 }
 
-.addSkillButton {
-  background: var(--secondary-blue, #475777);
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.addSkillButton:hover {
-  background: var(--primary-dark, #0b1e3d);
-  transform: translateY(-2px);
-}
-
-.addSkillButton:disabled {
-  background: var(--gray-400, #a3a3a3);
-  cursor: not-allowed;
-  transform: none;
-}
-
 .submitButton {
   width: 100%;
   background: var(--accent-coral, #ff6f61);
@@ -192,27 +215,19 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
   .formWrapper {
-    padding: 2rem;
+    padding: 1.5rem 0.5rem;
   }
-
-  .backButton {
-    top: 1rem;
-    left: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+  .skillsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
-
   .skillRow {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
   }
-
   .removeSkillButton {
     align-self: flex-end;
     margin-top: 0.5rem;

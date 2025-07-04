@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import styles from './EmployerSignup.module.css';
 import { auth, db } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
-import { doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
  
 const EmployerSignup = () => {
@@ -19,26 +18,12 @@ const EmployerSignup = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Check if user already exists and delete if so
-      // This approach does not handle email already exists error properly
-      // Instead, catch the error and handle it gracefully
- 
-      // Create user with email and password
       let userCredential;
       try {
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
-          // Find and delete existing user and their Firestore data
-          alert('This email is already registered. Attempting to delete existing user data to allow re-signup.');
-          try {
-            // Firebase does not allow deleting users by email client-side directly
-            // So we can only delete current logged-in user, or instruct manual deletion
-            alert('Please delete the user manually from Firebase Authentication console or log in and delete your account.');
-          } catch (deleteError) {
-            console.error('Error deleting existing user:', deleteError);
-            alert('Failed to delete existing user: ' + deleteError.message);
-          }
+          alert('This email is already registered. Please log in or reset your password.');
           setLoading(false);
           return;
         } else {
@@ -47,19 +32,20 @@ const EmployerSignup = () => {
       }
       const user = userCredential.user;
  
-      // Save employer details in Firestore
-      await setDoc(doc(db, 'employersignup', user.uid), {
-        companyName,
-        email,
-        phone,
-        website,
-        createdAt: new Date(),
-      }).then(() => {
+      try {
+        console.log('Saving employer data:', { companyName, email, phone, website });
+        await setDoc(doc(db, 'employers', user.uid), {
+          companyName,
+          email,
+          phone,
+          website,
+          createdAt: new Date(),
+        });
         console.log('Employer data saved successfully');
-      }).catch((error) => {
+      } catch (error) {
         console.error('Error saving employer data:', error);
         alert('Error saving employer data: ' + error.message);
-      });
+      }
  
       alert('Signup successful!');
       navigate('/employer/dashboard'); // Redirect after signup
@@ -131,5 +117,3 @@ const EmployerSignup = () => {
 };
  
 export default EmployerSignup;
- 
- 

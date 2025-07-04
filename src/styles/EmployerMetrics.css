@@ -9,6 +9,8 @@
   padding: 2rem;
   position: relative;
   font-family: var(--font-family, "Inter", sans-serif);
+  animation: fadeInUp 0.6s ease-out;
+  margin-left: 260px; /* Add this line to move content to the right (adjust 260px to your sidebar width) */
 }
 
 .back-button {

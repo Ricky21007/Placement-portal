@@ -10,6 +10,15 @@
   overflow-x: hidden;
 }
 
+/* Example: AdminDashboard.module.css or a global admin layout CSS */
+.admin-main-content {
+  margin-left: 140px; /* Further reduced left margin to move content more to the left */
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f8f9fa;
+}
+
 /* Background pattern */
 .admin-dashboard-container::before {
   content: "";
@@ -53,9 +62,10 @@
 /* Metrics Grid */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
   gap: var(--spacing-xl);
-  max-width: 1400px;
+  max-width: calc(100% - 280px); /* subtract sidebar width */
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -274,6 +284,13 @@
 
   .metric-card p {
     font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-main-content {
+    margin-left: 0;
+    padding: 1rem 0.5rem;
   }
 }
 

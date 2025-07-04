@@ -102,11 +102,21 @@
   margin-bottom: var(--spacing-xl);
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    inset 0 1px 0 rgba(83, 78, 78, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: var(--transition-all);
   position: relative;
   overflow: hidden;
+  color: var(--text-dark); /* Make text color darker for better visibility */
+}
+
+.profile-info-item {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 1rem;
+  opacity: 1 !important;
+  /* Added text shadow for better visibility */
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .profile-section::before {
@@ -222,9 +232,11 @@
   border-radius: var(--radius-lg);
   font-size: var(--font-size-base);
   font-family: var(--font-family);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(168, 168, 168, 0.9);
   color: var(--text-dark);
   transition: var(--transition-all);
+  /* Make text color darker */
+  color: #222222;
 }
 
 .form-input:focus,

@@ -16,7 +16,7 @@ const AdminSidebar = () => {
  
   const handleLogout = () => {
     // Clear any auth tokens or session here if needed
-    navigate('/login/admin');
+    navigate('/');
   };
  
   return (
@@ -41,5 +41,4 @@ const AdminSidebar = () => {
 };
  
 export default AdminSidebar;
- 
- 
+

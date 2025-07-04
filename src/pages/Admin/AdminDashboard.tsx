@@ -48,7 +48,7 @@ const AdminDashboard = () => {
   }, []);
  
   return (
-    <div className="admin-dashboard-container" style={{ padding: "1rem" }}>
+    <div className="admin-dashboard-container admin-main-content" style={{ padding: "1rem" }}>
       <h1>Admin Dashboard</h1>
       <div className="metrics-grid">
         <div className="metric-card">

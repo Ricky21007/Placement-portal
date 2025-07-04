@@ -39,25 +39,30 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
       }
     }
     try {
-        if (mode === "login") {
-          await signInWithEmailAndPassword(auth, email, password);
-          navigate('/employer/dashboard');
-        } else {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          if (userCredential.user) {
-            await sendEmailVerification(userCredential.user);
-            setSuccess("Verification email sent! Please check your inbox. Redirecting to login...");
-          }
-          setName("");
-          setSurname("");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-          setTimeout(() => {
-            setSuccess("");
-            navigate("/login/employer");
-          }, 2000);
+      if (mode === "login") {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        if (!userCredential.user.emailVerified) {
+          setError("Please verify your email before logging in. Check your inbox for the verification email.");
+          await auth.signOut();
+          return;
         }
+        navigate('/employer/dashboard');
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        if (userCredential.user) {
+          await sendEmailVerification(userCredential.user);
+          setSuccess("Verification email sent! Please check your inbox. Redirecting to login...");
+        }
+        setName("");
+        setSurname("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setTimeout(() => {
+          setSuccess("");
+          navigate("/login/employer");
+        }, 2000);
+      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -293,4 +298,3 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
 };
  
 export default EmployerAuth;
- 

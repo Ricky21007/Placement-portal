@@ -137,7 +137,7 @@
   background: linear-gradient(
     135deg,
     rgba(255, 111, 97, 0.1),
-    rgba(71, 87, 119, 0.1)
+    rgba(138, 148, 168, 0.918)
   );
   backdrop-filter: blur(20px);
   box-shadow:
@@ -149,8 +149,8 @@
   transform: scale(1.08);
   border-color: rgba(255, 111, 97, 0.6);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 0 8px rgba(255, 111, 97, 0.1);
+    0 20px 40px rgba(139, 138, 138, 0.3),
+    0 0 0 8px rgba(238, 226, 226, 0.1);
 }
 
 .profile-picture img {
@@ -166,21 +166,26 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--white);
+  background: rgba(80, 80, 80, 0.85); /* default grey */
+  color: #ff6f61; /* <-- coral text, change to any color you want */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: var(--transition-slow);
+  transition: background 0.3s, color 0.3s, opacity 0.3s;
   border-radius: 50%;
   cursor: pointer;
   backdrop-filter: blur(10px);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .profile-picture:hover .upload-overlay {
   opacity: 1;
+  background: rgba(220, 220, 220, 0.95); /* light grey on hover */
+  color: #22223b; /* dark blue text on hover, or keep #ff6f61 if you want coral */
 }
 
 /* Edit Profile Link in Sidebar */
@@ -283,7 +288,7 @@
 .section-description {
   font-size: var(--font-size-lg);
   font-weight: 400;
-  color: var(--gray-600);
+  color: #060607bb;
   line-height: var(--leading-relaxed);
   margin-bottom: var(--spacing-3xl);
   text-align: center;
@@ -391,7 +396,7 @@
 
 .nav-card-description {
   font-size: var(--font-size-base);
-  color: var(--gray-600);
+  color: #060607bb; /* dark blue */
   line-height: var(--leading-relaxed);
   margin-bottom: var(--spacing-lg);
   max-width: 280px;
