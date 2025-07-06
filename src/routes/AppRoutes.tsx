@@ -17,6 +17,8 @@ import EmployerMetrics from '../pages/Admin/EmployerMetrics';
 import ManageUsers from '../pages/Admin/ManageUsers';
 import AdminLayout from '../components/AdminLayout';
 import ManageAdmins from '../pages/Admin/ManageAdmins';
+import HostCompanies from '../pages/Admin/HostCompanies';
+import Graduates from '../pages/Admin/Graduates';
 import ViewJobs from '../pages/Employer/ViewJobs';
 import Applicants from '../pages/Employer/Applicants';
 import EditProfile from '../pages/Employer/EditProfile';
@@ -43,15 +45,15 @@ function AppRoutes() {
       <Route path="/login/admin" element={<AdminAuth mode="login" />} />
       <Route path="/signup/admin" element={<AdminAuth mode="signup" />} />
      
-      /*
-<Route path="/admin" element={<AdminLayout />} >
-  <Route path="dashboard" element={<AdminDashboard />} />
-  <Route path="placement-tracker" element={<PlacementTracker />} />
-  <Route path="employer-metrics" element={<EmployerMetrics />} />
-  <Route path="manage-users" element={<ManageUsers />} />
-  {/* <Route path="manage-admins" element={<ManageAdmins />} /> */}
-</Route>
-*/
+      <Route path="/admin" element={<AdminLayout />} >
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="placement-tracker" element={<PlacementTracker />} />
+        <Route path="employer-metrics" element={<EmployerMetrics />} />
+        <Route path="manage-users" element={<ManageUsers />} />
+        <Route path="manage-admins" element={<ManageAdmins />} />
+        <Route path="host-companies" element={<HostCompanies />} />
+        <Route path="graduates" element={<Graduates />} />
+      </Route>
  
       <Route path="/forgot-password" element={<ForgotPassword />} />
  

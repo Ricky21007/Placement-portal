@@ -35,8 +35,8 @@ const EmployerDashboard = () => {
     // Clear any authentication tokens or session data here
     localStorage.clear();
     sessionStorage.clear();
-    // Redirect to employer login page
-    navigate('/login/employer');
+    // Redirect to Welcome page
+    navigate('/');
   };
  
   return (

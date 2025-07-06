@@ -12,8 +12,8 @@ import {
 } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import "../../styles/ManageAdmins.css"; // Import your CSS styles
- 
- 
+
+
 const ManageAdmins: React.FC = () => {
   interface AdminUser {
     id: string;
@@ -22,7 +22,7 @@ const ManageAdmins: React.FC = () => {
     role: string;
     active: boolean;
   }
- 
+
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [newAdmin, setNewAdmin] = useState({
     fullname: "",
@@ -33,7 +33,7 @@ const ManageAdmins: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState<{ [key: string]: boolean }>({});
- 
+
   // Fetch admins (with optional search)
   const fetchAdmins = async (search = "") => {
     setLoading(true);
@@ -57,11 +57,35 @@ const ManageAdmins: React.FC = () => {
     }
     setLoading(false);
   };
- 
+
   useEffect(() => {
+    const createDefaultAdminIfNotExists = async () => {
+      try {
+        const adminsRef = collection(db, "admins");
+        const q = query(adminsRef, where("email", "==", "admin@gmail.com"));
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+          // Create default admin user in Firebase Auth and Firestore
+          const userCredential = await createUserWithEmailAndPassword(auth, "admin@gmail.com", "admin12345");
+          const user = userCredential.user;
+          await addDoc(adminsRef, {
+            fullname: "ADMIN ADMIN",
+            email: "admin@gmail.com",
+            role: "admin",
+            active: true,
+            uid: user.uid,
+          });
+          alert("Default admin created with email: admin@gmail.com and password: admin12345");
+        }
+      } catch (error) {
+        console.error("Error creating default admin:", error);
+      }
+    };
+
+    createDefaultAdminIfNotExists();
     fetchAdmins();
   }, []);
- 
+
   // Add new admin
   const handleAddAdmin = async () => {
     const { fullname, email, password, role, active } = newAdmin;
@@ -71,9 +95,9 @@ const ManageAdmins: React.FC = () => {
     }
     setPending((prev) => ({ ...prev, add: true }));
     try {
-    const userCredential = await createUserWithEmailAndPassword(auth, newAdmin.email, newAdmin.password);
-    const user = userCredential.user;
- 
+      const userCredential = await createUserWithEmailAndPassword(auth, newAdmin.email, newAdmin.password);
+      const user = userCredential.user;
+
       await addDoc(collection(db, "admins"), {
         fullname,
         email,
@@ -90,9 +114,18 @@ const ManageAdmins: React.FC = () => {
     }
     setPending((prev) => ({ ...prev, add: false }));
   };
- 
+
   // Toggle active/inactive
-  const handleToggleActive = async (id: string, status: boolean) => {
+  const handleToggleActive = async (id: string, status: boolean, email: string) => {
+    // Prevent toggling default admin or self
+    if (email === "admin@gmail.com") {
+      alert("Default admin cannot be deactivated.");
+      return;
+    }
+    if (auth.currentUser && auth.currentUser.email === email) {
+      alert("You cannot deactivate yourself.");
+      return;
+    }
     setPending((prev) => ({ ...prev, [id]: true }));
     try {
       await updateDoc(doc(db, "admins", id), { active: !status });
@@ -102,9 +135,18 @@ const ManageAdmins: React.FC = () => {
     }
     setPending((prev) => ({ ...prev, [id]: false }));
   };
- 
+
   // Delete admin
-  const handleDeleteAdmin = async (id: string) => {
+  const handleDeleteAdmin = async (id: string, email: string) => {
+    // Prevent deleting default admin or self
+    if (email === "admin@gmail.com") {
+      alert("Default admin cannot be deleted.");
+      return;
+    }
+    if (auth.currentUser && auth.currentUser.email === email) {
+      alert("You cannot delete yourself.");
+      return;
+    }
     if (!confirm("Are you sure you want to delete this admin?")) return;
     setPending((prev) => ({ ...prev, [id]: true }));
     try {
@@ -115,12 +157,12 @@ const ManageAdmins: React.FC = () => {
     }
     setPending((prev) => ({ ...prev, [id]: false }));
   };
- 
+
   return (
-    <div className="manage-users-container">
+    <div className="manage-users-container" style={{ marginLeft: "260px", minHeight: "100vh", padding: "1rem", overflowY: "auto", marginTop: "0", marginBottom: "0" }}>
       <h1>Manage Admins</h1>
       <div className="form-row">
-      <button onClick={handleAddAdmin} disabled={pending.add}>
+        <button onClick={handleAddAdmin} disabled={pending.add}>
           {pending.add ? "Adding..." : "Add Admin"}
         </button>
         <input
@@ -141,16 +183,15 @@ const ManageAdmins: React.FC = () => {
           value={newAdmin.password}
           onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
         />
-   
       </div>
- 
+
       <input
         type="text"
         placeholder="Search admins..."
         onChange={(e) => fetchAdmins(e.target.value)}
         className="search-bar"
       />
- 
+
       {loading ? (
         <p>Loading admins...</p>
       ) : (
@@ -173,13 +214,13 @@ const ManageAdmins: React.FC = () => {
                 <td>{admin.active ? "Active" : "Inactive"}</td>
                 <td>
                   <button
-                    onClick={() => handleToggleActive(admin.id, admin.active)}
+                    onClick={() => handleToggleActive(admin.id, admin.active, admin.email)}
                     disabled={pending[admin.id]}
                   >
                     {admin.active ? "Deactivate" : "Activate"}
                   </button>
                   <button
-                    onClick={() => handleDeleteAdmin(admin.id)}
+                    onClick={() => handleDeleteAdmin(admin.id, admin.email)}
                     disabled={pending[admin.id]}
                   >
                     Delete
@@ -193,7 +234,5 @@ const ManageAdmins: React.FC = () => {
     </div>
   );
 };
- 
+
 export default ManageAdmins;
- 
- 

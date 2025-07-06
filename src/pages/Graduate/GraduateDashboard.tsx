@@ -91,6 +91,17 @@ const GraduateDashboard = () => {
                 Update your CV, skills and portfolio.
               </p>
             </Link>
+            <button
+              className="sidebar-logout-button"
+              onClick={() => {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = "/";
+              }}
+              style={{ marginTop: "1rem", cursor: "pointer" }}
+            >
+              Log Out
+            </button>
           </nav>
         </aside>
 

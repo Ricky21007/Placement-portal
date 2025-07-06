@@ -274,7 +274,8 @@ const Applicants = () => {
  
 const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
   const [interviewStatus, setInterviewStatus] = useState(null);
- 
+  const [marked, setMarked] = useState(false);
+
   useEffect(() => {
     const fetchInterviewStatus = async () => {
       const q = query(
@@ -289,20 +290,30 @@ const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
     };
     fetchInterviewStatus();
   }, [applicant.graduateId, applicant.jobId]);
- 
-  if (interviewStatus !== "Scheduled") return null;
- 
+
+  if (interviewStatus !== "Scheduled" || marked) return null;
+
+  const handleMarkHired = () => {
+    markAsHired(applicant);
+    setMarked(true);
+  };
+
+  const handleMarkNotHired = () => {
+    markAsNotHired(applicant);
+    setMarked(true);
+  };
+
   return (
     <div style={{ marginTop: 8 }}>
       <button
         className={styles.acceptButton}
-        onClick={() => markAsHired(applicant)}
+        onClick={handleMarkHired}
       >
         ✅ Mark as Hired
       </button>
       <button
         className={styles.declineButton}
-        onClick={() => markAsNotHired(applicant)}
+        onClick={handleMarkNotHired}
       >
         ❌ Mark as Not Hired
       </button>

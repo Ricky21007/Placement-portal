@@ -33,7 +33,7 @@ interface Placement {
   jobTitle: string;
   placedAt: Timestamp;
   employerId: string;
-  companyName?: string; // Added companyName to Placement interface
+  companyName?: string;
 }
  
 export const ApplicationTracker: React.FC = () => {
@@ -51,7 +51,6 @@ export const ApplicationTracker: React.FC = () => {
         const user = auth.currentUser;
         if (!user) return;
  
-        // Fetch applications
         const appsRef = collection(db, "applications");
         const q = query(appsRef, where("graduateId", "==", user.uid));
         const appSnap = await getDocs(q);
@@ -72,9 +71,19 @@ export const ApplicationTracker: React.FC = () => {
  
           if (jobSnap.exists()) {
             const jobData = jobSnap.data();
+ 
+            let companyName = "Unknown Company";
+            if (jobData.employerId) {
+              const companyRef = doc(db, "companyProfiles", jobData.employerId);
+              const companySnap = await getDoc(companyRef);
+              if (companySnap.exists()) {
+                companyName = companySnap.data().companyName || "Unknown Company";
+              }
+            }
+ 
             jobDetails = {
               jobTitle: jobData.jobTitle || jobData.title || "Unknown Job",
-              companyName: jobData.companyName || "Unknown Company",
+              companyName,
               jobType: jobData.jobType || "Unknown",
               location: jobData.location || "Unknown",
             };
@@ -112,35 +121,41 @@ export const ApplicationTracker: React.FC = () => {
           });
         }
  
-        // Sort by application date (most recent first)
         appsData.sort((a, b) => {
           if (!a.createdAt || !b.createdAt) return 0;
-          return (
-            b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()
-          );
+          return b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
         });
  
         setApplications(appsData);
  
-        // Listen for placements for this graduate
+        // Fetch placements
         const placementRef = collection(db, "placements");
         const placementsQuery = query(
           placementRef,
           where("graduateId", "==", user.uid)
         );
+ 
         unsubscribePlacements = onSnapshot(placementsQuery, async (snapshot) => {
           const placementArr: Placement[] = [];
           for (const docSnap of snapshot.docs) {
             const data = docSnap.data() as Placement;
  
-            // Fetch job info for companyName
+            let companyName = "Unknown Company";
+ 
+            // Get job to find employerId
             const jobRef = doc(db, "jobs", data.jobId);
             const jobSnap = await getDoc(jobRef);
  
-            const companyName =
-              jobSnap.exists() && jobSnap.data().companyName
-                ? jobSnap.data().companyName
-                : "Unknown Company";
+            if (jobSnap.exists()) {
+              const jobData = jobSnap.data();
+              if (jobData.employerId) {
+                const companyRef = doc(db, "companyProfiles", jobData.employerId);
+                const companySnap = await getDoc(companyRef);
+                if (companySnap.exists()) {
+                  companyName = companySnap.data().companyName || "Unknown Company";
+                }
+              }
+            }
  
             placementArr.push({ ...data, companyName, id: docSnap.id });
           }
@@ -160,7 +175,6 @@ export const ApplicationTracker: React.FC = () => {
     };
   }, []);
  
-  // Map applications with placement info
   const applicationsWithPlacement = applications.map((app) => {
     const placed = placements.find((p) => p.jobId === app.jobId);
     return {
@@ -171,7 +185,6 @@ export const ApplicationTracker: React.FC = () => {
     };
   });
  
-  // Filter by status
   const filteredApplications =
     selectedStatus === "all"
       ? applicationsWithPlacement
@@ -205,7 +218,7 @@ export const ApplicationTracker: React.FC = () => {
       default:
         return (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6Z" />
+            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
           </svg>
         );
     }
@@ -238,7 +251,6 @@ export const ApplicationTracker: React.FC = () => {
   return (
     <div className="application-tracker-page">
       <div className="application-tracker-container">
-        {/* Header */}
         <div className="page-header">
           <Link to="/graduate/dashboard" className="back-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -252,7 +264,6 @@ export const ApplicationTracker: React.FC = () => {
           </p>
         </div>
  
-        {/* Status Filter Tabs */}
         <div className="status-tabs">
           {Object.entries(statusCounts).map(([status, count]) => (
             <button
@@ -268,16 +279,10 @@ export const ApplicationTracker: React.FC = () => {
           ))}
         </div>
  
-        {/* Applications List */}
         {filteredApplications.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">
-              <svg
-                width="80"
-                height="80"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
               </svg>
             </div>
@@ -325,20 +330,18 @@ export const ApplicationTracker: React.FC = () => {
                         <span>PLACED</span>
                       </>
                     ) : (
-                                          <>
-                                            {getStatusIcon(app.status)}
-                                            <span>{app.status.toUpperCase()}</span>
-                                          </>
-                                        )}
-                                      </div>
-                                    </div>
-                                    {/* You may have more content for each application card here */}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    };
- 
+                      <>
+                        {getStatusIcon(app.status)}
+                        <span>{app.status.toUpperCase()}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
