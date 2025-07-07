@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './EmployerDashboard.module.css';
 import { FaPlus, FaBriefcase, FaUsers, FaUserEdit, FaSignOutAlt } from 'react-icons/fa';
+import { auth } from '../../firebase';  // Import Firebase auth
  
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -13,10 +14,14 @@ const EmployerDashboard = () => {
   const [recentActivity, setRecentActivity] = useState([]);
  
   useEffect(() => {
-    // Simulate fetching data from an API
+    // Fetch data and get current user from Firebase auth
     const fetchData = () => {
-      // Mock data
-      setEmployerName('Mkhuseli Mditshwa');
+      const user = auth.currentUser;
+      if (user) {
+        setEmployerName(user.displayName || user.email || 'Employer');
+      } else {
+        setEmployerName('Employer');
+      }
       setActiveJobs(5);
       setApplicants(23);
       setInterviews(7);

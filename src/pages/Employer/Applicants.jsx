@@ -183,10 +183,10 @@ const Applicants = () => {
  
   return (
     <div className={styles.container}>
-      <button
-        className={styles.backButton}
-        onClick={() => navigate("/employer-dashboard")}
-      >
+       <button
+             className={styles.backButton}
+             onClick={() => navigate("/employer/dashboard")}
+           >
         ← Back to Dashboard
       </button>
       <h2 className={styles.title}>Applicants</h2>
