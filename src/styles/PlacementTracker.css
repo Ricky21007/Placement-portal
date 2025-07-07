@@ -142,6 +142,11 @@
   background: rgba(255, 111, 97, 0.05);
 }
 
+/* Set table rows background color to white */
+.placement-table tbody tr {
+  background-color: white;
+}
+
 .placement-table tr:last-child td {
   border-bottom: none;
 }

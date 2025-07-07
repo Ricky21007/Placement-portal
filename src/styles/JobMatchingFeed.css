@@ -39,6 +39,8 @@
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.8s ease-out;
+  color: black !important; /* Set text color to black */
+  font-weight: 700 !important; /* Make text bold */
 }
 
 /* Header */

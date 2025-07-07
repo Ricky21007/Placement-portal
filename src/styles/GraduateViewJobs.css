@@ -3,7 +3,8 @@
   width: 100vw;
   min-height: 100vh;
   font-family: var(--font-family);
-  color: var(--text-dark);
+  color: black !important; /* Set text color to black */
+  font-weight: 700 !important; /* Make text bold */
   padding: var(--spacing-3xl);
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   box-sizing: border-box;
@@ -220,6 +221,8 @@
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-sm);
+  overflow-wrap: break-word; /* Prevent overlay by wrapping long text */
+  word-break: break-word; /* Additional break for long words */
 }
 
 .jobLabel {

@@ -86,6 +86,16 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: var(--spacing-xs);
+  text-align: center; /* Center the heading */
+  width: 100%; /* Take full width */
+}
+
+.profile-header-subtitle {
+  color: var(--text-muted);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  text-align: center; /* Center the subtitle */
+  width: 100%; /* Take full width */
 }
 
 .profile-header-subtitle {
@@ -136,6 +146,8 @@
   position: relative;
   overflow: hidden;
   animation: fadeInUp 0.6s ease-out both;
+  color: black !important; /* Changed text color to black */
+  font-weight: 700 !important; /* Made text bold */
 }
 
 .profile-section:nth-child(2) {

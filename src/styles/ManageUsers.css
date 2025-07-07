@@ -42,7 +42,7 @@
 .manage-users-container h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--text-light, #f0f4f8);
+  color: white !important; /* Added !important to enforce white color */
   text-align: center;
   margin: 4rem 0 3rem 0;
 }
@@ -84,6 +84,11 @@
 
 .users-table tr:hover {
   background: rgba(255, 111, 97, 0.05);
+}
+
+/* Set table rows background color to white */
+.users-table tbody tr {
+  background-color: white;
 }
 
 .users-table tr:last-child td {

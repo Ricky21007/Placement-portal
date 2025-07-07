@@ -83,7 +83,16 @@
   margin-bottom: 1rem;
   line-height: 1.6;
   font-size: 1rem;
+  font-weight: 700; /* Make text bold */
 }
+
+/* Alternative bold gray color option */
+/*
+.jobDetail {
+  color: #b0b0b0;
+  font-weight: 700;
+}
+*/
 
 .jobLabel {
   color: var(--color-accent-coral, #ff6f61);
