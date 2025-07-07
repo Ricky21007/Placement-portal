@@ -6,7 +6,7 @@ import { FaPlus, FaBriefcase, FaUsers, FaUserEdit, FaSignOutAlt } from 'react-ic
 const EmployerDashboard = () => {
   const navigate = useNavigate();
  
-  const [employerName, setEmployerName] = useState('Mkhuseli Mditshwa');
+  const [employerName, setEmployerName] = useState('');
   const [activeJobs, setActiveJobs] = useState(0);
   const [applicants, setApplicants] = useState(0);
   const [interviews, setInterviews] = useState(0);
