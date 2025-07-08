@@ -139,9 +139,12 @@
 /* Button Grid */
 .employer-button-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
   margin-bottom: var(--spacing-3xl);
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .employer-action-button {
