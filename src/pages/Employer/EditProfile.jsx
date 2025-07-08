@@ -86,19 +86,26 @@ const EditProfile = () => {
   };
 
   return (
-    <>
-      <button
-        className={styles.backButton}
-        onClick={() => navigate("/employer/dashboard")}
-      >
-        ← Back to Dashboard
-      </button>
-      <div className={styles.container}>
-        <div className={styles.formWrapper}>
-          <form onSubmit={handleSubmit} className={styles.form} noValidate>
-            <h2 className={styles.title}>Edit Company Profile</h2>
-            <label htmlFor="companyName">
-              Company Name
+    <div className="employer-page">
+      <div className="employer-container">
+        <button
+          className="employer-back-button"
+          onClick={() => navigate("/employer/dashboard")}
+        >
+          ← Back to Dashboard
+        </button>
+
+        <div className="employer-header">
+          <h1 className="employer-title">Edit Company Profile</h1>
+          <p className="employer-subtitle">Update your company information</p>
+        </div>
+
+        <div className="employer-form-container">
+          <form onSubmit={handleSubmit} className="employer-form" noValidate>
+            <div className="employer-form-group">
+              <label htmlFor="companyName" className="employer-form-label">
+                Company Name *
+              </label>
               <input
                 id="companyName"
                 type="text"
@@ -107,18 +114,21 @@ const EditProfile = () => {
                 onChange={(e) => setCompanyName(e.target.value)}
                 required
                 disabled={loading}
-                className={styles.formInput}
+                className="employer-form-input"
                 aria-invalid={errors.companyName ? "true" : "false"}
                 aria-describedby="companyName-error"
               />
               {errors.companyName && (
-                <span id="companyName-error" className={styles.error}>
+                <span id="companyName-error" className="employer-error">
                   {errors.companyName}
                 </span>
               )}
-            </label>
-            <label htmlFor="companyEmail">
-              Company Email
+            </div>
+
+            <div className="employer-form-group">
+              <label htmlFor="companyEmail" className="employer-form-label">
+                Company Email *
+              </label>
               <input
                 id="companyEmail"
                 type="email"
@@ -127,18 +137,21 @@ const EditProfile = () => {
                 onChange={(e) => setCompanyEmail(e.target.value)}
                 required
                 disabled={loading}
-                className={styles.formInput}
+                className="employer-form-input"
                 aria-invalid={errors.companyEmail ? "true" : "false"}
                 aria-describedby="companyEmail-error"
               />
               {errors.companyEmail && (
-                <span id="companyEmail-error" className={styles.error}>
+                <span id="companyEmail-error" className="employer-error">
                   {errors.companyEmail}
                 </span>
               )}
-            </label>
-            <label htmlFor="companyPhone">
-              Company Phone
+            </div>
+
+            <div className="employer-form-group">
+              <label htmlFor="companyPhone" className="employer-form-label">
+                Company Phone
+              </label>
               <input
                 id="companyPhone"
                 type="tel"
@@ -146,45 +159,54 @@ const EditProfile = () => {
                 value={companyPhone}
                 onChange={(e) => setCompanyPhone(e.target.value)}
                 disabled={loading}
-                className={styles.formInput}
+                className="employer-form-input"
               />
-            </label>
-            <label htmlFor="companyWebsite">
-              Company Website
+            </div>
+
+            <div className="employer-form-group">
+              <label htmlFor="companyWebsite" className="employer-form-label">
+                Company Website
+              </label>
               <input
                 id="companyWebsite"
                 type="url"
-                placeholder="Company Website"
+                placeholder="https://company-website.com"
                 value={companyWebsite}
                 onChange={(e) => setCompanyWebsite(e.target.value)}
                 disabled={loading}
-                className={styles.formInput}
+                className="employer-form-input"
               />
-            </label>
-            <label htmlFor="companyDescription">
-              Company Description
+            </div>
+
+            <div className="employer-form-group">
+              <label
+                htmlFor="companyDescription"
+                className="employer-form-label"
+              >
+                Company Description
+              </label>
               <textarea
                 id="companyDescription"
-                placeholder="Company Description"
+                placeholder="Tell us about your company..."
                 value={companyDescription}
                 onChange={(e) => setCompanyDescription(e.target.value)}
                 rows={4}
                 disabled={loading}
-                className={styles.formTextarea}
+                className="employer-form-textarea"
               />
-            </label>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className={styles.submitButton}
-              style={{ cursor: loading ? "not-allowed" : "pointer" }}
+              className="employer-submit-button"
             >
               {loading ? "Saving..." : "Save Profile"}
             </button>
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
