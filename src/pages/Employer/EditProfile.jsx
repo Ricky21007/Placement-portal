@@ -1,61 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase';
-import { useNavigate } from 'react-router-dom';
-import styles from './EditProfile.module.css';
- 
+import React, { useState, useEffect } from "react";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { useNavigate } from "react-router-dom";
+import "../../styles/UnifiedEmployer.css";
+
 const EditProfile = () => {
-  const [companyName, setCompanyName] = useState('');
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [companyPhone, setCompanyPhone] = useState('');
-  const [companyWebsite, setCompanyWebsite] = useState('');
-  const [companyDescription, setCompanyDescription] = useState('');
+  const [companyName, setCompanyName] = useState("");
+  const [companyEmail, setCompanyEmail] = useState("");
+  const [companyPhone, setCompanyPhone] = useState("");
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
- 
+
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
       try {
         const user = auth.currentUser;
         if (!user) {
-          alert('You must be logged in to view profile.');
+          alert("You must be logged in to view profile.");
           setLoading(false);
           return;
         }
-        console.log('Fetching profile for UID:', user.uid);
-        const profileRef = doc(db, 'employersignup', user.uid);
+        console.log("Fetching profile for UID:", user.uid);
+        const profileRef = doc(db, "employersignup", user.uid);
         const profileSnap = await getDoc(profileRef);
-        console.log('Profile document exists:', profileSnap.exists());
+        console.log("Profile document exists:", profileSnap.exists());
         if (profileSnap.exists()) {
           const data = profileSnap.data();
-          setCompanyName(data.companyName || '');
-          setCompanyEmail(data.email || '');
-          setCompanyPhone(data.phone || '');
-          setCompanyWebsite(data.website || '');
-          setCompanyDescription(data.companyDescription || '');
+          setCompanyName(data.companyName || "");
+          setCompanyEmail(data.email || "");
+          setCompanyPhone(data.phone || "");
+          setCompanyWebsite(data.website || "");
+          setCompanyDescription(data.companyDescription || "");
         } else {
-          console.log('No profile data found');
+          console.log("No profile data found");
         }
       } catch (error) {
-        console.error('Error fetching profile:', error);
-        alert('Failed to load profile data.');
+        console.error("Error fetching profile:", error);
+        alert("Failed to load profile data.");
       }
       setLoading(false);
     };
     fetchProfile();
   }, []);
- 
+
   const validate = () => {
     const newErrors = {};
-    if (!companyName.trim()) newErrors.companyName = 'Company Name is required';
-    if (!companyEmail.trim()) newErrors.companyEmail = 'Company Email is required';
-    else if (!/\S+@\S+\.\S+/.test(companyEmail)) newErrors.companyEmail = 'Email is invalid';
+    if (!companyName.trim()) newErrors.companyName = "Company Name is required";
+    if (!companyEmail.trim())
+      newErrors.companyEmail = "Company Email is required";
+    else if (!/\S+@\S+\.\S+/.test(companyEmail))
+      newErrors.companyEmail = "Email is invalid";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -63,11 +65,11 @@ const EditProfile = () => {
     try {
       const user = auth.currentUser;
       if (!user) {
-        alert('You must be logged in to update profile.');
+        alert("You must be logged in to update profile.");
         setLoading(false);
         return;
       }
-      const profileRef = doc(db, 'employersignup', user.uid);
+      const profileRef = doc(db, "employersignup", user.uid);
       await setDoc(profileRef, {
         companyName,
         email: companyEmail,
@@ -75,14 +77,14 @@ const EditProfile = () => {
         website: companyWebsite,
         companyDescription,
       });
-      alert('Profile updated successfully!');
+      alert("Profile updated successfully!");
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.');
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
     }
     setLoading(false);
   };
- 
+
   return (
     <>
       <button
@@ -175,9 +177,9 @@ const EditProfile = () => {
               type="submit"
               disabled={loading}
               className={styles.submitButton}
-              style={{ cursor: loading ? 'not-allowed' : 'pointer' }}
+              style={{ cursor: loading ? "not-allowed" : "pointer" }}
             >
-              {loading ? 'Saving...' : 'Save Profile'}
+              {loading ? "Saving..." : "Save Profile"}
             </button>
           </form>
         </div>
@@ -185,5 +187,5 @@ const EditProfile = () => {
     </>
   );
 };
- 
+
 export default EditProfile;
