@@ -43,9 +43,31 @@
 
 /* Header */
 .page-header {
-  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: var(--spacing-3xl);
   animation: fadeInDown 0.8s ease-out;
+}
+
+.page-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-info {
+  text-align: center;
+  flex: 1;
 }
 
 .back-button {
@@ -64,7 +86,6 @@
   font-weight: 600;
   transition: var(--transition-all);
   box-shadow: 0 8px 24px rgba(255, 111, 97, 0.2);
-  margin-bottom: var(--spacing-xl);
 }
 
 .back-button:hover {
