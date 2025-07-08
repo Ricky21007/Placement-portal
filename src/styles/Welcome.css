@@ -835,20 +835,24 @@
     padding: var(--spacing-lg);
   }
 
-  .welcome-title {
-    font-size: clamp(1.75rem, 8vw, 2.5rem);
-    margin-bottom: var(--spacing-lg);
+  .welcome-title-main {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .welcome-title-sub {
+    font-size: clamp(1rem, 4vw, 1.25rem);
   }
 
   .welcome-subtitle {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     margin-bottom: var(--spacing-2xl);
+    flex-direction: column;
+    gap: var(--spacing-sm);
   }
 
   .welcome-logo {
-    width: 6rem;
-    height: 6rem;
-    margin-bottom: var(--spacing-xl);
+    width: 7rem;
+    height: 7rem;
   }
 
   .welcome-cards {
@@ -858,19 +862,32 @@
   }
 
   .welcome-card {
-    padding: var(--spacing-xl);
-    min-height: 240px;
+    min-height: 280px;
+  }
+
+  .welcome-card-content {
+    padding: var(--spacing-lg);
+  }
+
+  .welcome-card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-md);
   }
 
   .welcome-card-title {
-    font-size: var(--font-size-xl);
-    flex-direction: column;
-    gap: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    text-align: center;
   }
 
   .welcome-card-text {
-    font-size: var(--font-size-base);
-    max-width: none;
+    font-size: var(--font-size-sm);
+    text-align: center;
+  }
+
+  .welcome-card-stats {
+    justify-content: center;
   }
 
   .welcome-actions {
@@ -883,6 +900,33 @@
   .welcome-button {
     max-width: 100%;
     font-size: var(--font-size-base);
+  }
+
+  /* Mobile footer adjustments */
+  .welcome-footer-main {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    text-align: center;
+  }
+
+  .welcome-footer-brand {
+    text-align: center;
+  }
+
+  .welcome-footer-links {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .welcome-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+
+  .welcome-social-links {
+    justify-content: center;
   }
 }
 
