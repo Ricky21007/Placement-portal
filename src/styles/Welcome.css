@@ -464,42 +464,52 @@
   flex-wrap: wrap;
 }
 
-/* Keep existing select and button styles as requested */
+/* Enhanced welcome actions */
+.welcome-select-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
 .welcome-select {
   width: 100%;
-  max-width: 280px;
-  padding: 0.75rem 1rem;
-  border: 1px solid #ff6f61;
-  border-radius: 9999px;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(255, 111, 97, 0.3);
+  border-radius: var(--radius-full);
   font-size: 1rem;
-  background: #13294b;
+  background: rgba(19, 41, 75, 0.8);
   color: #f0f4f8;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-sizing: border-box;
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg fill='%23FF6F61' stroke='%23FF6F61' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
+  background-position: right 1.25rem center;
   background-size: 20px;
-  padding-right: 3rem;
+  padding-right: 3.5rem;
   font-weight: 500;
-  backdrop-filter: blur(10px);
-  font-family: "Inter", sans-serif;
+  backdrop-filter: blur(20px);
+  font-family: var(--font-family);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .welcome-select:focus {
   outline: none;
-  border-color: #ff6f61;
-  box-shadow: 0 0 0 3px rgba(255, 111, 97, 0.1);
-  background: #13294b;
+  border-color: var(--accent-coral);
+  box-shadow:
+    0 0 0 3px rgba(255, 111, 97, 0.2),
+    0 8px 25px rgba(0, 0, 0, 0.15);
+  background: rgba(19, 41, 75, 0.9);
+  transform: translateY(-2px);
 }
 
 .welcome-select:hover {
-  border-color: #ff6f61;
-  background: #1a2f4d;
-  transform: translateY(-1px);
+  border-color: var(--accent-coral);
+  background: rgba(26, 47, 77, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-select option {
@@ -514,39 +524,64 @@
 }
 
 .welcome-button {
-  background: #ff6f61;
+  background: linear-gradient(135deg, var(--accent-coral) 0%, #e65a4f 100%);
   color: #fff;
   font-weight: 700;
   font-size: 1.125rem;
-  padding: 0.75rem 3rem;
-  border-radius: 9999px;
+  padding: 1rem 3rem;
+  border-radius: var(--radius-full);
   border: none;
-  box-shadow: 0 10px 20px rgba(255, 111, 97, 0.2);
+  box-shadow: 0 12px 25px rgba(255, 111, 97, 0.3);
   cursor: pointer;
   width: 100%;
-  max-width: 280px;
-  transition:
-    background 0.3s ease,
-    box-shadow 0.3s ease;
+  max-width: 320px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   user-select: none;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-family);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-button-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .welcome-button:hover:not(:disabled) {
-  background: #e65a4f;
-  box-shadow: 0 15px 30px rgba(255, 111, 97, 0.3);
+  background: linear-gradient(135deg, #e65a4f 0%, #d84a3f 100%);
+  box-shadow: 0 18px 40px rgba(255, 111, 97, 0.4);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.welcome-button:hover:not(:disabled) .welcome-button-glow {
+  opacity: 1;
+}
+
+.welcome-button:active:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
 }
 
 .welcome-button:disabled {
-  background: #ff6f61aa;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 111, 97, 0.5),
+    rgba(230, 90, 79, 0.5)
+  );
   cursor: not-allowed;
   opacity: 0.6;
   box-shadow: none;
+  transform: none;
 }
 
-.welcome-button:disabled:hover {
-  transform: none;
-  box-shadow: none;
+.welcome-button span {
+  position: relative;
+  z-index: 2;
 }
 
 .welcome-footer {
