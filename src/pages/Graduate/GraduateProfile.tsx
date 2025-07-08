@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { Avatar, AvatarImage, AvatarFallback } from "../../ui/avatar";
 import "../../styles/GraduateProfile.css";
- 
+
 type Section =
   | "personal"
   | "contact"
@@ -15,8 +15,9 @@ type Section =
   | "skills"
   | "certifications"
   | "languages"
-  | "security";
- 
+  | "security"
+  | "stream";
+
 const GraduateProfile = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +29,7 @@ const GraduateProfile = () => {
   const [education, setEducation] = useState("");
   const [experience, setExperience] = useState("");
   const [summary, setSummary] = useState("");
+  const [stream, setStream] = useState("");
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState<Record<Section, boolean>>({
     personal: false,
@@ -38,14 +40,15 @@ const GraduateProfile = () => {
     certifications: false,
     languages: false,
     security: false,
+    stream: false,
   });
   const [profilePicUrl, setProfilePicUrl] = useState("");
   const [profileSaved, setProfileSaved] = useState(false);
   const [currentSkill, setCurrentSkill] = useState("");
- 
+
   const user = auth.currentUser;
   const navigate = useNavigate();
- 
+
   useEffect(() => {
     if (!user) return;
     const fetchProfile = async () => {
@@ -63,6 +66,7 @@ const GraduateProfile = () => {
         setEducation(data.education || "");
         setExperience(data.experience || "");
         setSummary(data.summary || "");
+        setStream(data.stream || "");
         setProfilePicUrl(data.profilePicUrl || "");
       } else {
         setEmail(user.email || "");
@@ -70,11 +74,11 @@ const GraduateProfile = () => {
     };
     fetchProfile();
   }, [user]);
- 
+
   const toggleEditMode = (section: Section) => {
     setEditMode((prev) => ({ ...prev, [section]: !prev[section] }));
   };
- 
+
   const cancelEdit = (section: Section) => {
     setEditMode((prev) => ({ ...prev, [section]: false }));
     // Reset values from Firebase when canceling
@@ -96,29 +100,29 @@ const GraduateProfile = () => {
       fetchProfile();
     }
   };
- 
+
   const handleAddSkill = () => {
     if (currentSkill.trim() && !skills.includes(currentSkill.trim())) {
       setSkills((prev) => [...prev, currentSkill.trim()]);
       setCurrentSkill("");
     }
   };
- 
+
   const handleRemoveSkill = (skillToRemove: string) => {
     setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
   };
- 
+
   const handleProfilePicUpload = async (file: File) => {
     if (!user) return;
     setLoading(true);
- 
+
     try {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
         refresh_token: token,
       });
- 
+
       const filePath = `${user.uid}/profile-${Date.now()}-${file.name}`;
       const { data, error } = await supabase.storage
         .from("profile-pictures")
@@ -126,24 +130,24 @@ const GraduateProfile = () => {
           cacheControl: "3600",
           upsert: true,
         });
- 
+
       if (error) throw error;
- 
+
       const { data: publicData } = supabase.storage
         .from("profile-pictures")
         .getPublicUrl(filePath);
- 
+
       const publicUrl = publicData?.publicUrl;
       if (!publicUrl) throw new Error("Failed to get profile picture URL");
- 
+
       setProfilePicUrl(publicUrl);
- 
+
       await setDoc(
         doc(db, "graduates", user.uid),
         { profilePicUrl: publicUrl },
         { merge: true },
       );
- 
+
       setProfileSaved(true);
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (err) {
@@ -153,18 +157,18 @@ const GraduateProfile = () => {
       setLoading(false);
     }
   };
- 
+
   const handleCvUpload = async (file: File) => {
     if (!user) return;
     setLoading(true);
- 
+
     try {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
         refresh_token: token,
       });
- 
+
       const filePath = `${user.uid}/cv-${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("cv-uploads")
@@ -172,19 +176,19 @@ const GraduateProfile = () => {
           cacheControl: "3600",
           upsert: true,
         });
- 
+
       if (uploadError) throw uploadError;
- 
+
       const { data: publicData } = supabase.storage
         .from("cv-uploads")
         .getPublicUrl(filePath);
- 
+
       const publicUrl = publicData?.publicUrl;
       if (!publicUrl) throw new Error("Failed to get public URL");
- 
+
       setCvUrl(publicUrl);
       setCvFileName(file.name);
- 
+
       await setDoc(
         doc(db, "graduates", user.uid),
         {
@@ -193,7 +197,7 @@ const GraduateProfile = () => {
         },
         { merge: true },
       );
- 
+
       setProfileSaved(true);
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (error: any) {
@@ -203,42 +207,52 @@ const GraduateProfile = () => {
       setLoading(false);
     }
   };
- 
-  const handleUpload = async (file: File, bucket: string, field: "cvUrl" | "profilePicUrl") => {
+
+  const handleUpload = async (
+    file: File,
+    bucket: string,
+    field: "cvUrl" | "profilePicUrl",
+  ) => {
     if (!user) return;
     setLoading(true);
     try {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
-        refresh_token: token
+        refresh_token: token,
       });
- 
+
       const filePath = `${user.uid}/${field}-${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: field === "profilePicUrl"
+          upsert: field === "profilePicUrl",
         });
- 
+
       if (uploadError) throw uploadError;
- 
+
       const { data: publicData } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
- 
+
       const publicUrl = publicData?.publicUrl;
       if (!publicUrl) throw new Error("Failed to get public URL");
- 
+
       if (field === "cvUrl") {
         setCvUrl(publicUrl);
         setCvFileName(file.name);
       }
- 
-      await setDoc(doc(db, "graduates", user.uid), { [field]: publicUrl }, { merge: true });
- 
-      alert(`${field === "cvUrl" ? "CV" : "Profile picture"} uploaded successfully!`);
+
+      await setDoc(
+        doc(db, "graduates", user.uid),
+        { [field]: publicUrl },
+        { merge: true },
+      );
+
+      alert(
+        `${field === "cvUrl" ? "CV" : "Profile picture"} uploaded successfully!`,
+      );
     } catch (error: any) {
       console.error("Upload failed:", error);
       alert("Upload failed. Please try again.");
@@ -246,7 +260,7 @@ const GraduateProfile = () => {
       setLoading(false);
     }
   };
- 
+
   const saveSection = async (section: Section) => {
     if (!user) return;
     setLoading(true);
@@ -264,6 +278,7 @@ const GraduateProfile = () => {
         education,
         experience,
         summary,
+        stream,
         profilePicUrl,
         isProfileComplete: true,
         updatedAt: new Date().toISOString(),
@@ -279,7 +294,7 @@ const GraduateProfile = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <div className="graduate-profile-page">
       {/* Header */}
@@ -299,7 +314,7 @@ const GraduateProfile = () => {
           </div>
         </div>
       </div>
- 
+
       <div className="profile-container">
         {/* Success Message */}
         {profileSaved && (
@@ -310,7 +325,7 @@ const GraduateProfile = () => {
             Profile updated successfully!
           </div>
         )}
- 
+
         {/* Profile Picture Section */}
         <div className="profile-section">
           <div className="section-header">
@@ -328,7 +343,7 @@ const GraduateProfile = () => {
               Profile Picture
             </h2>
           </div>
- 
+
           <div className="profile-picture-section">
             <label
               htmlFor="profile-pic-input"
@@ -374,7 +389,7 @@ const GraduateProfile = () => {
             </label>
           </div>
         </div>
- 
+
         {/* Personal Information */}
         <div className="profile-section">
           <div className="section-header">
@@ -429,7 +444,7 @@ const GraduateProfile = () => {
               )}
             </button>
           </div>
- 
+
           {editMode.personal ? (
             <div className="form-grid">
               <div className="form-group">
@@ -505,7 +520,7 @@ const GraduateProfile = () => {
               )}
             </div>
           )}
- 
+
           {editMode.personal && (
             <div className="action-buttons">
               <button
@@ -517,7 +532,7 @@ const GraduateProfile = () => {
             </div>
           )}
         </div>
- 
+
         {/* Skills Section */}
         <div className="profile-section">
           <div className="section-header">
@@ -572,7 +587,7 @@ const GraduateProfile = () => {
               )}
             </button>
           </div>
- 
+
           {editMode.skills ? (
             <>
               <div className="skills-input-container">
@@ -622,7 +637,7 @@ const GraduateProfile = () => {
               )}
             </div>
           )}
- 
+
           {editMode.skills && (
             <div className="action-buttons">
               <button
@@ -634,7 +649,7 @@ const GraduateProfile = () => {
             </div>
           )}
         </div>
- 
+
         {/* Experience & Education */}
         <div className="profile-section">
           <div className="section-header">
@@ -689,7 +704,7 @@ const GraduateProfile = () => {
               )}
             </button>
           </div>
- 
+
           {editMode.experience ? (
             <div className="form-grid">
               <div className="form-group form-group-full">
@@ -725,7 +740,7 @@ const GraduateProfile = () => {
               </div>
             </div>
           )}
- 
+
           {editMode.experience && (
             <div className="action-buttons">
               <button
@@ -737,32 +752,44 @@ const GraduateProfile = () => {
             </div>
           )}
         </div>
- 
+
         {/* CV Upload Section */}
         <div className="profile-section">
           <div className="section-header">
             <h2 className="section-title">
               <div className="section-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
                   <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                 </svg>
               </div>
               CV / Resume
             </h2>
           </div>
- 
+
           <div className="file-upload-area">
             <div className="upload-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
               </svg>
             </div>
- 
-          {cvUrl ? (
+
+            {cvUrl ? (
               <div className="file-uploaded">
                 <p className="upload-text">CV Uploaded Successfully!</p>
                 <p className="upload-subtext">{cvFileName}</p>
-                <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                <div
+                  style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}
+                >
                   <a
                     href={cvUrl}
                     target="_blank"
@@ -808,9 +835,8 @@ const GraduateProfile = () => {
             )}
           </div>
         </div>
- 
       </div>
- 
+
       {/* Loading Overlay */}
       {loading && (
         <div className="loading-overlay">
@@ -821,7 +847,5 @@ const GraduateProfile = () => {
     </div>
   );
 };
- 
+
 export default GraduateProfile;
- 
- 
