@@ -46,8 +46,20 @@ const ScheduleInterview: React.FC<ScheduleInterviewProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!date || !time || !location) {
-      alert("Please fill in date, time, and location.");
+
+    // Validation
+    if (!date || !time) {
+      alert("Please fill in date and time.");
+      return;
+    }
+
+    if (meetingType === "in-person" && !location.trim()) {
+      alert("Please provide a location for in-person meeting.");
+      return;
+    }
+
+    if (meetingType === "teams" && !teamsLink.trim()) {
+      alert("Please provide a Teams meeting link.");
       return;
     }
 
@@ -56,15 +68,23 @@ const ScheduleInterview: React.FC<ScheduleInterviewProps> = ({
       const user = auth.currentUser;
       if (!user) throw new Error("Not authenticated");
 
-      const interviewDoc = await addDoc(collection(db, "interviews"), {
+      const interviewData = {
         graduateId: application.graduateId,
         jobId: application.jobId,
         employerId: user.uid,
         date: Timestamp.fromDate(new Date(`${date}T${time}`)),
-        location,
+        meetingType,
+        location: meetingType === "in-person" ? location : "Online",
+        teamsLink: meetingType === "teams" ? teamsLink : "",
         status: "Scheduled",
         notes,
-      });
+        createdAt: serverTimestamp(),
+      };
+
+      const interviewDoc = await addDoc(
+        collection(db, "interviews"),
+        interviewData,
+      );
 
       setInterview({
         id: interviewDoc.id,
@@ -74,15 +94,21 @@ const ScheduleInterview: React.FC<ScheduleInterviewProps> = ({
         status: "Scheduled",
       });
 
+      // Create notification message based on meeting type
+      const meetingDetails =
+        meetingType === "teams"
+          ? `via Teams meeting: ${teamsLink}`
+          : `at ${location}`;
+
       await addDoc(collection(db, "notifications"), {
         userId: application.graduateId,
-        message: `Your interview for "${application.jobTitle}" has been scheduled on ${new Date(`${date}T${time}`).toLocaleString()}`,
+        message: `Your interview for "${application.jobTitle}" has been scheduled on ${new Date(`${date}T${time}`).toLocaleString()} ${meetingDetails}`,
         read: false,
         createdAt: serverTimestamp(),
       });
 
       setStatus("Interview scheduled successfully.");
-      if (onClose) setTimeout(onClose, 1500);
+      if (onClose) setTimeout(onClose, 2000);
     } catch (error) {
       console.error("Error scheduling interview:", error);
       setStatus("Failed to schedule interview.");
