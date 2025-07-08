@@ -162,22 +162,25 @@ const JobMatchingFeed: React.FC = () => {
 
   return (
     <div className="job-matching-page">
-      <div className="job-matching-container">
-        {/* Header */}
-        <div className="page-header">
+      <div className="page-header">
+        <div className="page-header-content">
           <Link to="/graduate/dashboard" className="back-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
             </svg>
             Back to Dashboard
           </Link>
-          <h1 className="page-title">Jobs Matching Your Skills</h1>
-          <p className="page-subtitle">
-            We found {matchingJobs.length} job
-            {matchingJobs.length !== 1 ? "s" : ""} that match your profile
-          </p>
+          <div className="header-info">
+            <h1 className="page-title">Jobs Matching Your Skills</h1>
+            <p className="page-subtitle">
+              We found {matchingJobs.length} job
+              {matchingJobs.length !== 1 ? "s" : ""} that match your profile
+            </p>
+          </div>
         </div>
+      </div>
 
+      <div className="job-matching-container">
         {/* User Skills Display */}
         {userSkills.length > 0 && (
           <div className="skills-summary">
