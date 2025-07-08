@@ -187,7 +187,14 @@ const EmployerDashboard = () => {
           </p>
         </div>
 
-        <div className="employer-button-grid">
+        <div
+          className="employer-button-grid"
+          style={{
+            gridTemplateColumns: "repeat(4, 1fr)",
+            maxWidth: "1000px",
+            margin: "0 auto",
+          }}
+        >
           <button
             className="employer-action-button"
             onClick={() => navigate("/employer/post-job")}
