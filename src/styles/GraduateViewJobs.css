@@ -83,9 +83,6 @@
 
 /* Back Button */
 .back-button {
-  position: fixed;
-  top: var(--spacing-xl);
-  left: var(--spacing-xl);
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
@@ -101,8 +98,7 @@
   font-weight: 600;
   transition: var(--transition-all);
   box-shadow: 0 8px 24px rgba(255, 111, 97, 0.2);
-  z-index: var(--z-sticky);
-  backdrop-filter: blur(10px);
+  margin-bottom: var(--spacing-xl);
 }
 
 .back-button:hover {
