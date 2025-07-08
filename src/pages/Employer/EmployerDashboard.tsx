@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import "../../styles/UnifiedEmployer.css";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebase";
-import { doc, getDoc, DocumentData } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 interface EmployerData {
   companyName?: string;
@@ -13,38 +22,161 @@ interface EmployerData {
 
 const EmployerDashboard = () => {
   const [employerData, setEmployerData] = useState<EmployerData | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [stats, setStats] = useState({
-    activeJobs: 5,
-    applicants: 12,
-    interviews: 3,
+    activeJobs: 0,
+    applicants: 0,
+    interviews: 0,
   });
 
-  const [recentActivity, setRecentActivity] = useState<string[]>([
-    "Job posting 'Frontend Developer' approved",
-    "New applicant for 'Backend Engineer'",
-    "Interview scheduled for 'Project Manager'",
-  ]);
+  const [recentActivity, setRecentActivity] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchEmployerData = async () => {
-      if (auth.currentUser) {
-        console.log("Fetching employer data for UID:", auth.currentUser.uid);
-        const docRef = doc(db, "employers", auth.currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        console.log("Document exists:", docSnap.exists());
-        if (docSnap.exists()) {
-          setEmployerData(docSnap.data() as EmployerData);
-        } else {
-          console.log("No employer data found!");
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          navigate("/login/employer");
+          return;
         }
-      } else {
-        console.log("No authenticated user found");
+
+        // Fetch employer profile data
+        const employerDocRef = doc(db, "employers", user.uid);
+        const employerDocSnap = await getDoc(employerDocRef);
+        if (employerDocSnap.exists()) {
+          setEmployerData(employerDocSnap.data() as EmployerData);
+        }
+
+        // Also try employersignup collection if not found in employers
+        if (!employerDocSnap.exists()) {
+          const employerSignupDocRef = doc(db, "employersignup", user.uid);
+          const employerSignupDocSnap = await getDoc(employerSignupDocRef);
+          if (employerSignupDocSnap.exists()) {
+            setEmployerData(employerSignupDocSnap.data() as EmployerData);
+          }
+        }
+
+        // Fetch active jobs count
+        const jobsQuery = query(
+          collection(db, "jobs"),
+          where("employerId", "==", user.uid),
+        );
+        const jobsSnapshot = await getDocs(jobsQuery);
+        const jobsCount = jobsSnapshot.size;
+
+        // Fetch applicants count for this employer's jobs
+        const jobIds = jobsSnapshot.docs.map((doc) => doc.id);
+        let totalApplicants = 0;
+        if (jobIds.length > 0) {
+          const applicationsQuery = query(
+            collection(db, "applications"),
+            where("jobId", "in", jobIds),
+          );
+          const applicationsSnapshot = await getDocs(applicationsQuery);
+          totalApplicants = applicationsSnapshot.size;
+        }
+
+        // Fetch interviews count
+        const interviewsQuery = query(
+          collection(db, "interviews"),
+          where("employerId", "==", user.uid),
+        );
+        const interviewsSnapshot = await getDocs(interviewsQuery);
+
+        setStats({
+          activeJobs: jobsCount,
+          applicants: totalApplicants,
+          interviews: interviewsSnapshot.size,
+        });
+
+        // Fetch recent activity
+        const activities: string[] = [];
+
+        // Add recent job postings
+        const recentJobsQuery = query(
+          collection(db, "jobs"),
+          where("employerId", "==", user.uid),
+          orderBy("createdAt", "desc"),
+          limit(3),
+        );
+        const recentJobsSnapshot = await getDocs(recentJobsQuery);
+        recentJobsSnapshot.forEach((doc) => {
+          const jobData = doc.data();
+          const date = jobData.createdAt?.toDate();
+          const timeAgo = date ? getTimeAgo(date) : "recently";
+          activities.push(
+            `Job "${jobData.jobTitle || jobData.title}" posted ${timeAgo}`,
+          );
+        });
+
+        // Add recent applications
+        if (jobIds.length > 0) {
+          const recentAppsQuery = query(
+            collection(db, "applications"),
+            where("jobId", "in", jobIds.slice(0, 10)),
+            orderBy("createdAt", "desc"),
+            limit(3),
+          );
+          const recentAppsSnapshot = await getDocs(recentAppsQuery);
+
+          for (const appDoc of recentAppsSnapshot.docs) {
+            const appData = appDoc.data();
+            const jobDoc = await getDoc(doc(db, "jobs", appData.jobId));
+            const jobTitle = jobDoc.exists()
+              ? jobDoc.data()?.jobTitle || jobDoc.data()?.title
+              : "Unknown Position";
+            const date = appData.createdAt?.toDate();
+            const timeAgo = date ? getTimeAgo(date) : "recently";
+            activities.push(`New applicant for "${jobTitle}" ${timeAgo}`);
+          }
+        }
+
+        // Add recent interviews
+        const recentInterviewsQuery = query(
+          collection(db, "interviews"),
+          where("employerId", "==", user.uid),
+          orderBy("date", "desc"),
+          limit(2),
+        );
+        const recentInterviewsSnapshot = await getDocs(recentInterviewsQuery);
+        recentInterviewsSnapshot.forEach((doc) => {
+          const interviewData = doc.data();
+          const date = interviewData.date?.toDate();
+          const timeAgo = date ? getTimeAgo(date) : "recently";
+          activities.push(`Interview scheduled ${timeAgo}`);
+        });
+
+        setRecentActivity(activities.slice(0, 5));
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setRecentActivity(["Error loading recent activity"]);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchEmployerData();
-  }, []);
+
+    fetchData();
+  }, [navigate]);
+
+  const getTimeAgo = (date: Date): string => {
+    const now = new Date();
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+    );
+
+    if (diffInHours < 1) return "just now";
+    if (diffInHours < 24)
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7)
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+
+    return date.toLocaleDateString();
+  };
 
   // Added button click handlers for navigation
   const handlePostJob = () => {
