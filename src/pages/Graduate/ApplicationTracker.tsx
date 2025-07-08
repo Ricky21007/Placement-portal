@@ -165,6 +165,8 @@ export const ApplicationTracker: React.FC = () => {
             interviewStatus,
             employerName,
             interviewDuration,
+            meetingType,
+            interviewLocation,
             jobId: appData.jobId,
           });
         }
