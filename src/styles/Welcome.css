@@ -1,11 +1,12 @@
-/* Welcome Page - Full Screen Modern Design */
+/* Welcome Page - Enhanced Visual Design */
 .welcome-container {
   min-height: 100vh;
   width: 100vw;
   background: linear-gradient(
     135deg,
     var(--primary-dark) 0%,
-    #1a2f4d 50%,
+    #1a2f4d 30%,
+    #2d4a6b 60%,
     var(--primary-light) 100%
   );
   background-attachment: fixed;
