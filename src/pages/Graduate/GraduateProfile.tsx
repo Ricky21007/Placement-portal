@@ -95,6 +95,7 @@ const GraduateProfile = () => {
           setEducation(data.education || "");
           setExperience(data.experience || "");
           setSummary(data.summary || "");
+          setStream(data.stream || "");
         }
       };
       fetchProfile();
