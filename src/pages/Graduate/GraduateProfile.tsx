@@ -534,6 +534,132 @@ const GraduateProfile = () => {
           )}
         </div>
 
+        {/* Capaciti Stream Section */}
+        <div className="profile-section">
+          <div className="section-header">
+            <h2 className="section-title">
+              <div className="section-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </div>
+              Capaciti Stream
+            </h2>
+            <button
+              className="edit-button"
+              onClick={() =>
+                editMode.stream
+                  ? saveSection("stream")
+                  : toggleEditMode("stream")
+              }
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="loading-spinner" />
+              ) : editMode.stream ? (
+                <>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                  Save
+                </>
+              ) : (
+                <>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                  </svg>
+                  Edit
+                </>
+              )}
+            </button>
+          </div>
+
+          {editMode.stream ? (
+            <div className="form-grid">
+              <div className="form-group">
+                <label className="form-label">Your Capaciti Stream *</label>
+                <select
+                  className="form-input"
+                  value={stream}
+                  onChange={(e) => setStream(e.target.value)}
+                  required
+                >
+                  <option value="">Select your stream</option>
+                  <option value="Software Development">
+                    Software Development
+                  </option>
+                  <option value="Full Stack Development">
+                    Full Stack Development
+                  </option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Data Analytics">Data Analytics</option>
+                  <option value="IT Support">IT Support</option>
+                  <option value="Artificial Intelligence">
+                    Artificial Intelligence
+                  </option>
+                  <option value="Cloud Computing">Cloud Computing</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="Mobile Development">Mobile Development</option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                  <option value="Other">Other</option>
+                </select>
+                <small
+                  style={{
+                    color: "#dc2626",
+                    fontSize: "0.875rem",
+                    marginTop: "0.5rem",
+                    display: "block",
+                  }}
+                >
+                  * Stream is required for profile completion
+                </small>
+              </div>
+            </div>
+          ) : (
+            <div className="info-display">
+              <div className="info-item">
+                <strong>Stream:</strong>
+                <span
+                  style={{
+                    color: stream ? "#1f2937" : "#dc2626",
+                    fontWeight: stream ? "500" : "600",
+                  }}
+                >
+                  {stream ||
+                    "⚠️ Stream not selected - Please update your profile"}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {editMode.stream && (
+            <div className="action-buttons">
+              <button
+                className="btn-secondary"
+                onClick={() => cancelEdit("stream")}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Skills Section */}
         <div className="profile-section">
           <div className="section-header">
