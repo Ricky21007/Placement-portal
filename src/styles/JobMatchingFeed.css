@@ -45,9 +45,31 @@
 
 /* Header */
 .page-header {
-  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: var(--spacing-3xl);
   animation: fadeInDown 0.8s ease-out;
+}
+
+.page-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-info {
+  text-align: center;
+  flex: 1;
 }
 
 .back-button {
@@ -66,7 +88,6 @@
   font-weight: 600;
   transition: var(--transition-all);
   box-shadow: 0 8px 24px rgba(255, 111, 97, 0.2);
-  margin-bottom: var(--spacing-xl);
 }
 
 .back-button:hover {
@@ -88,8 +109,8 @@
 
 .page-subtitle {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
   max-width: 600px;
   margin: 0 auto;
   line-height: var(--leading-relaxed);
@@ -248,8 +269,8 @@
 
 .company-name {
   font-size: var(--font-size-base);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Match Badge */
@@ -296,8 +317,8 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-size-sm);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 .job-meta-item svg {
@@ -311,7 +332,8 @@
   padding: var(--spacing-md);
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   margin: var(--spacing-lg) 0;
-  color: var(--gray-700);
+  color: #1f2937;
+  font-weight: 500;
   line-height: var(--leading-relaxed);
 }
 
@@ -443,8 +465,8 @@
 
 .loading-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Empty State */
@@ -469,12 +491,13 @@
   font-size: var(--font-size-2xl);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: var(--gray-600);
+  color: #1f2937;
 }
 
 .empty-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-500);
+  color: #374151;
+  font-weight: 500;
   max-width: 400px;
   margin: 0 auto var(--spacing-xl);
   line-height: var(--leading-relaxed);
