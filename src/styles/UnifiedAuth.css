@@ -278,6 +278,9 @@
 .auth-links {
   text-align: center;
   margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .auth-link {
@@ -288,11 +291,18 @@
   transition: all 0.3s ease;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
+  display: inline-block;
 }
 
 .auth-link:hover {
   color: var(--text-light);
   background: rgba(255, 111, 97, 0.1);
+}
+
+/* Single auth link (for forgot password on other pages) */
+.auth-links:has(> .auth-link:only-child) {
+  flex-direction: row;
+  justify-content: center;
 }
 
 /* Auth Switch */
