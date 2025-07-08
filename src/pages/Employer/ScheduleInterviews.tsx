@@ -162,97 +162,185 @@ const ScheduleInterview: React.FC<ScheduleInterviewProps> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        marginTop: 12,
-        background: "#f8f8ff",
-        padding: 16,
-        borderRadius: 8,
-      }}
-    >
-      <h3>Schedule Interview</h3>
-
-      <label>
-        Date:
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-
-      <label>
-        Time:
-        <input
-          type="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-
-      <label>
-        Location:
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />
-      </label>
-      <br />
-
-      <label>
-        Notes:
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
-      </label>
-      <br />
-
-      <button type="submit" disabled={loading}>
-        {loading ? "Scheduling..." : "Schedule Interview"}
-      </button>
-      <button type="button" onClick={onClose} style={{ marginLeft: 8 }}>
-        Cancel
-      </button>
-
-      {status && <p>{status}</p>}
-
-      {interview?.status === "Scheduled" && (
-        <div style={{ marginTop: 16 }}>
+    <div className="interview-scheduling-overlay">
+      <div className="interview-scheduling-modal">
+        <div className="interview-modal-header">
+          <h3 className="interview-modal-title">Schedule Interview</h3>
+          <p className="interview-modal-subtitle">
+            Position: {application.jobTitle}
+          </p>
           <button
-            onClick={() =>
-              markOutcome(
-                interview.id,
-                "Hired",
-                interview.graduateId,
-                interview.jobId,
-                interview.jobTitle,
-              )
-            }
+            type="button"
+            className="interview-modal-close"
+            onClick={onClose}
+            aria-label="Close"
           >
-            Mark as Hired
-          </button>
-          <button
-            onClick={() =>
-              markOutcome(
-                interview.id,
-                "Not Hired",
-                interview.graduateId,
-                interview.jobId,
-                interview.jobTitle,
-              )
-            }
-            style={{ marginLeft: 10 }}
-          >
-            Not Hired
+            ×
           </button>
         </div>
-      )}
-    </form>
+
+        <form onSubmit={handleSubmit} className="interview-form">
+          <div className="interview-form-row">
+            <div className="employer-form-group">
+              <label className="employer-form-label">Interview Date *</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                className="employer-form-input"
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+
+            <div className="employer-form-group">
+              <label className="employer-form-label">Interview Time *</label>
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                required
+                className="employer-form-input"
+              />
+            </div>
+          </div>
+
+          <div className="employer-form-group">
+            <label className="employer-form-label">Meeting Type *</label>
+            <select
+              value={meetingType}
+              onChange={(e) => setMeetingType(e.target.value)}
+              className="employer-form-select"
+            >
+              <option value="in-person">In-Person Meeting</option>
+              <option value="teams">Microsoft Teams</option>
+              <option value="other">Other Online Platform</option>
+            </select>
+          </div>
+
+          {meetingType === "in-person" && (
+            <div className="employer-form-group">
+              <label className="employer-form-label">Meeting Location *</label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Office Address, Conference Room"
+                className="employer-form-input"
+              />
+            </div>
+          )}
+
+          {meetingType === "teams" && (
+            <div className="employer-form-group">
+              <label className="employer-form-label">
+                Teams Meeting Link *
+              </label>
+              <input
+                type="url"
+                value={teamsLink}
+                onChange={(e) => setTeamsLink(e.target.value)}
+                placeholder="https://teams.microsoft.com/l/meetup-join/..."
+                className="employer-form-input"
+              />
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "var(--font-size-sm)",
+                }}
+              >
+                Generate this link from Microsoft Teams and paste it here
+              </small>
+            </div>
+          )}
+
+          {meetingType === "other" && (
+            <div className="employer-form-group">
+              <label className="employer-form-label">Meeting Details *</label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Zoom link, Google Meet link, etc."
+                className="employer-form-input"
+              />
+            </div>
+          )}
+
+          <div className="employer-form-group">
+            <label className="employer-form-label">Additional Notes</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any additional information for the candidate..."
+              className="employer-form-textarea"
+              rows={3}
+            />
+          </div>
+
+          {status && (
+            <div
+              className={`interview-status ${status.includes("Failed") ? "error" : "success"}`}
+            >
+              {status}
+            </div>
+          )}
+
+          <div className="interview-form-actions">
+            <button
+              type="button"
+              onClick={onClose}
+              className="employer-button-secondary"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="employer-button-primary"
+            >
+              {loading ? "Scheduling..." : "Schedule Interview"}
+            </button>
+          </div>
+        </form>
+
+        {interview?.status === "Scheduled" && (
+          <div className="interview-outcome-section">
+            <h4 className="interview-outcome-title">Interview Outcome</h4>
+            <div className="interview-outcome-buttons">
+              <button
+                onClick={() =>
+                  markOutcome(
+                    interview.id,
+                    "Hired",
+                    interview.graduateId,
+                    interview.jobId,
+                    interview.jobTitle,
+                  )
+                }
+                className="employer-button-primary"
+              >
+                ✅ Mark as Hired
+              </button>
+              <button
+                onClick={() =>
+                  markOutcome(
+                    interview.id,
+                    "Not Hired",
+                    interview.graduateId,
+                    interview.jobId,
+                    interview.jobTitle,
+                  )
+                }
+                className="employer-button-danger"
+              >
+                ❌ Mark as Not Hired
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
