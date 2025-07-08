@@ -32,8 +32,8 @@ const AdminAuth: React.FC<Props> = ({ mode }) => {
   };
 
   return (
-    <div className="admin-auth-bg">
-      <div className="admin-auth-container">
+    <div className="auth-bg admin-auth">
+      <div className="auth-container">
         <Link to="/" className="back-to-welcome-btn">
           <span className="back-arrow-icon" aria-hidden="true">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
