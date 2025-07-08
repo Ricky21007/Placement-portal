@@ -584,14 +584,220 @@
   z-index: 2;
 }
 
+/* Enhanced Cool Footer */
 .welcome-footer {
-  margin-top: var(--spacing-2xl);
-  font-weight: 500;
+  margin-top: var(--spacing-3xl);
+  background: linear-gradient(
+    135deg,
+    rgba(11, 30, 61, 0.95) 0%,
+    rgba(19, 41, 75, 0.9) 50%,
+    rgba(26, 47, 77, 0.95) 100%
+  );
+  backdrop-filter: blur(30px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.welcome-footer-content {
+  padding: var(--spacing-2xl);
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-footer-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-2xl);
+  align-items: start;
+  margin-bottom: var(--spacing-xl);
+}
+
+.welcome-footer-brand {
+  text-align: left;
+}
+
+.welcome-footer-title {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-light);
+  margin-bottom: var(--spacing-sm);
+  background: linear-gradient(
+    135deg,
+    var(--text-light) 0%,
+    var(--accent-coral) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-footer-tagline {
   font-size: var(--font-size-base);
-  color: rgba(240, 244, 248, 0.8);
-  user-select: none;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  opacity: 0.9;
+  color: var(--text-muted);
+  opacity: 0.8;
+  margin: 0;
+}
+
+.welcome-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+}
+
+.welcome-footer-section h4 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--accent-coral);
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.welcome-footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.welcome-footer-section li {
+  margin-bottom: var(--spacing-sm);
+}
+
+.welcome-footer-section a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.welcome-footer-section a:hover {
+  color: var(--accent-coral);
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.welcome-social-links {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.welcome-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 111, 97, 0.1);
+  border: 1px solid rgba(255, 111, 97, 0.2);
+  border-radius: var(--radius-lg);
+  color: var(--accent-coral);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(10px);
+}
+
+.welcome-social-link:hover {
+  background: rgba(255, 111, 97, 0.2);
+  border-color: rgba(255, 111, 97, 0.4);
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 25px rgba(255, 111, 97, 0.3);
+}
+
+.welcome-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.welcome-footer-copyright {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.welcome-footer-location {
+  font-size: var(--font-size-sm);
+  color: var(--accent-coral);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Footer decorative elements */
+.welcome-footer-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.welcome-footer-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-coral),
+    #64b5f6,
+    #81c784,
+    var(--accent-coral)
+  );
+  background-size: 200% 100%;
+  animation: waveFlow 3s linear infinite;
+}
+
+@keyframes waveFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
+.welcome-footer-stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.welcome-footer-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--accent-coral);
+  border-radius: 50%;
+  animation: starFloat 4s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--accent-coral);
+}
+
+@keyframes starFloat {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.5);
+  }
 }
 
 /* Enhanced Responsive Design */
