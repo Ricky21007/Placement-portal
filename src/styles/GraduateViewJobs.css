@@ -72,8 +72,8 @@
 
 .subtitle {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
   margin-bottom: var(--spacing-2xl);
   max-width: 600px;
   margin-left: auto;
@@ -216,7 +216,7 @@
 .jobDetail {
   font-size: var(--font-size-base);
   margin-bottom: var(--spacing-md);
-  color: var(--gray-600);
+  color: #1f2937;
   line-height: var(--leading-relaxed);
   display: flex;
   align-items: flex-start;
@@ -236,7 +236,8 @@
 
 .jobValue {
   flex: 1;
-  color: var(--gray-700);
+  color: #111827;
+  font-weight: 500;
 }
 
 /* Job Description */
@@ -247,7 +248,8 @@
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   margin: var(--spacing-lg) 0;
   font-style: italic;
-  color: var(--gray-700);
+  color: #1f2937;
+  font-weight: 500;
   line-height: var(--leading-relaxed);
 }
 
@@ -366,8 +368,8 @@
 
 .loading-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Empty State */
@@ -387,12 +389,13 @@
   font-size: var(--font-size-2xl);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: var(--gray-600);
+  color: #1f2937;
 }
 
 .empty-state-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-500);
+  color: #374151;
+  font-weight: 500;
   max-width: 400px;
   margin: 0 auto;
   line-height: var(--leading-relaxed);
