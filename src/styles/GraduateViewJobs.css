@@ -407,12 +407,6 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--spacing-xl);
   }
-
-  .back-button {
-    position: static;
-    margin-bottom: var(--spacing-xl);
-    align-self: flex-start;
-  }
 }
 
 @media (max-width: 768px) {
