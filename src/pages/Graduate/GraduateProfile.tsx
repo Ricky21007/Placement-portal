@@ -264,6 +264,14 @@ const GraduateProfile = () => {
 
   const saveSection = async (section: Section) => {
     if (!user) return;
+
+    // Validate stream field if we're saving the stream section
+    if (section === "stream" && !stream.trim()) {
+      alert("Please select your Capaciti stream before saving.");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const docRef = doc(db, "graduates", user.uid);
