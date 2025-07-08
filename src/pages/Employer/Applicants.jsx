@@ -220,6 +220,28 @@ const Applicants = () => {
           <p className="employer-subtitle">
             Review and manage job applications
           </p>
+          <div
+            style={{
+              background: "rgba(255, 111, 97, 0.1)",
+              border: "1px solid rgba(255, 111, 97, 0.3)",
+              borderRadius: "var(--radius-lg)",
+              padding: "var(--spacing-md)",
+              marginTop: "var(--spacing-lg)",
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                color: "var(--accent-coral)",
+                margin: 0,
+                fontSize: "var(--font-size-sm)",
+                fontWeight: "500",
+              }}
+            >
+              💡 <strong>Tip:</strong> Accept an application to unlock interview
+              scheduling options
+            </p>
+          </div>
         </div>
 
         <div className="employer-list">
