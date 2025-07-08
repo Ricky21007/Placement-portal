@@ -352,25 +352,18 @@ const JobMatchingFeed: React.FC = () => {
                 <div className="job-actions">
                   <button
                     className="btn-apply"
-                    onClick={() => handleApply(job)}
-                    disabled={applyingJobId === job.id}
+                    onClick={() => openApplicationModal(job)}
                   >
-                    {applyingJobId === job.id ? (
-                      <>
-                        <div className="btn-spinner" />
-                        Applying...
-                      </>
-                    ) : (
-                      "Apply Now"
-                    )}
-                  </button>
-                  <button
-                    className="btn-secondary"
-                    onClick={() =>
-                      navigate(`/job-details/${job.id}`, { state: { job } })
-                    }
-                  >
-                    View Details
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      style={{ marginRight: "0.5rem" }}
+                    >
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    Apply Now
                   </button>
                 </div>
               </div>
