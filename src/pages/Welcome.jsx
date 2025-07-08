@@ -207,16 +207,16 @@ const Welcome = () => {
               <option value="Employer">💼 Employer</option>
               <option value="Admin">📊 Admin</option>
             </select>
-          </div>
 
-          <button
-            onClick={handleGetStarted}
-            disabled={!loginType}
-            className="welcome-button"
-          >
-            <span>Get Started</span>
-            <div className="welcome-button-glow" />
-          </button>
+            <button
+              onClick={handleGetStarted}
+              disabled={!loginType}
+              className="welcome-button"
+            >
+              <span>Get Started</span>
+              <div className="welcome-button-glow" />
+            </button>
+          </div>
         </div>
 
         <footer className="welcome-footer">
