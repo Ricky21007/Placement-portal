@@ -1,7 +1,7 @@
 .container {
   position: relative;
   min-height: 100vh;
-   background: linear-gradient(
+  background: linear-gradient(
     135deg,
     var(--color-primary-dark, #0b1e3d) 0%,
     var(--color-secondary-blue, #475777) 100%
@@ -109,8 +109,10 @@ form {
 .skillsHeader {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  width: 100%;
 }
 
 .skillsLabel {
@@ -134,7 +136,7 @@ form {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: 0.5rem;
+  margin-left: 0;
 }
 
 .addSkillButton:hover {
@@ -217,6 +219,8 @@ form {
 @media (max-width: 768px) {
   .formWrapper {
     padding: 1.5rem 0.5rem;
+    max-width: 100%;
+    margin: 1rem;
   }
   .skillsHeader {
     flex-direction: column;
@@ -231,5 +235,15 @@ form {
   .removeSkillButton {
     align-self: flex-end;
     margin-top: 0.5rem;
+  }
+  .formInput,
+  .formTextarea,
+  .formDate {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+  .submitButton {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
   }
 }

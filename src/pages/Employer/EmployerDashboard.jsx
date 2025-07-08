@@ -51,9 +51,9 @@ const EmployerDashboard = () => {
           <FaSignOutAlt />
         </button>
         <div className={styles.header}>
-          <h2>Employer Portal</h2>
+          <h2><strong>Employer Portal</strong></h2>
           <p>
-            Welcome back, {employerName} <span role="img" aria-label="wave">👋</span>
+            Welcome back, <strong>{employerName}</strong> <span role="img" aria-label="wave">👋</span>
           </p>
         </div>
  

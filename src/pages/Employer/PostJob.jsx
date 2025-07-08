@@ -106,29 +106,10 @@ const PostJob = () => {
             className={styles.formInput}
             disabled={loading}
           />
-          <input
-            type="text"
-            placeholder="Salary"
-            value={salary}
-            onChange={(e) => setSalary(e.target.value)}
-            required
-            className={styles.formInput}
-            disabled={loading}
-          />
-          <input
-            type="date"
-            placeholder="Select Deadline Date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            required
-            className={styles.formDate}
-            disabled={loading}
-          />
 
           {/* Skills Section */}
           <div className={styles.skillsWrapper}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-              <label className={styles.skillsLabel}>Required Skills</label>
+            <div className={styles.skillsHeader}>
               <button
                 type="button"
                 className={styles.addSkillButton}
@@ -138,6 +119,7 @@ const PostJob = () => {
               >
                 + Add Skill
               </button>
+              <label className={styles.skillsLabel}>Required Skills</label>
             </div>
             {skills.map((skill, index) => (
               <div className={styles.skillRow} key={index}>
@@ -163,6 +145,24 @@ const PostJob = () => {
               </div>
             ))}
           </div>
+          <input
+            type="text"
+            placeholder="Salary"
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+            required
+            className={styles.formInput}
+            disabled={loading}
+          />
+          <input
+            type="date"
+            placeholder="Select Deadline Date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            required
+            className={styles.formDate}
+            disabled={loading}
+          />
 
           <button
             type="submit"
