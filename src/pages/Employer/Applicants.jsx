@@ -340,7 +340,13 @@ const Applicants = () => {
                   >
                     <button
                       className="employer-button-primary"
-                      onClick={() => setShowInterviewFor(applicant.id)}
+                      onClick={() => {
+                        console.log(
+                          "Schedule Interview clicked for applicant:",
+                          applicant.id,
+                        );
+                        setShowInterviewFor(applicant.id);
+                      }}
                       style={{
                         display: "flex",
                         alignItems: "center",
