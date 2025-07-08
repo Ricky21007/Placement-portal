@@ -141,7 +141,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-3xl);
+  margin-bottom: calc(var(--spacing-3xl) + var(--spacing-xl));
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
