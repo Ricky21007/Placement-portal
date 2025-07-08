@@ -86,7 +86,7 @@
 
 .page-subtitle {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
+  color: #374151;
   font-weight: 500;
   max-width: 600px;
   margin: 0 auto;
@@ -248,7 +248,7 @@
 
 .company-name {
   font-size: var(--font-size-base);
-  color: var(--gray-600);
+  color: #1f2937;
   font-weight: 500;
 }
 
@@ -292,7 +292,7 @@
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-sm);
   font-size: var(--font-size-sm);
-  color: var(--gray-600);
+  color: #1f2937;
   font-weight: 500;
 }
 
@@ -421,8 +421,8 @@
 
 .loading-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-600);
-  font-weight: 500;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 /* Empty State */
@@ -447,12 +447,12 @@
   font-size: var(--font-size-2xl);
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: var(--gray-600);
+  color: #1f2937;
 }
 
 .empty-text {
   font-size: var(--font-size-lg);
-  color: var(--gray-500);
+  color: #374151;
   max-width: 400px;
   margin: 0 auto var(--spacing-xl);
   line-height: var(--leading-relaxed);
