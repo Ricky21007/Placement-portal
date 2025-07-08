@@ -51,20 +51,19 @@ const EmployerDashboard = () => {
   };
 
   return (
-    <div className={styles.dashboardWrapper}>
-      <div className={styles.container}>
+    <div className="employer-page">
+      <div className="employer-container">
         <button
-          className={styles.logoutButton}
+          className="employer-logout-button"
           onClick={handleLogout}
           aria-label="Logout"
         >
           <FaSignOutAlt />
         </button>
-        <div className={styles.header}>
-          <h2>
-            <strong>Employer Portal</strong>
-          </h2>
-          <p>
+
+        <div className="employer-header">
+          <h1 className="employer-title">Employer Portal</h1>
+          <p className="employer-subtitle">
             Welcome back, <strong>{employerName}</strong>{" "}
             <span role="img" aria-label="wave">
               👋
@@ -72,56 +71,64 @@ const EmployerDashboard = () => {
           </p>
         </div>
 
-        <div className={styles.buttonGrid}>
+        <div className="employer-button-grid">
           <button
-            className={styles.button}
+            className="employer-action-button"
             onClick={() => navigate("/employer/post-job")}
           >
-            <FaPlus className={styles.icon} /> Post Job
+            <FaPlus className="employer-button-icon" />
+            Post Job
           </button>
           <button
-            className={styles.button}
+            className="employer-action-button"
             onClick={() => navigate("/employer/view-jobs")}
           >
-            <FaBriefcase className={styles.icon} /> View Jobs
+            <FaBriefcase className="employer-button-icon" />
+            View Jobs
           </button>
           <button
-            className={styles.button}
+            className="employer-action-button"
             onClick={() => navigate("/employer/applicants")}
           >
-            <FaUsers className={styles.icon} /> Applicants
+            <FaUsers className="employer-button-icon" />
+            Applicants
           </button>
           <button
-            className={styles.button}
+            className="employer-action-button"
             onClick={() => navigate("/employer/edit-profile")}
           >
-            <FaUserEdit className={styles.icon} /> Edit Profile
+            <FaUserEdit className="employer-button-icon" />
+            Edit Profile
           </button>
         </div>
 
-        <div className={styles.statsContainer}>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>{activeJobs}</div>
-            <div className={styles.statLabel}>Active Jobs</div>
+        <div className="employer-stats-container">
+          <div className="employer-stat-card">
+            <div className="employer-stat-number">{activeJobs}</div>
+            <div className="employer-stat-label">Active Jobs</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>{applicants}</div>
-            <div className={styles.statLabel}>Applicants</div>
+          <div className="employer-stat-card">
+            <div className="employer-stat-number">{applicants}</div>
+            <div className="employer-stat-label">Applicants</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>{interviews}</div>
-            <div className={styles.statLabel}>Interviews</div>
+          <div className="employer-stat-card">
+            <div className="employer-stat-number">{interviews}</div>
+            <div className="employer-stat-label">Interviews</div>
           </div>
         </div>
 
-        <div className={styles.recentActivity}>
-          <h3>Recent Activity</h3>
+        <div className="employer-activity-section">
+          <h3 className="employer-activity-title">Recent Activity</h3>
           {recentActivity.length === 0 ? (
-            <p>No job activity yet.</p>
+            <div className="employer-empty-state">
+              <p>No job activity yet.</p>
+            </div>
           ) : (
-            <ul>
+            <ul className="employer-activity-list">
               {recentActivity.map((activity, index) => (
-                <li key={index}>{activity}</li>
+                <li key={index} className="employer-activity-item">
+                  {activity}
+                </li>
               ))}
             </ul>
           )}
