@@ -1,9 +1,9 @@
-/* Graduate View Jobs - Premium Professional Design */
+/* Graduate View Jobs - Professional Design */
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-gradient: linear-gradient(135deg, #1d4368 0%, #2d4f7d 100%);
   --card-gradient: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-  --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  --accent-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --accent-gradient: linear-gradient(135deg, #ff6f61 0%, #e65a4f 100%);
   --shadow-light: 0 10px 40px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.15);
   --border-radius: 16px;
@@ -12,25 +12,19 @@
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    #667eea 0%,
-    #764ba2 25%,
-    #f093fb 75%,
-    #f5576c 100%
-  );
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   font-family:
     "Inter",
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
-  color: #1a202c;
+  color: #1d4368;
   position: relative;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* Animated background particles */
+/* Background pattern */
 .container::before {
   content: "";
   position: fixed;
@@ -40,21 +34,15 @@
   height: 100%;
   background:
     radial-gradient(
-      circle at 20% 80%,
-      rgba(120, 119, 198, 0.1) 0%,
+      circle at 20% 20%,
+      rgba(255, 111, 97, 0.03) 0%,
       transparent 50%
     ),
     radial-gradient(
-      circle at 80% 20%,
-      rgba(255, 107, 107, 0.1) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 40% 40%,
-      rgba(240, 147, 251, 0.1) 0%,
+      circle at 80% 80%,
+      rgba(29, 67, 104, 0.02) 0%,
       transparent 50%
     );
-  animation: float 20s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
 }
@@ -145,7 +133,7 @@
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d4368 0%, #2d4f7d 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -305,7 +293,7 @@
 }
 
 .job-type-badge {
-  background: var(--success-gradient);
+  background: var(--primary-gradient);
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 50px;
@@ -313,7 +301,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+  box-shadow: 0 4px 15px rgba(29, 67, 104, 0.3);
   white-space: nowrap;
 }
 
