@@ -174,100 +174,146 @@ const Applicants = () => {
   };
 
   if (loading) {
-    return <div className={styles.container}>Loading applicants...</div>;
+    return (
+      <div className="employer-page">
+        <div className="employer-container">
+          <div className="employer-loading">
+            <div className="employer-loading-spinner"></div>
+            <p>Loading applicants...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (applicants.length === 0) {
-    return <div className={styles.container}>No applicants found.</div>;
+    return (
+      <div className="employer-page">
+        <div className="employer-container">
+          <button
+            className="employer-back-button"
+            onClick={() => navigate("/employer/dashboard")}
+          >
+            ← Back to Dashboard
+          </button>
+          <div className="employer-empty-state">
+            <h3>No Applicants Found</h3>
+            <p>You haven't received any job applications yet.</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className={styles.container}>
-      <button
-        className={styles.backButton}
-        onClick={() => navigate("/employer/dashboard")}
-      >
-        ← Back to Dashboard
-      </button>
-      <h2 className={styles.title}>Applicants</h2>
-      <ul className={styles.applicantList}>
-        {applicants.map((applicant) => (
-          <li key={applicant.id} className={styles.applicantItem}>
-            <p>
-              <span className={styles.applicantLabel}>Name:</span>{" "}
-              {applicant.name}
-            </p>
-            <p>
-              <span className={styles.applicantLabel}>Email:</span>{" "}
-              {applicant.email}
-            </p>
-            <p>
-              <span className={styles.applicantLabel}>Job Applied:</span>{" "}
-              {applicant.jobTitle}
-            </p>
-            <p>
-              <span className={styles.applicantLabel}>Motivation:</span>{" "}
-              {applicant.motivation}
-            </p>
-            <p>
-              <span className={styles.applicantLabel}>CV:</span>
-              {applicant.cvUrl ? (
-                <a
-                  href={applicant.cvUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#0070f3" }}
-                >
-                  View CV
-                </a>
-              ) : (
-                "No CV uploaded"
-              )}
-            </p>
-            <p>
-              <span className={styles.applicantLabel}>Status:</span>{" "}
-              {applicant.status}
-            </p>
-            {applicant.status === "pending" && (
-              <div style={{ marginTop: 8 }}>
-                <button
-                  className={styles.acceptButton}
-                  onClick={() => handleStatusChange(applicant, "accepted")}
-                >
-                  Accept
-                </button>
-                <button
-                  className={styles.declineButton}
-                  onClick={() => handleStatusChange(applicant, "declined")}
-                >
-                  Decline
-                </button>
+    <div className="employer-page">
+      <div className="employer-container">
+        <button
+          className="employer-back-button"
+          onClick={() => navigate("/employer/dashboard")}
+        >
+          ← Back to Dashboard
+        </button>
+
+        <div className="employer-header">
+          <h1 className="employer-title">Applicants</h1>
+          <p className="employer-subtitle">
+            Review and manage job applications
+          </p>
+        </div>
+
+        <div className="employer-list">
+          {applicants.map((applicant) => (
+            <div key={applicant.id} className="employer-list-item">
+              <h3 className="employer-item-title">{applicant.name}</h3>
+
+              <div className="employer-item-detail">
+                <span className="employer-item-label">Email:</span>
+                {applicant.email}
               </div>
-            )}
-            {applicant.status === "accepted" && (
-              <>
-                <button
-                  className={styles.scheduleButton}
-                  onClick={() => setShowInterviewFor(applicant.id)}
-                >
-                  Schedule Interview
-                </button>
-                {showInterviewFor === applicant.id && (
-                  <ScheduleInterview
-                    application={applicant}
-                    onClose={() => setShowInterviewFor(null)}
-                  />
+
+              <div className="employer-item-detail">
+                <span className="employer-item-label">Job Applied:</span>
+                {applicant.jobTitle}
+              </div>
+
+              <div className="employer-item-detail">
+                <span className="employer-item-label">Motivation:</span>
+                {applicant.motivation}
+              </div>
+
+              <div className="employer-item-detail">
+                <span className="employer-item-label">CV:</span>
+                {applicant.cvUrl ? (
+                  <a
+                    href={applicant.cvUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "var(--accent-coral)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    View CV
+                  </a>
+                ) : (
+                  "No CV uploaded"
                 )}
-                <MarkOutcomeButtons
-                  applicant={applicant}
-                  markAsHired={markAsHired}
-                  markAsNotHired={markAsNotHired}
-                />
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+              </div>
+
+              <div className="employer-item-detail">
+                <span className="employer-item-label">Status:</span>
+                {applicant.status}
+              </div>
+
+              {applicant.status === "pending" && (
+                <div
+                  style={{
+                    marginTop: "var(--spacing-lg)",
+                    display: "flex",
+                    gap: "var(--spacing-sm)",
+                  }}
+                >
+                  <button
+                    className="employer-button-primary"
+                    onClick={() => handleStatusChange(applicant, "accepted")}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="employer-button-danger"
+                    onClick={() => handleStatusChange(applicant, "declined")}
+                  >
+                    Decline
+                  </button>
+                </div>
+              )}
+
+              {applicant.status === "accepted" && (
+                <div style={{ marginTop: "var(--spacing-lg)" }}>
+                  <button
+                    className="employer-button-secondary"
+                    onClick={() => setShowInterviewFor(applicant.id)}
+                  >
+                    Schedule Interview
+                  </button>
+                  {showInterviewFor === applicant.id && (
+                    <ScheduleInterview
+                      application={applicant}
+                      onClose={() => setShowInterviewFor(null)}
+                    />
+                  )}
+                  <MarkOutcomeButtons
+                    applicant={applicant}
+                    markAsHired={markAsHired}
+                    markAsNotHired={markAsNotHired}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
