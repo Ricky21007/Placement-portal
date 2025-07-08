@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "../../styles/ApplicationTracker.css";
- 
+
 interface Application {
   id: string;
   jobTitle: string;
@@ -20,12 +20,18 @@ interface Application {
   createdAt: Timestamp;
   interviewDate?: string;
   interviewLink?: string;
+  interviewTime?: string;
+  interviewType?: string;
+  interviewNotes?: string;
+  interviewStatus?: string;
+  employerName?: string;
+  interviewDuration?: string;
   companyName?: string;
   jobType?: string;
   location?: string;
   jobId?: string;
 }
- 
+
 interface Placement {
   id: string;
   graduateId: string;
@@ -35,52 +41,53 @@ interface Placement {
   employerId: string;
   companyName?: string;
 }
- 
+
 export const ApplicationTracker: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [placements, setPlacements] = useState<Placement[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
- 
+
   useEffect(() => {
     let unsubscribePlacements: (() => void) | null = null;
- 
+
     const fetchApplications = async () => {
       setLoading(true);
       try {
         const user = auth.currentUser;
         if (!user) return;
- 
+
         const appsRef = collection(db, "applications");
         const q = query(appsRef, where("graduateId", "==", user.uid));
         const appSnap = await getDocs(q);
- 
+
         const appsData: Application[] = [];
- 
+
         for (const docSnap of appSnap.docs) {
           const appData = docSnap.data();
           const jobRef = doc(db, "jobs", appData.jobId);
           const jobSnap = await getDoc(jobRef);
- 
+
           let jobDetails = {
             jobTitle: "Unknown Job",
             companyName: "Unknown Company",
             jobType: "Unknown",
             location: "Unknown",
           };
- 
+
           if (jobSnap.exists()) {
             const jobData = jobSnap.data();
- 
+
             let companyName = "Unknown Company";
             if (jobData.employerId) {
               const companyRef = doc(db, "companyProfiles", jobData.employerId);
               const companySnap = await getDoc(companyRef);
               if (companySnap.exists()) {
-                companyName = companySnap.data().companyName || "Unknown Company";
+                companyName =
+                  companySnap.data().companyName || "Unknown Company";
               }
             }
- 
+
             jobDetails = {
               jobTitle: jobData.jobTitle || jobData.title || "Unknown Job",
               companyName,
@@ -88,28 +95,45 @@ export const ApplicationTracker: React.FC = () => {
               location: jobData.location || "Unknown",
             };
           }
- 
+
           let interviewDate = "";
           let interviewLink = "";
- 
+          let interviewTime = "";
+          let interviewType = "";
+          let interviewNotes = "";
+          let interviewStatus = "";
+          let employerName = "";
+          let interviewDuration = "";
+
           if (appData.status === "accepted") {
             const interviewsRef = collection(db, "interviews");
             const interviewQuery = query(
               interviewsRef,
               where("graduateId", "==", appData.graduateId),
-              where("jobId", "==", appData.jobId)
+              where("jobId", "==", appData.jobId),
             );
             const interviewSnap = await getDocs(interviewQuery);
- 
+
             if (!interviewSnap.empty) {
               const interviewData = interviewSnap.docs[0].data();
               interviewDate = interviewData.date
-                ? interviewData.date.toDate().toLocaleString("en-ZA")
+                ? interviewData.date.toDate().toLocaleDateString("en-ZA")
+                : "";
+              interviewTime = interviewData.date
+                ? interviewData.date.toDate().toLocaleTimeString("en-ZA", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
                 : "";
               interviewLink = interviewData.link || "";
+              interviewType = interviewData.type || "Not specified";
+              interviewNotes = interviewData.notes || "";
+              interviewStatus = interviewData.status || "scheduled";
+              employerName = interviewData.employerName || companyName;
+              interviewDuration = interviewData.duration || "Not specified";
             }
           }
- 
+
           appsData.push({
             id: docSnap.id,
             ...jobDetails,
@@ -117,64 +141,80 @@ export const ApplicationTracker: React.FC = () => {
             createdAt: appData.createdAt,
             interviewDate,
             interviewLink,
+            interviewTime,
+            interviewType,
+            interviewNotes,
+            interviewStatus,
+            employerName,
+            interviewDuration,
             jobId: appData.jobId,
           });
         }
- 
+
         appsData.sort((a, b) => {
           if (!a.createdAt || !b.createdAt) return 0;
-          return b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime();
+          return (
+            b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime()
+          );
         });
- 
+
         setApplications(appsData);
- 
+
         // Fetch placements
         const placementRef = collection(db, "placements");
         const placementsQuery = query(
           placementRef,
-          where("graduateId", "==", user.uid)
+          where("graduateId", "==", user.uid),
         );
- 
-        unsubscribePlacements = onSnapshot(placementsQuery, async (snapshot) => {
-          const placementArr: Placement[] = [];
-          for (const docSnap of snapshot.docs) {
-            const data = docSnap.data() as Placement;
- 
-            let companyName = "Unknown Company";
- 
-            // Get job to find employerId
-            const jobRef = doc(db, "jobs", data.jobId);
-            const jobSnap = await getDoc(jobRef);
- 
-            if (jobSnap.exists()) {
-              const jobData = jobSnap.data();
-              if (jobData.employerId) {
-                const companyRef = doc(db, "companyProfiles", jobData.employerId);
-                const companySnap = await getDoc(companyRef);
-                if (companySnap.exists()) {
-                  companyName = companySnap.data().companyName || "Unknown Company";
+
+        unsubscribePlacements = onSnapshot(
+          placementsQuery,
+          async (snapshot) => {
+            const placementArr: Placement[] = [];
+            for (const docSnap of snapshot.docs) {
+              const data = docSnap.data() as Placement;
+
+              let companyName = "Unknown Company";
+
+              // Get job to find employerId
+              const jobRef = doc(db, "jobs", data.jobId);
+              const jobSnap = await getDoc(jobRef);
+
+              if (jobSnap.exists()) {
+                const jobData = jobSnap.data();
+                if (jobData.employerId) {
+                  const companyRef = doc(
+                    db,
+                    "companyProfiles",
+                    jobData.employerId,
+                  );
+                  const companySnap = await getDoc(companyRef);
+                  if (companySnap.exists()) {
+                    companyName =
+                      companySnap.data().companyName || "Unknown Company";
+                  }
                 }
               }
+
+              placementArr.push({ ...data, companyName, id: docSnap.id });
             }
- 
-            placementArr.push({ ...data, companyName, id: docSnap.id });
-          }
-          setPlacements(placementArr);
-        });
+            setPlacements(placementArr);
+          },
+        );
       } catch (error) {
         console.error("Error fetching applications or placements:", error);
       } finally {
         setLoading(false);
       }
     };
- 
+
     fetchApplications();
- 
+
     return () => {
       if (unsubscribePlacements) unsubscribePlacements();
     };
   }, []);
- 
+
   const applicationsWithPlacement = applications.map((app) => {
     const placed = placements.find((p) => p.jobId === app.jobId);
     return {
@@ -184,22 +224,26 @@ export const ApplicationTracker: React.FC = () => {
       companyName: placed?.companyName || app.companyName,
     };
   });
- 
+
   const filteredApplications =
     selectedStatus === "all"
       ? applicationsWithPlacement
-      : applicationsWithPlacement.filter((app) => app.status === selectedStatus);
- 
+      : applicationsWithPlacement.filter(
+          (app) => app.status === selectedStatus,
+        );
+
   const statusCounts = {
     all: applicationsWithPlacement.length,
     pending: applicationsWithPlacement.filter((app) => app.status === "pending")
       .length,
-    accepted: applicationsWithPlacement.filter((app) => app.status === "accepted")
-      .length,
-    declined: applicationsWithPlacement.filter((app) => app.status === "declined")
-      .length,
+    accepted: applicationsWithPlacement.filter(
+      (app) => app.status === "accepted",
+    ).length,
+    declined: applicationsWithPlacement.filter(
+      (app) => app.status === "declined",
+    ).length,
   };
- 
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "accepted":
@@ -223,7 +267,7 @@ export const ApplicationTracker: React.FC = () => {
         );
     }
   };
- 
+
   const getStatusClass = (status: string, isPlaced: boolean): string => {
     if (isPlaced) return "status-placed";
     switch (status) {
@@ -236,7 +280,7 @@ export const ApplicationTracker: React.FC = () => {
         return "status-pending";
     }
   };
- 
+
   if (loading) {
     return (
       <div className="application-tracker-page">
@@ -247,7 +291,7 @@ export const ApplicationTracker: React.FC = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="application-tracker-page">
       <div className="application-tracker-container">
@@ -263,7 +307,7 @@ export const ApplicationTracker: React.FC = () => {
             Track the status of your job applications and upcoming interviews
           </p>
         </div>
- 
+
         <div className="status-tabs">
           {Object.entries(statusCounts).map(([status, count]) => (
             <button
@@ -278,11 +322,16 @@ export const ApplicationTracker: React.FC = () => {
             </button>
           ))}
         </div>
- 
+
         {filteredApplications.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                width="80"
+                height="80"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
               </svg>
             </div>
@@ -314,7 +363,7 @@ export const ApplicationTracker: React.FC = () => {
                   <div
                     className={`status-badge ${getStatusClass(
                       app.status,
-                      app.isPlaced
+                      app.isPlaced,
                     )}`}
                   >
                     {app.isPlaced ? (
