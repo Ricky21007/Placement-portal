@@ -879,11 +879,31 @@
 
 .interview-form-actions {
   display: flex;
-  gap: var(--spacing-md);
-  justify-content: flex-end;
+  gap: var(--spacing-lg);
+  justify-content: center;
   margin-top: var(--spacing-xl);
-  padding-top: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.interview-form-actions .employer-button-primary {
+  background: linear-gradient(135deg, var(--accent-coral) 0%, #e65a4f 100%);
+  color: var(--white);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4);
+  min-width: 160px;
+}
+
+.interview-form-actions .employer-button-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  min-width: 160px;
 }
 
 .interview-outcome-section {
