@@ -12,15 +12,15 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
-import styles from "./Applicants.module.css";
+import "../../styles/UnifiedEmployer.css";
 import ScheduleInterview from "./ScheduleInterviews"; // Keep this import as you use it
- 
+
 const Applicants = () => {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showInterviewFor, setShowInterviewFor] = useState(null);
   const navigate = useNavigate();
- 
+
   useEffect(() => {
     const fetchApplicants = async () => {
       setLoading(true);
@@ -31,13 +31,13 @@ const Applicants = () => {
           setLoading(false);
           return;
         }
- 
+
         const appSnap = await getDocs(collection(db, "applications"));
         const relevantApplicants = [];
- 
+
         for (const appDoc of appSnap.docs) {
           const appData = appDoc.data();
- 
+
           if (
             !appData.jobId ||
             typeof appData.jobId !== "string" ||
@@ -49,17 +49,17 @@ const Applicants = () => {
             );
             continue;
           }
- 
+
           const jobRef = doc(db, "jobs", appData.jobId);
           const jobSnap = await getDoc(jobRef);
- 
+
           if (jobSnap.exists()) {
             const jobData = jobSnap.data();
             if (jobData.employerId === user.uid) {
               const gradRef = doc(db, "graduates", appData.graduateId);
               const gradSnap = await getDoc(gradRef);
               const gradData = gradSnap.exists() ? gradSnap.data() : {};
- 
+
               relevantApplicants.push({
                 id: appDoc.id,
                 name: gradData.fullName || "Unknown",
@@ -74,7 +74,7 @@ const Applicants = () => {
             }
           }
         }
- 
+
         setApplicants(relevantApplicants);
       } catch (error) {
         console.error("Error fetching applicants:", error);
@@ -82,10 +82,10 @@ const Applicants = () => {
       }
       setLoading(false);
     };
- 
+
     fetchApplicants();
   }, []);
- 
+
   const handleStatusChange = async (applicant, newStatus) => {
     try {
       const appRef = doc(db, "applications", applicant.id);
@@ -95,7 +95,7 @@ const Applicants = () => {
           a.id === applicant.id ? { ...a, status: newStatus } : a,
         ),
       );
- 
+
       if (newStatus === "accepted" || newStatus === "declined") {
         await addDoc(collection(db, "notifications"), {
           userId: applicant.graduateId,
@@ -108,20 +108,20 @@ const Applicants = () => {
       alert("Failed to update status");
     }
   };
- 
+
   const markAsHired = async (application) => {
     try {
       const interviewQuery = query(
         collection(db, "interviews"),
         where("graduateId", "==", application.graduateId),
-        where("jobId", "==", application.jobId)
+        where("jobId", "==", application.jobId),
       );
       const interviewSnap = await getDocs(interviewQuery);
       const interviewDoc = interviewSnap.docs[0];
       if (interviewDoc) {
         await updateDoc(interviewDoc.ref, { status: "Hired" });
       }
- 
+
       await addDoc(collection(db, "placements"), {
         graduateId: application.graduateId,
         jobId: application.jobId,
@@ -131,62 +131,62 @@ const Applicants = () => {
         placedAt: serverTimestamp(),
         createdAt: serverTimestamp(),
       });
- 
+
       await addDoc(collection(db, "notifications"), {
         userId: application.graduateId,
         message: `Congratulations! You've been hired for "${application.jobTitle}"${application.companyName ? ` at ${application.companyName}` : ""}.`,
         read: false,
         createdAt: serverTimestamp(),
       });
- 
+
       alert("Graduate marked as hired.");
     } catch (err) {
       console.error(err);
       alert("Failed to mark as hired.");
     }
   };
- 
+
   const markAsNotHired = async (application) => {
     try {
       const interviewQuery = query(
         collection(db, "interviews"),
         where("graduateId", "==", application.graduateId),
-        where("jobId", "==", application.jobId)
+        where("jobId", "==", application.jobId),
       );
       const interviewSnap = await getDocs(interviewQuery);
       const interviewDoc = interviewSnap.docs[0];
       if (interviewDoc) {
         await updateDoc(interviewDoc.ref, { status: "Not Hired" });
       }
- 
+
       await addDoc(collection(db, "notifications"), {
         userId: application.graduateId,
         message: `We regret to inform you that you were not selected for "${application.jobTitle}".`,
         read: false,
         createdAt: serverTimestamp(),
       });
- 
+
       alert("Graduate marked as not hired.");
     } catch (err) {
       console.error(err);
       alert("Failed to mark as not hired.");
     }
   };
- 
+
   if (loading) {
     return <div className={styles.container}>Loading applicants...</div>;
   }
- 
+
   if (applicants.length === 0) {
     return <div className={styles.container}>No applicants found.</div>;
   }
- 
+
   return (
     <div className={styles.container}>
-       <button
-             className={styles.backButton}
-             onClick={() => navigate("/employer/dashboard")}
-           >
+      <button
+        className={styles.backButton}
+        onClick={() => navigate("/employer/dashboard")}
+      >
         ← Back to Dashboard
       </button>
       <h2 className={styles.title}>Applicants</h2>
@@ -271,7 +271,7 @@ const Applicants = () => {
     </div>
   );
 };
- 
+
 const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
   const [interviewStatus, setInterviewStatus] = useState(null);
   const [marked, setMarked] = useState(false);
@@ -281,7 +281,7 @@ const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
       const q = query(
         collection(db, "interviews"),
         where("graduateId", "==", applicant.graduateId),
-        where("jobId", "==", applicant.jobId)
+        where("jobId", "==", applicant.jobId),
       );
       const snap = await getDocs(q);
       if (!snap.empty) {
@@ -305,20 +305,14 @@ const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
 
   return (
     <div style={{ marginTop: 8 }}>
-      <button
-        className={styles.acceptButton}
-        onClick={handleMarkHired}
-      >
+      <button className={styles.acceptButton} onClick={handleMarkHired}>
         ✅ Mark as Hired
       </button>
-      <button
-        className={styles.declineButton}
-        onClick={handleMarkNotHired}
-      >
+      <button className={styles.declineButton} onClick={handleMarkNotHired}>
         ❌ Mark as Not Hired
       </button>
     </div>
   );
 };
- 
+
 export default Applicants;
