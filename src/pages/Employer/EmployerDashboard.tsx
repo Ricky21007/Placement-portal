@@ -384,9 +384,14 @@ const EmployerDashboard = () => {
 
         <div className="employer-activity-section">
           <h3 className="employer-activity-title">Recent Activity</h3>
-          {recentActivity.length === 0 ? (
+          {loading ? (
+            <div className="employer-loading">
+              <div className="employer-loading-spinner"></div>
+              <p>Loading activity...</p>
+            </div>
+          ) : recentActivity.length === 0 ? (
             <div className="employer-empty-state">
-              <p>No job activity yet.</p>
+              <p>No recent activity. Start by posting your first job!</p>
             </div>
           ) : (
             <ul className="employer-activity-list">
