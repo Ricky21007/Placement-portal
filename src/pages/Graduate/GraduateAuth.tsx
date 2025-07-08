@@ -6,7 +6,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import "../../styles/GraduateAuth.css";
+import "../../styles/UnifiedAuth.css";
 
 interface Props {
   mode: "login" | "signup";
@@ -207,7 +207,7 @@ const GraduateAuth: React.FC<Props> = ({ mode }) => {
                     <circle cx="12" cy="12" r="3" stroke="currentColor" />
                   </svg>
                 )}
-            </button>
+              </button>
             </div>
             {mode === "signup" && (
               <div className="input-group" style={{ position: "relative" }}>
@@ -224,7 +224,9 @@ const GraduateAuth: React.FC<Props> = ({ mode }) => {
                   className="password-toggle"
                   onClick={() => setShowConfirmPassword((v) => !v)}
                   tabIndex={-1}
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
                 >
                   {showConfirmPassword ? (
                     // Eye-off SVG
