@@ -278,21 +278,112 @@
   );
   backdrop-filter: blur(30px);
   border-radius: var(--radius-2xl);
-  padding: var(--spacing-2xl);
+  padding: 0;
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 25px 50px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: default;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
-  min-height: 280px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  text-align: left;
+}
+
+.welcome-card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 111, 97, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.welcome-card-content {
+  padding: var(--spacing-2xl);
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.welcome-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.welcome-card-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.welcome-stat {
+  background: rgba(255, 111, 97, 0.15);
+  color: var(--accent-coral);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: 1px solid rgba(255, 111, 97, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Card type specific colors */
+.welcome-card-graduates .welcome-card-background {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(76, 175, 80, 0.08) 100%
+  );
+}
+
+.welcome-card-graduates .welcome-stat {
+  background: rgba(76, 175, 80, 0.15);
+  color: #81c784;
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.welcome-card-employers .welcome-card-background {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(33, 150, 243, 0.08) 100%
+  );
+}
+
+.welcome-card-employers .welcome-stat {
+  background: rgba(33, 150, 243, 0.15);
+  color: #64b5f6;
+  border-color: rgba(33, 150, 243, 0.3);
+}
+
+.welcome-card-admins .welcome-card-background {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(156, 39, 176, 0.08) 100%
+  );
+}
+
+.welcome-card-admins .welcome-stat {
+  background: rgba(156, 39, 176, 0.15);
+  color: #ba68c8;
+  border-color: rgba(156, 39, 176, 0.3);
 }
 
 .welcome-card::before {
