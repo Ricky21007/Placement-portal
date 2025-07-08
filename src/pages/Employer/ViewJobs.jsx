@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
-import styles from "./ViewJobs.module.css";
+import "../../styles/UnifiedEmployer.css";
 
 const ViewJobs = () => {
   const [jobs, setJobs] = useState([]);
