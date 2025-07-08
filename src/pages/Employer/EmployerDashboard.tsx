@@ -363,16 +363,22 @@ const EmployerDashboard = () => {
 
         <div className="employer-stats-container">
           <div className="employer-stat-card">
-            <div className="employer-stat-number">{stats.activeJobs}</div>
+            <div className="employer-stat-number">
+              {loading ? "..." : stats.activeJobs}
+            </div>
             <div className="employer-stat-label">Active Jobs</div>
           </div>
           <div className="employer-stat-card">
-            <div className="employer-stat-number">{stats.applicants}</div>
+            <div className="employer-stat-number">
+              {loading ? "..." : stats.applicants}
+            </div>
             <div className="employer-stat-label">Applicants</div>
           </div>
           <div className="employer-stat-card">
-            <div className="employer-stat-number">{stats.interviews}</div>
-            <div className="employer-stat-label">Interviews</div>
+            <div className="employer-stat-number">
+              {loading ? "..." : stats.interviews}
+            </div>
+            <div className="employer-stat-label">Interviews Scheduled</div>
           </div>
         </div>
 
