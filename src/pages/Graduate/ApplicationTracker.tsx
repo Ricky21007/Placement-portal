@@ -104,6 +104,8 @@ export const ApplicationTracker: React.FC = () => {
           let interviewStatus = "";
           let employerName = "";
           let interviewDuration = "";
+          let meetingType = "";
+          let interviewLocation = "";
 
           if (appData.status === "accepted") {
             const interviewsRef = collection(db, "interviews");
@@ -125,10 +127,23 @@ export const ApplicationTracker: React.FC = () => {
                     minute: "2-digit",
                   })
                 : "";
-              interviewLink = interviewData.link || "";
-              interviewType = interviewData.type || "Not specified";
+
+              // Use the correct field names from the employer's interview creation
+              interviewLink =
+                interviewData.teamsLink || interviewData.link || "";
+              meetingType = interviewData.meetingType || "Not specified";
+              interviewLocation = interviewData.location || "Not specified";
+              interviewType =
+                meetingType === "teams"
+                  ? "Microsoft Teams"
+                  : meetingType === "in-person"
+                    ? "In-Person Meeting"
+                    : meetingType === "other"
+                      ? "Online Meeting"
+                      : interviewData.type || "Not specified";
+
               interviewNotes = interviewData.notes || "";
-              interviewStatus = interviewData.status || "scheduled";
+              interviewStatus = interviewData.status || "Scheduled";
               employerName =
                 interviewData.employerName || jobDetails.companyName;
               interviewDuration = interviewData.duration || "Not specified";
