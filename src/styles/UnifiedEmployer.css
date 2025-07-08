@@ -705,8 +705,8 @@
   }
 
   .employer-button-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
   }
 
   .employer-stats-container {
@@ -725,6 +725,18 @@
 
   .employer-skill-row {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .employer-button-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .employer-action-button {
+    padding: var(--spacing-lg);
+    font-size: var(--font-size-base);
   }
 }
 
