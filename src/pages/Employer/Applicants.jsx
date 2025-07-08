@@ -396,16 +396,17 @@ const Applicants = () => {
                   />
                 </div>
               )}
-
-              {showInterviewFor === applicant.id && (
-                <ScheduleInterview
-                  application={applicant}
-                  onClose={() => setShowInterviewFor(null)}
-                />
-              )}
             </div>
           ))}
         </div>
+
+        {/* Interview Modal - Rendered outside of list items for better visibility */}
+        {showInterviewFor && (
+          <ScheduleInterview
+            application={applicants.find((app) => app.id === showInterviewFor)}
+            onClose={() => setShowInterviewFor(null)}
+          />
+        )}
       </div>
     </div>
   );
