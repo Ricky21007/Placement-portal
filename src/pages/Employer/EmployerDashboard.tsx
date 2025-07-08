@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styles from './EmployerDashboard.module.css';
-import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../firebase';
-import { doc, getDoc, DocumentData } from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import "../../styles/UnifiedEmployer.css";
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../../firebase";
+import { doc, getDoc, DocumentData } from "firebase/firestore";
 
 interface EmployerData {
   companyName?: string;
@@ -30,17 +30,17 @@ const EmployerDashboard = () => {
   useEffect(() => {
     const fetchEmployerData = async () => {
       if (auth.currentUser) {
-        console.log('Fetching employer data for UID:', auth.currentUser.uid);
-        const docRef = doc(db, 'employers', auth.currentUser.uid);
+        console.log("Fetching employer data for UID:", auth.currentUser.uid);
+        const docRef = doc(db, "employers", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        console.log('Document exists:', docSnap.exists());
+        console.log("Document exists:", docSnap.exists());
         if (docSnap.exists()) {
           setEmployerData(docSnap.data() as EmployerData);
         } else {
-          console.log('No employer data found!');
+          console.log("No employer data found!");
         }
       } else {
-        console.log('No authenticated user found');
+        console.log("No authenticated user found");
       }
     };
     fetchEmployerData();
@@ -48,31 +48,36 @@ const EmployerDashboard = () => {
 
   // Added button click handlers for navigation
   const handlePostJob = () => {
-    navigate('/employer/postjob');
+    navigate("/employer/postjob");
   };
 
   const handleViewJobs = () => {
-    navigate('/employer/viewjobs');
+    navigate("/employer/viewjobs");
   };
 
   const handleApplicants = () => {
-    navigate('/employer/applicants');
+    navigate("/employer/applicants");
   };
 
   const handleEditProfile = () => {
-    navigate('/employer/editprofile');
+    navigate("/employer/editprofile");
   };
 
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>
         <h2 className={styles.title}>Employer Portal</h2>
-        <button className={styles.logoutButton} aria-label="Logout" onClick={() => {
-          if (window.confirm("Are you sure you want to logout?")) {
-            console.log('Logout clicked');
-            navigate('/login');
-          }
-        }} title="Logout">
+        <button
+          className={styles.logoutButton}
+          aria-label="Logout"
+          onClick={() => {
+            if (window.confirm("Are you sure you want to logout?")) {
+              console.log("Logout clicked");
+              navigate("/login");
+            }
+          }}
+          title="Logout"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -93,11 +98,18 @@ const EmployerDashboard = () => {
       </header>
 
       <p className={styles.welcomeMessage}>
-        Welcome back, {employerData?.companyName ?? 'Employer'} <span role="img" aria-label="waving hand">👋</span>
+        Welcome back, {employerData?.companyName ?? "Employer"}{" "}
+        <span role="img" aria-label="waving hand">
+          👋
+        </span>
       </p>
 
       <div className={styles.buttonGrid}>
-        <button className={styles.actionButton} onClick={handlePostJob} title="Post a new job">
+        <button
+          className={styles.actionButton}
+          onClick={handlePostJob}
+          title="Post a new job"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={styles.buttonIcon}
@@ -106,11 +118,19 @@ const EmployerDashboard = () => {
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Post Job
         </button>
-        <button className={styles.actionButton} onClick={handleViewJobs} title="View your job postings">
+        <button
+          className={styles.actionButton}
+          onClick={handleViewJobs}
+          title="View your job postings"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={styles.buttonIcon}
@@ -119,11 +139,19 @@ const EmployerDashboard = () => {
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
           View Jobs
         </button>
-        <button className={styles.actionButton} onClick={handleApplicants} title="View applicants">
+        <button
+          className={styles.actionButton}
+          onClick={handleApplicants}
+          title="View applicants"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={styles.buttonIcon}
@@ -132,13 +160,31 @@ const EmployerDashboard = () => {
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 20H4v-2a4 4 0 0 1 3-3.87" />
-            <circle cx="12" cy="7" r="4" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 20h5v-2a4 4 0 0 0-3-3.87"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 20H4v-2a4 4 0 0 1 3-3.87"
+            />
+            <circle
+              cx="12"
+              cy="7"
+              r="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           Applicants
         </button>
-        <button className={styles.actionButton} onClick={handleEditProfile} title="Edit your profile">
+        <button
+          className={styles.actionButton}
+          onClick={handleEditProfile}
+          title="Edit your profile"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={styles.buttonIcon}
@@ -157,10 +203,18 @@ const EmployerDashboard = () => {
       {employerData && (
         <div className={styles.dashboardContainer}>
           <h3>Company Details</h3>
-          <p><strong>Company Name:</strong> {employerData.companyName}</p>
-          <p><strong>Email:</strong> {employerData.email}</p>
-          <p><strong>Phone:</strong> {employerData.phone || 'N/A'}</p>
-          <p><strong>Website:</strong> {employerData.website || 'N/A'}</p>
+          <p>
+            <strong>Company Name:</strong> {employerData.companyName}
+          </p>
+          <p>
+            <strong>Email:</strong> {employerData.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {employerData.phone || "N/A"}
+          </p>
+          <p>
+            <strong>Website:</strong> {employerData.website || "N/A"}
+          </p>
         </div>
       )}
 
