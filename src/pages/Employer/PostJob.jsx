@@ -63,116 +63,147 @@ const PostJob = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <Link to="/employer/dashboard" className={styles.backToDashboardBtn}>
-        ← Back to Dashboard
-      </Link>
-      <div className={styles.formWrapper}>
-        <h2 className={styles.title}>Post a New Job</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Job Title"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            required
-            className={styles.formInput}
-            disabled={loading}
-          />
-          <textarea
-            placeholder="Job Description"
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            required
-            rows={4}
-            className={styles.formTextarea}
-            disabled={loading}
-          />
-          <input
-            type="text"
-            placeholder="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-            className={styles.formInput}
-            disabled={loading}
-          />
-          <input
-            type="text"
-            placeholder="Job Type (e.g., Full-time, Remote)"
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value)}
-            required
-            className={styles.formInput}
-            disabled={loading}
-          />
+    <div className="employer-page">
+      <div className="employer-container">
+        <Link to="/employer/dashboard" className="employer-back-button">
+          ← Back to Dashboard
+        </Link>
 
-          {/* Skills Section */}
-          <div className={styles.skillsWrapper}>
-            <div className={styles.skillsHeader}>
-              <button
-                type="button"
-                className={styles.addSkillButton}
-                onClick={handleAddSkill}
+        <div className="employer-header">
+          <h1 className="employer-title">Post a New Job</h1>
+          <p className="employer-subtitle">
+            Create an opportunity for talented graduates
+          </p>
+        </div>
+
+        <div className="employer-form-container">
+          <form onSubmit={handleSubmit} className="employer-form">
+            <div className="employer-form-group">
+              <label className="employer-form-label">Job Title *</label>
+              <input
+                type="text"
+                placeholder="e.g., Frontend Developer, Marketing Manager"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                required
+                className="employer-form-input"
                 disabled={loading}
-                title="Add another skill"
-              >
-                + Add Skill
-              </button>
-              <label className={styles.skillsLabel}>Required Skills</label>
+              />
             </div>
-            {skills.map((skill, index) => (
-              <div className={styles.skillRow} key={index}>
-                <input
-                  type="text"
-                  className={styles.formInput}
-                  value={skill}
-                  onChange={(e) => handleSkillChange(index, e.target.value)}
-                  placeholder={`Skill #${index + 1}`}
-                  disabled={loading}
-                />
-                {skills.length > 1 && (
-                  <button
-                    type="button"
-                    className={styles.removeSkillButton}
-                    onClick={() => handleRemoveSkill(index)}
-                    disabled={loading}
-                    title="Remove skill"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-          <input
-            type="text"
-            placeholder="Salary"
-            value={salary}
-            onChange={(e) => setSalary(e.target.value)}
-            required
-            className={styles.formInput}
-            disabled={loading}
-          />
-          <input
-            type="date"
-            placeholder="Select Deadline Date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            required
-            className={styles.formDate}
-            disabled={loading}
-          />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={styles.submitButton}
-            style={{ cursor: loading ? "not-allowed" : "pointer" }}
-          >
-            {loading ? "Posting..." : "Post Job"}
-          </button>
-        </form>
+            <div className="employer-form-group">
+              <label className="employer-form-label">Job Description *</label>
+              <textarea
+                placeholder="Describe the role, responsibilities, and requirements..."
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                required
+                rows={5}
+                className="employer-form-textarea"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="employer-form-group">
+              <label className="employer-form-label">Location *</label>
+              <input
+                type="text"
+                placeholder="e.g., Cape Town, Remote, Hybrid"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+                className="employer-form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="employer-form-group">
+              <label className="employer-form-label">Job Type *</label>
+              <input
+                type="text"
+                placeholder="e.g., Full-time, Part-time, Contract, Internship"
+                value={jobType}
+                onChange={(e) => setJobType(e.target.value)}
+                required
+                className="employer-form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="employer-skills-wrapper">
+              <div className="employer-skills-header">
+                <label className="employer-skills-label">Required Skills</label>
+                <button
+                  type="button"
+                  className="employer-add-skill-button"
+                  onClick={handleAddSkill}
+                  disabled={loading}
+                  title="Add another skill"
+                >
+                  + Add Skill
+                </button>
+              </div>
+              {skills.map((skill, index) => (
+                <div className="employer-skill-row" key={index}>
+                  <input
+                    type="text"
+                    className="employer-form-input"
+                    value={skill}
+                    onChange={(e) => handleSkillChange(index, e.target.value)}
+                    placeholder={`Skill #${index + 1} (e.g., React, Python, Project Management)`}
+                    disabled={loading}
+                  />
+                  {skills.length > 1 && (
+                    <button
+                      type="button"
+                      className="employer-remove-skill-button"
+                      onClick={() => handleRemoveSkill(index)}
+                      disabled={loading}
+                      title="Remove skill"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="employer-form-group">
+              <label className="employer-form-label">Salary *</label>
+              <input
+                type="text"
+                placeholder="e.g., R25,000 - R35,000 per month, Competitive"
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
+                required
+                className="employer-form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="employer-form-group">
+              <label className="employer-form-label">
+                Application Deadline *
+              </label>
+              <input
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                required
+                className="employer-form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="employer-submit-button"
+            >
+              {loading ? "Posting..." : "Post Job"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
