@@ -22,27 +22,89 @@
   position: relative;
 }
 
-/* Animated background particles */
-.welcome-container::before {
-  content: "";
+/* Enhanced floating particles */
+.floating-particle {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(
-      circle at 20% 80%,
-      rgba(255, 111, 97, 0.1) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(71, 87, 119, 0.15) 0%,
-      transparent 50%
-    );
-  pointer-events: none;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, var(--accent-coral), #ffa726);
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+  opacity: 0;
   z-index: 1;
+  box-shadow: 0 0 10px rgba(255, 111, 97, 0.5);
+}
+
+.floating-particle:nth-child(odd) {
+  background: linear-gradient(45deg, #64b5f6, var(--accent-coral));
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(10vh) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+}
+
+/* Glowing orbs for ambient lighting */
+.welcome-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.3;
+  animation: pulse 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+.welcome-glow-orb-1 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--accent-coral), transparent);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.welcome-glow-orb-2 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #64b5f6, transparent);
+  top: 60%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.welcome-glow-orb-3 {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #81c784, transparent);
+  bottom: 20%;
+  left: 30%;
+  animation-delay: 1s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
 }
 
 /* Remove container constraints - make full screen */
