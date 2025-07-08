@@ -386,6 +386,177 @@ export const ApplicationTracker: React.FC = () => {
                     )}
                   </div>
                 </div>
+
+                {/* Application Details */}
+                <div className="application-details">
+                  <div className="detail-item">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                    </svg>
+                    <span>
+                      <strong>Type:</strong> {app.jobType}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <span>
+                      <strong>Location:</strong> {app.location}
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                    </svg>
+                    <span>
+                      <strong>Applied:</strong>{" "}
+                      {app.createdAt?.toDate().toLocaleDateString("en-ZA")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Interview Section for Accepted Applications */}
+                {app.status === "accepted" && app.interviewDate && (
+                  <div className="interview-section">
+                    <div className="interview-header">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 16H9V7h9v14z" />
+                      </svg>
+                      <h4>Interview Scheduled</h4>
+                    </div>
+                    <div className="interview-details">
+                      <div className="interview-info-grid">
+                        <div className="interview-info-item">
+                          <strong>Date:</strong>
+                          <span>{app.interviewDate}</span>
+                        </div>
+                        <div className="interview-info-item">
+                          <strong>Time:</strong>
+                          <span>{app.interviewTime || "Not specified"}</span>
+                        </div>
+                        <div className="interview-info-item">
+                          <strong>Type:</strong>
+                          <span>{app.interviewType || "Not specified"}</span>
+                        </div>
+                        <div className="interview-info-item">
+                          <strong>Duration:</strong>
+                          <span>
+                            {app.interviewDuration || "Not specified"}
+                          </span>
+                        </div>
+                        {app.employerName && (
+                          <div className="interview-info-item">
+                            <strong>Interviewer:</strong>
+                            <span>{app.employerName}</span>
+                          </div>
+                        )}
+                        <div className="interview-info-item">
+                          <strong>Status:</strong>
+                          <span
+                            className={`interview-status ${app.interviewStatus}`}
+                          >
+                            {app.interviewStatus === "scheduled"
+                              ? "📅 Scheduled"
+                              : app.interviewStatus === "completed"
+                                ? "✅ Completed"
+                                : app.interviewStatus === "cancelled"
+                                  ? "❌ Cancelled"
+                                  : "📋 " +
+                                    (app.interviewStatus || "Scheduled")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {app.interviewNotes && (
+                        <div className="interview-notes">
+                          <strong>Additional Notes:</strong>
+                          <p>{app.interviewNotes}</p>
+                        </div>
+                      )}
+
+                      {app.interviewLink && (
+                        <div className="interview-actions">
+                          <a
+                            href={app.interviewLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="interview-link"
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                            </svg>
+                            Join Interview
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Status-specific messages */}
+                {app.status === "pending" && (
+                  <div className="pending-section">
+                    <p className="pending-message">
+                      Your application is under review. You will be notified
+                      once the employer makes a decision.
+                    </p>
+                  </div>
+                )}
+
+                {app.status === "declined" && (
+                  <div className="declined-section">
+                    <p className="declined-message">
+                      Unfortunately, your application was not successful this
+                      time. Keep applying to other opportunities!
+                    </p>
+                  </div>
+                )}
+
+                {app.isPlaced && (
+                  <div className="placement-section">
+                    <div className="placement-header">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                      </svg>
+                      <h4>🎉 Congratulations! You've been placed!</h4>
+                    </div>
+                    <p className="placement-message">
+                      You have been successfully placed at {app.companyName}.
+                      Welcome to your new role!
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
