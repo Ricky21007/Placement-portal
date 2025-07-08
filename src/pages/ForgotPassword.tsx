@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import "./styles/UnifiedAuth.css";
+import "../styles/UnifiedAuth.css";
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
