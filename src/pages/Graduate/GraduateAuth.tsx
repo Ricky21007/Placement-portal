@@ -80,9 +80,8 @@ const GraduateAuth: React.FC<Props> = ({ mode }) => {
   };
 
   return (
-    <div className="graduate-auth-bg">
-      <div className="graduate-auth-container">
-        <div className="auth-form-box">
+    <div className="auth-bg graduate-auth">
+      <div className="auth-container">
           <Link to="/" className="back-to-welcome-btn">
             <span className="back-arrow-icon" aria-hidden="true">
               {/* Unique SVG Arrow */}
@@ -207,7 +206,7 @@ const GraduateAuth: React.FC<Props> = ({ mode }) => {
                     <circle cx="12" cy="12" r="3" stroke="currentColor" />
                   </svg>
                 )}
-              </button>
+            </button>
             </div>
             {mode === "signup" && (
               <div className="input-group" style={{ position: "relative" }}>
@@ -224,9 +223,7 @@ const GraduateAuth: React.FC<Props> = ({ mode }) => {
                   className="password-toggle"
                   onClick={() => setShowConfirmPassword((v) => !v)}
                   tabIndex={-1}
-                  aria-label={
-                    showConfirmPassword ? "Hide password" : "Show password"
-                  }
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? (
                     // Eye-off SVG
