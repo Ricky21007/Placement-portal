@@ -94,16 +94,29 @@ const ViewJobsGraduate = () => {
     return (
       <div className="container">
         <div className="page-header">
-          <Link to="/graduate/dashboard" className="back-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
-            </svg>
-            Back to Dashboard
-          </Link>
+          <div className="page-header-content">
+            <Link to="/graduate/dashboard" className="back-button">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
+              </svg>
+              Back to Dashboard
+            </Link>
+            <div className="header-info">
+              <h1 className="title">Available Jobs</h1>
+              <p className="subtitle">
+                Loading amazing opportunities for you...
+              </p>
+            </div>
+          </div>
         </div>
         <div className="loading-container">
           <div className="loading-spinner" />
-          <p className="loading-text">Loading jobs...</p>
+          <p className="loading-text">Finding the best jobs for you...</p>
         </div>
       </div>
     );
@@ -113,21 +126,35 @@ const ViewJobsGraduate = () => {
     return (
       <div className="container">
         <div className="page-header">
-          <Link to="/graduate/dashboard" className="back-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
-            </svg>
-            Back to Dashboard
-          </Link>
-          <h2 className="title">Available Jobs</h2>
+          <div className="page-header-content">
+            <Link to="/graduate/dashboard" className="back-button">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
+              </svg>
+              Back to Dashboard
+            </Link>
+            <div className="header-info">
+              <h1 className="title">Available Jobs</h1>
+              <p className="subtitle">
+                Your next opportunity is just around the corner
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="empty-state">
-          <div className="empty-state-icon">📋</div>
-          <h3 className="empty-state-title">No Jobs Available</h3>
-          <p className="empty-state-text">
-            There are no job opportunities available at the moment. Check back
-            later!
-          </p>
+        <div className="jobs-container">
+          <div className="empty-state">
+            <div className="empty-state-icon">🎯</div>
+            <h3 className="empty-state-title">No Jobs Available Yet</h3>
+            <p className="empty-state-text">
+              We're working hard to bring you amazing opportunities. Check back
+              soon for new job postings that match your skills and ambitions!
+            </p>
+          </div>
         </div>
       </div>
     );
