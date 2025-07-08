@@ -8,7 +8,17 @@ import {
   FaUserEdit,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { auth } from "../../firebase"; // Import Firebase auth
+import { auth, db } from "../../firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -18,29 +28,135 @@ const EmployerDashboard = () => {
   const [applicants, setApplicants] = useState(0);
   const [interviews, setInterviews] = useState(0);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch data and get current user from Firebase auth
-    const fetchData = () => {
-      const user = auth.currentUser;
-      if (user) {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          navigate("/login/employer");
+          return;
+        }
+
+        // Set employer name
         setEmployerName(user.displayName || user.email || "Employer");
-      } else {
-        setEmployerName("Employer");
+
+        // Fetch active jobs count
+        const jobsQuery = query(
+          collection(db, "jobs"),
+          where("employerId", "==", user.uid),
+        );
+        const jobsSnapshot = await getDocs(jobsQuery);
+        const jobsCount = jobsSnapshot.size;
+        setActiveJobs(jobsCount);
+
+        // Fetch applicants count for this employer's jobs
+        const jobIds = jobsSnapshot.docs.map((doc) => doc.id);
+        let totalApplicants = 0;
+        if (jobIds.length > 0) {
+          const applicationsQuery = query(
+            collection(db, "applications"),
+            where("jobId", "in", jobIds),
+          );
+          const applicationsSnapshot = await getDocs(applicationsQuery);
+          totalApplicants = applicationsSnapshot.size;
+        }
+        setApplicants(totalApplicants);
+
+        // Fetch interviews count
+        const interviewsQuery = query(
+          collection(db, "interviews"),
+          where("employerId", "==", user.uid),
+        );
+        const interviewsSnapshot = await getDocs(interviewsQuery);
+        setInterviews(interviewsSnapshot.size);
+
+        // Fetch recent activity
+        const activities = [];
+
+        // Add recent job postings
+        const recentJobsQuery = query(
+          collection(db, "jobs"),
+          where("employerId", "==", user.uid),
+          orderBy("createdAt", "desc"),
+          limit(3),
+        );
+        const recentJobsSnapshot = await getDocs(recentJobsQuery);
+        recentJobsSnapshot.forEach((doc) => {
+          const jobData = doc.data();
+          const date = jobData.createdAt?.toDate();
+          const timeAgo = date ? getTimeAgo(date) : "recently";
+          activities.push(
+            `Job "${jobData.jobTitle || jobData.title}" posted ${timeAgo}`,
+          );
+        });
+
+        // Add recent applications
+        if (jobIds.length > 0) {
+          const recentAppsQuery = query(
+            collection(db, "applications"),
+            where("jobId", "in", jobIds.slice(0, 10)), // Limit to avoid "in" query limit
+            orderBy("createdAt", "desc"),
+            limit(3),
+          );
+          const recentAppsSnapshot = await getDocs(recentAppsQuery);
+
+          for (const appDoc of recentAppsSnapshot.docs) {
+            const appData = appDoc.data();
+            const jobDoc = await getDoc(doc(db, "jobs", appData.jobId));
+            const jobTitle = jobDoc.exists()
+              ? jobDoc.data().jobTitle || jobDoc.data().title
+              : "Unknown Position";
+            const date = appData.createdAt?.toDate();
+            const timeAgo = date ? getTimeAgo(date) : "recently";
+            activities.push(`New applicant for "${jobTitle}" ${timeAgo}`);
+          }
+        }
+
+        // Add recent interviews
+        const recentInterviewsQuery = query(
+          collection(db, "interviews"),
+          where("employerId", "==", user.uid),
+          orderBy("date", "desc"),
+          limit(2),
+        );
+        const recentInterviewsSnapshot = await getDocs(recentInterviewsQuery);
+        recentInterviewsSnapshot.forEach((doc) => {
+          const interviewData = doc.data();
+          const date = interviewData.date?.toDate();
+          const timeAgo = date ? getTimeAgo(date) : "recently";
+          activities.push(`Interview scheduled ${timeAgo}`);
+        });
+
+        // Sort activities by most recent and limit to 5
+        setRecentActivity(activities.slice(0, 5));
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setRecentActivity(["Error loading recent activity"]);
+      } finally {
+        setLoading(false);
       }
-      setActiveJobs(5);
-      setApplicants(23);
-      setInterviews(7);
-      setRecentActivity([
-        'Job "Software Engineer" posted',
-        '3 new applicants for "Product Manager"',
-        "Interview scheduled with John Doe",
-        "Profile updated",
-      ]);
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
+
+  const getTimeAgo = (date) => {
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+
+    if (diffInHours < 1) return "just now";
+    if (diffInHours < 24)
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7)
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+
+    return date.toLocaleDateString();
+  };
 
   const handleLogout = () => {
     // Clear any authentication tokens or session data here
