@@ -939,26 +939,48 @@
     padding: var(--spacing-md);
   }
 
+  .welcome-logo {
+    width: 6rem;
+    height: 6rem;
+  }
+
   .welcome-cards {
     gap: var(--spacing-md);
   }
 
   .welcome-card {
-    padding: var(--spacing-lg);
-    min-height: 200px;
+    min-height: 240px;
+  }
+
+  .welcome-card-content {
+    padding: var(--spacing-md);
   }
 
   .welcome-card-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
   }
 
   .welcome-card-text {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .welcome-icon {
+    width: 50px;
+    height: 50px;
   }
 
   .welcome-select,
   .welcome-button {
     padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+  }
+
+  .welcome-footer-content {
+    padding: var(--spacing-lg);
+  }
+
+  .welcome-footer-title {
+    font-size: var(--font-size-lg);
   }
 }
 
