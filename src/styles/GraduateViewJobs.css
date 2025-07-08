@@ -318,15 +318,15 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(255, 111, 97, 0.05);
   border-radius: 12px;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(255, 111, 97, 0.1);
 }
 
 .detail-icon {
   width: 20px;
   height: 20px;
-  color: #667eea;
+  color: #ff6f61;
   flex-shrink: 0;
 }
 
@@ -355,10 +355,10 @@
 .job-description {
   background: linear-gradient(
     135deg,
-    rgba(102, 126, 234, 0.1) 0%,
-    rgba(118, 75, 162, 0.1) 100%
+    rgba(255, 111, 97, 0.05) 0%,
+    rgba(29, 67, 104, 0.05) 100%
   );
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #ff6f61;
   border-radius: 0 12px 12px 0;
   padding: 1.25rem;
   margin: 1.5rem 0;
@@ -465,8 +465,8 @@
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top: 4px solid #667eea;
+  border: 4px solid rgba(255, 111, 97, 0.2);
+  border-top: 4px solid #ff6f61;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1.5rem;
