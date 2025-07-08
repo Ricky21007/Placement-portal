@@ -30,6 +30,8 @@ interface Application {
   jobType?: string;
   location?: string;
   jobId?: string;
+  meetingType?: string;
+  interviewLocation?: string;
 }
 
 interface Placement {
