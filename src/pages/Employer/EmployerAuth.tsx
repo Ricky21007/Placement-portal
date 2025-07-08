@@ -81,8 +81,8 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
   };
 
   return (
-    <div className="employer-auth-bg">
-      <div className="employer-auth-container">
+    <div className="auth-bg employer-auth">
+      <div className="auth-container">
         <Link to="/" className="back-to-welcome-btn">
           <span className="back-arrow-icon" aria-hidden="true">
             {/* Unique SVG Arrow */}
