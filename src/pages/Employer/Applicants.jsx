@@ -350,11 +350,17 @@ const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
   };
 
   return (
-    <div style={{ marginTop: 8 }}>
-      <button className={styles.acceptButton} onClick={handleMarkHired}>
+    <div
+      style={{
+        marginTop: "var(--spacing-md)",
+        display: "flex",
+        gap: "var(--spacing-sm)",
+      }}
+    >
+      <button className="employer-button-primary" onClick={handleMarkHired}>
         ✅ Mark as Hired
       </button>
-      <button className={styles.declineButton} onClick={handleMarkNotHired}>
+      <button className="employer-button-danger" onClick={handleMarkNotHired}>
         ❌ Mark as Not Hired
       </button>
     </div>
