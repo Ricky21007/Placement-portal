@@ -29,7 +29,10 @@ const JobMatchingFeed: React.FC = () => {
   const [matchingJobs, setMatchingJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [userSkills, setUserSkills] = useState<string[]>([]);
-  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [motivation, setMotivation] = useState("");
+  const [applying, setApplying] = useState(false);
   const navigate = useNavigate();
 
   const calculateMatchPercentage = (
