@@ -129,7 +129,8 @@ export const ApplicationTracker: React.FC = () => {
               interviewType = interviewData.type || "Not specified";
               interviewNotes = interviewData.notes || "";
               interviewStatus = interviewData.status || "scheduled";
-              employerName = interviewData.employerName || companyName;
+              employerName =
+                interviewData.employerName || jobDetails.companyName;
               interviewDuration = interviewData.duration || "Not specified";
             }
           }
