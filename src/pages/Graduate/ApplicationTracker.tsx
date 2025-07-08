@@ -295,20 +295,24 @@ export const ApplicationTracker: React.FC = () => {
 
   return (
     <div className="application-tracker-page">
-      <div className="application-tracker-container">
-        <div className="page-header">
+      <div className="page-header">
+        <div className="page-header-content">
           <Link to="/graduate/dashboard" className="back-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
             </svg>
             Back to Dashboard
           </Link>
-          <h1 className="page-title">Application Tracker</h1>
-          <p className="page-subtitle">
-            Track the status of your job applications and upcoming interviews
-          </p>
+          <div className="header-info">
+            <h1 className="page-title">Application Tracker</h1>
+            <p className="page-subtitle">
+              Track the status of your job applications and upcoming interviews
+            </p>
+          </div>
         </div>
+      </div>
 
+      <div className="application-tracker-container">
         <div className="status-tabs">
           {Object.entries(statusCounts).map(([status, count]) => (
             <button
