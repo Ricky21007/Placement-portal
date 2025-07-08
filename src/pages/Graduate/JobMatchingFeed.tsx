@@ -116,32 +116,73 @@ const JobMatchingFeed: React.FC = () => {
     fetchJobs();
   }, []);
 
-  const handleApply = async (job: Job) => {
+  // Open application modal
+  const openApplicationModal = (job: Job) => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to apply.");
+      return;
+    }
+    setSelectedJob(job);
+    setShowModal(true);
+    setMotivation("");
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+    setMotivation("");
+  };
+
+  // Submit application
+  const submitApplication = async () => {
+    if (!selectedJob || !motivation.trim()) {
+      alert("Please provide your motivation for applying.");
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
       alert("You must be logged in to apply.");
       return;
     }
 
-    setApplyingJobId(job.id);
-
+    setApplying(true);
     try {
-      await addDoc(collection(db, "applications"), {
-        graduateId: user.uid,
-        jobId: job.id,
-        jobTitle: job.title,
-        status: "pending",
-        createdAt: serverTimestamp(),
+      // Fetch graduate CV from Firestore
+      const gradRef = collection(db, "graduates");
+      const gradSnap = await getDocs(gradRef);
+      let cvUrl = "";
+
+      gradSnap.forEach((doc) => {
+        if (doc.id === user.uid) {
+          const data = doc.data();
+          if (data.cvUrl) {
+            cvUrl = data.cvUrl;
+          }
+        }
       });
 
+      await addDoc(collection(db, "applications"), {
+        graduateId: user.uid,
+        jobId: selectedJob.id,
+        jobTitle: selectedJob.title,
+        motivation,
+        status: "pending",
+        createdAt: serverTimestamp(),
+        cvUrl,
+      });
+
+      closeModal();
       alert("Application submitted successfully!");
-      // Remove the applied job from the list or mark it as applied
-      setMatchingJobs((prev) => prev.filter((j) => j.id !== job.id));
+      // Remove the applied job from the list
+      setMatchingJobs((prev) => prev.filter((j) => j.id !== selectedJob.id));
     } catch (error) {
-      console.error("Error submitting application:", error);
-      alert("Failed to submit application. Please try again.");
+      console.error("Error applying for job:", error);
+      alert("Failed to submit application.");
     } finally {
-      setApplyingJobId(null);
+      setApplying(false);
     }
   };
 
