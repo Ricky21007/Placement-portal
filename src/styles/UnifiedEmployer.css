@@ -761,13 +761,224 @@
   }
 }
 
+/* Interview Scheduling Modal */
+.interview-scheduling-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.interview-scheduling-modal {
+  background: linear-gradient(
+    135deg,
+    rgba(71, 87, 119, 0.95) 0%,
+    rgba(60, 74, 99, 0.9) 100%
+  );
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+}
+
+.interview-modal-header {
+  padding: var(--spacing-2xl);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.interview-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-light);
+  margin: 0 0 var(--spacing-sm) 0;
+  background: linear-gradient(
+    135deg,
+    var(--text-light) 0%,
+    var(--accent-coral) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.interview-modal-subtitle {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: var(--font-size-base);
+}
+
+.interview-modal-close {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-light);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  transition: all 0.3s ease;
+}
+
+.interview-modal-close:hover {
+  background: rgba(255, 111, 97, 0.2);
+  transform: scale(1.1);
+}
+
+.interview-form {
+  padding: var(--spacing-2xl);
+}
+
+.interview-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.interview-status {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  margin: var(--spacing-lg) 0;
+  font-weight: 500;
+  text-align: center;
+}
+
+.interview-status.success {
+  background: rgba(81, 207, 102, 0.2);
+  border: 1px solid rgba(81, 207, 102, 0.3);
+  color: #51cf66;
+}
+
+.interview-status.error {
+  background: rgba(255, 107, 107, 0.2);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.interview-form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.interview-outcome-section {
+  padding: var(--spacing-2xl);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 111, 97, 0.05);
+}
+
+.interview-outcome-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-light);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.interview-outcome-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+/* Select field styling */
+.employer-form-select {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  background: rgba(19, 41, 75, 0.8);
+  color: var(--text-light);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg fill='%23FF6F61' stroke='%23FF6F61' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--spacing-md) center;
+  background-size: 20px;
+  padding-right: calc(var(--spacing-md) * 3);
+}
+
+.employer-form-select:focus {
+  outline: none;
+  border-color: var(--accent-coral);
+  box-shadow:
+    0 0 0 3px rgba(255, 111, 97, 0.2),
+    0 4px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(19, 41, 75, 0.9);
+  transform: translateY(-1px);
+}
+
+.employer-form-select option {
+  background: var(--primary-dark);
+  color: var(--text-light);
+  padding: var(--spacing-sm);
+}
+
+/* Responsive design for interview modal */
+@media (max-width: 768px) {
+  .interview-form-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .interview-scheduling-modal {
+    margin: var(--spacing-md);
+    max-width: none;
+  }
+
+  .interview-modal-header,
+  .interview-form,
+  .interview-outcome-section {
+    padding: var(--spacing-lg);
+  }
+
+  .interview-form-actions {
+    flex-direction: column;
+  }
+
+  .interview-outcome-buttons {
+    flex-direction: column;
+  }
+}
+
 /* Focus states for accessibility */
 .employer-action-button:focus-visible,
 .employer-submit-button:focus-visible,
 .employer-button-primary:focus-visible,
 .employer-button-secondary:focus-visible,
 .employer-form-input:focus-visible,
-.employer-form-textarea:focus-visible {
+.employer-form-textarea:focus-visible,
+.employer-form-select:focus-visible,
+.interview-modal-close:focus-visible {
   outline: 2px solid var(--accent-coral);
   outline-offset: 2px;
 }
