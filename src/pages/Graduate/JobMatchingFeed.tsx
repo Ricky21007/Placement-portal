@@ -371,6 +371,85 @@ const JobMatchingFeed: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Application Modal */}
+      {showModal && selectedJob && (
+        <div className="application-modal-overlay" onClick={closeModal}>
+          <div
+            className="application-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <button className="modal-close" onClick={closeModal}>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+              </button>
+              <h2 className="modal-title">Apply for Position</h2>
+              <p className="modal-subtitle">{selectedJob.title}</p>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">
+                  Why are you interested in this position? *
+                </label>
+                <textarea
+                  className="form-textarea"
+                  value={motivation}
+                  onChange={(e) => setMotivation(e.target.value)}
+                  placeholder="Tell us why you're excited about this opportunity and how your skills align with the role..."
+                  rows={5}
+                />
+              </div>
+
+              <div
+                style={{
+                  background: "rgba(255, 111, 97, 0.05)",
+                  padding: "1rem",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 111, 97, 0.1)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ margin: 0, fontSize: "0.9rem", color: "#374151" }}>
+                  <strong>Note:</strong> Your CV and profile information will be
+                  automatically included with this application.
+                </p>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                className="modal-button modal-button-secondary"
+                onClick={closeModal}
+                disabled={applying}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-button modal-button-primary"
+                onClick={submitApplication}
+                disabled={applying || !motivation.trim()}
+              >
+                {applying ? (
+                  <div className="loading-button">
+                    <div className="button-spinner"></div>
+                    Submitting...
+                  </div>
+                ) : (
+                  "Submit Application"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
