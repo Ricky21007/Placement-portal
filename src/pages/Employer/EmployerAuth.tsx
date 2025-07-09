@@ -6,12 +6,12 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import "../../styles/EmployerAuth.css";
- 
+import "../../styles/UnifiedAuth.css";
+
 interface Props {
   mode: "login" | "signup";
 }
- 
+
 const EmployerAuth: React.FC<Props> = ({ mode }) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -23,7 +23,7 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
- 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -40,18 +40,30 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
     }
     try {
       if (mode === "login") {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
         if (!userCredential.user.emailVerified) {
-          setError("Please verify your email before logging in. Check your inbox for the verification email.");
+          setError(
+            "Please verify your email before logging in. Check your inbox for the verification email.",
+          );
           await auth.signOut();
           return;
         }
-        navigate('/employer/dashboard');
+        navigate("/employer/dashboard");
       } else {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
         if (userCredential.user) {
           await sendEmailVerification(userCredential.user);
-          setSuccess("Verification email sent! Please check your inbox. Redirecting to login...");
+          setSuccess(
+            "Verification email sent! Please check your inbox. Redirecting to login...",
+          );
         }
         setName("");
         setSurname("");
@@ -67,10 +79,10 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
       setError(err.message);
     }
   };
- 
+
   return (
-    <div className="employer-auth-bg">
-      <div className="employer-auth-container">
+    <div className="auth-bg employer-auth">
+      <div className="auth-container">
         <Link to="/" className="back-to-welcome-btn">
           <span className="back-arrow-icon" aria-hidden="true">
             {/* Unique SVG Arrow */}
@@ -105,7 +117,7 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
         <p className="auth-subtitle">
           Empowering graduates. Connecting employers.
         </p>
- 
+
         <form onSubmit={handleSubmit} className="auth-form">
           {mode === "signup" && (
             <>
@@ -131,7 +143,7 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
               </div>
             </>
           )}
- 
+
           <div className="input-group">
             <input
               type="email"
@@ -142,7 +154,7 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
               className="auth-input"
             />
           </div>
- 
+
           <div className="input-group" style={{ position: "relative" }}>
             <input
               type={showPassword ? "text" : "password"}
@@ -200,7 +212,7 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
               )}
             </button>
           </div>
- 
+
           {mode === "signup" && (
             <div className="input-group" style={{ position: "relative" }}>
               <input
@@ -216,7 +228,9 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
                 className="password-toggle"
                 onClick={() => setShowConfirmPassword((v) => !v)}
                 tabIndex={-1}
-                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                aria-label={
+                  showConfirmPassword ? "Hide password" : "Show password"
+                }
               >
                 {showConfirmPassword ? (
                   // Eye-off SVG
@@ -260,18 +274,18 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
               </button>
             </div>
           )}
- 
+
           <button type="submit" className="auth-button">
             {mode === "login" ? "Login" : "Sign Up"}
           </button>
- 
+
           {error && <div className="auth-error">{error}</div>}
           {success && <div className="auth-success">{success}</div>}
- 
+
           <Link to="/forgot-password" className="auth-link">
             Forgot password?
           </Link>
- 
+
           <div className="auth-switch">
             {mode === "login" ? (
               <p className="auth-switch-text">
@@ -290,11 +304,11 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
             )}
           </div>
         </form>
- 
+
         <div className="auth-footer">© 2025 CAPACITI Programme</div>
       </div>
     </div>
   );
 };
- 
+
 export default EmployerAuth;

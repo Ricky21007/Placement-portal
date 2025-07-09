@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -29,7 +30,10 @@ const JobMatchingFeed: React.FC = () => {
   const [matchingJobs, setMatchingJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [userSkills, setUserSkills] = useState<string[]>([]);
-  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [motivation, setMotivation] = useState("");
+  const [applying, setApplying] = useState(false);
   const navigate = useNavigate();
 
   const calculateMatchPercentage = (
@@ -113,32 +117,73 @@ const JobMatchingFeed: React.FC = () => {
     fetchJobs();
   }, []);
 
-  const handleApply = async (job: Job) => {
+  // Open application modal
+  const openApplicationModal = (job: Job) => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to apply.");
+      return;
+    }
+    setSelectedJob(job);
+    setShowModal(true);
+    setMotivation("");
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+    setMotivation("");
+  };
+
+  // Submit application
+  const submitApplication = async () => {
+    if (!selectedJob || !motivation.trim()) {
+      alert("Please provide your motivation for applying.");
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
       alert("You must be logged in to apply.");
       return;
     }
 
-    setApplyingJobId(job.id);
-
+    setApplying(true);
     try {
-      await addDoc(collection(db, "applications"), {
-        graduateId: user.uid,
-        jobId: job.id,
-        jobTitle: job.title,
-        status: "pending",
-        createdAt: serverTimestamp(),
+      // Fetch graduate CV from Firestore
+      const gradRef = collection(db, "graduates");
+      const gradSnap = await getDocs(gradRef);
+      let cvUrl = "";
+
+      gradSnap.forEach((doc) => {
+        if (doc.id === user.uid) {
+          const data = doc.data();
+          if (data.cvUrl) {
+            cvUrl = data.cvUrl;
+          }
+        }
       });
 
+      await addDoc(collection(db, "applications"), {
+        graduateId: user.uid,
+        jobId: selectedJob.id,
+        jobTitle: selectedJob.title,
+        motivation,
+        status: "pending",
+        createdAt: serverTimestamp(),
+        cvUrl,
+      });
+
+      closeModal();
       alert("Application submitted successfully!");
-      // Remove the applied job from the list or mark it as applied
-      setMatchingJobs((prev) => prev.filter((j) => j.id !== job.id));
+      // Remove the applied job from the list
+      setMatchingJobs((prev) => prev.filter((j) => j.id !== selectedJob.id));
     } catch (error) {
-      console.error("Error submitting application:", error);
-      alert("Failed to submit application. Please try again.");
+      console.error("Error applying for job:", error);
+      alert("Failed to submit application.");
     } finally {
-      setApplyingJobId(null);
+      setApplying(false);
     }
   };
 
@@ -307,25 +352,18 @@ const JobMatchingFeed: React.FC = () => {
                 <div className="job-actions">
                   <button
                     className="btn-apply"
-                    onClick={() => handleApply(job)}
-                    disabled={applyingJobId === job.id}
+                    onClick={() => openApplicationModal(job)}
                   >
-                    {applyingJobId === job.id ? (
-                      <>
-                        <div className="btn-spinner" />
-                        Applying...
-                      </>
-                    ) : (
-                      "Apply Now"
-                    )}
-                  </button>
-                  <button
-                    className="btn-secondary"
-                    onClick={() =>
-                      navigate(`/job-details/${job.id}`, { state: { job } })
-                    }
-                  >
-                    View Details
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      style={{ marginRight: "0.5rem" }}
+                    >
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    Apply Now
                   </button>
                 </div>
               </div>
@@ -333,6 +371,85 @@ const JobMatchingFeed: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Application Modal */}
+      {showModal && selectedJob && (
+        <div className="application-modal-overlay" onClick={closeModal}>
+          <div
+            className="application-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <button className="modal-close" onClick={closeModal}>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+              </button>
+              <h2 className="modal-title">Apply for Position</h2>
+              <p className="modal-subtitle">{selectedJob.title}</p>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">
+                  Why are you interested in this position? *
+                </label>
+                <textarea
+                  className="form-textarea"
+                  value={motivation}
+                  onChange={(e) => setMotivation(e.target.value)}
+                  placeholder="Tell us why you're excited about this opportunity and how your skills align with the role..."
+                  rows={5}
+                />
+              </div>
+
+              <div
+                style={{
+                  background: "rgba(255, 111, 97, 0.05)",
+                  padding: "1rem",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 111, 97, 0.1)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ margin: 0, fontSize: "0.9rem", color: "#374151" }}>
+                  <strong>Note:</strong> Your CV and profile information will be
+                  automatically included with this application.
+                </p>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                className="modal-button modal-button-secondary"
+                onClick={closeModal}
+                disabled={applying}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-button modal-button-primary"
+                onClick={submitApplication}
+                disabled={applying || !motivation.trim()}
+              >
+                {applying ? (
+                  <div className="loading-button">
+                    <div className="button-spinner"></div>
+                    Submitting...
+                  </div>
+                ) : (
+                  "Submit Application"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

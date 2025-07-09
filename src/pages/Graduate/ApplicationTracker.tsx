@@ -30,6 +30,8 @@ interface Application {
   jobType?: string;
   location?: string;
   jobId?: string;
+  meetingType?: string;
+  interviewLocation?: string;
 }
 
 interface Placement {
@@ -104,6 +106,8 @@ export const ApplicationTracker: React.FC = () => {
           let interviewStatus = "";
           let employerName = "";
           let interviewDuration = "";
+          let meetingType = "";
+          let interviewLocation = "";
 
           if (appData.status === "accepted") {
             const interviewsRef = collection(db, "interviews");
@@ -125,10 +129,23 @@ export const ApplicationTracker: React.FC = () => {
                     minute: "2-digit",
                   })
                 : "";
-              interviewLink = interviewData.link || "";
-              interviewType = interviewData.type || "Not specified";
+
+              // Use the correct field names from the employer's interview creation
+              interviewLink =
+                interviewData.teamsLink || interviewData.link || "";
+              meetingType = interviewData.meetingType || "Not specified";
+              interviewLocation = interviewData.location || "Not specified";
+              interviewType =
+                meetingType === "teams"
+                  ? "Microsoft Teams"
+                  : meetingType === "in-person"
+                    ? "In-Person Meeting"
+                    : meetingType === "other"
+                      ? "Online Meeting"
+                      : interviewData.type || "Not specified";
+
               interviewNotes = interviewData.notes || "";
-              interviewStatus = interviewData.status || "scheduled";
+              interviewStatus = interviewData.status || "Scheduled";
               employerName =
                 interviewData.employerName || jobDetails.companyName;
               interviewDuration = interviewData.duration || "Not specified";
@@ -148,6 +165,8 @@ export const ApplicationTracker: React.FC = () => {
             interviewStatus,
             employerName,
             interviewDuration,
+            meetingType,
+            interviewLocation,
             jobId: appData.jobId,
           });
         }
@@ -453,73 +472,150 @@ export const ApplicationTracker: React.FC = () => {
                     <div className="interview-details">
                       <div className="interview-info-grid">
                         <div className="interview-info-item">
-                          <strong>Date:</strong>
+                          <strong>📅 Date:</strong>
                           <span>{app.interviewDate}</span>
                         </div>
                         <div className="interview-info-item">
-                          <strong>Time:</strong>
+                          <strong>⏰ Time:</strong>
                           <span>{app.interviewTime || "Not specified"}</span>
                         </div>
                         <div className="interview-info-item">
-                          <strong>Type:</strong>
+                          <strong>📍 Meeting Type:</strong>
                           <span>{app.interviewType || "Not specified"}</span>
                         </div>
                         <div className="interview-info-item">
-                          <strong>Duration:</strong>
+                          <strong>🏢 Location:</strong>
                           <span>
-                            {app.interviewDuration || "Not specified"}
+                            {app.interviewLocation || "Not specified"}
                           </span>
                         </div>
                         {app.employerName && (
                           <div className="interview-info-item">
-                            <strong>Interviewer:</strong>
+                            <strong>👤 Interviewer:</strong>
                             <span>{app.employerName}</span>
                           </div>
                         )}
                         <div className="interview-info-item">
-                          <strong>Status:</strong>
+                          <strong>📊 Status:</strong>
                           <span
-                            className={`interview-status ${app.interviewStatus}`}
+                            className={`interview-status ${app.interviewStatus?.toLowerCase()}`}
                           >
-                            {app.interviewStatus === "scheduled"
+                            {app.interviewStatus === "Scheduled"
                               ? "📅 Scheduled"
-                              : app.interviewStatus === "completed"
+                              : app.interviewStatus === "Completed"
                                 ? "✅ Completed"
-                                : app.interviewStatus === "cancelled"
+                                : app.interviewStatus === "Cancelled"
                                   ? "❌ Cancelled"
-                                  : "📋 " +
-                                    (app.interviewStatus || "Scheduled")}
+                                  : app.interviewStatus === "Hired"
+                                    ? "🎉 Hired"
+                                    : app.interviewStatus === "Not Hired"
+                                      ? "❌ Not Selected"
+                                      : "📋 " +
+                                        (app.interviewStatus || "Scheduled")}
                           </span>
                         </div>
                       </div>
 
+                      {/* Meeting Link Section */}
+                      {app.interviewLink && (
+                        <div className="interview-meeting-section">
+                          <div className="meeting-info">
+                            <div className="meeting-type-badge">
+                              {app.meetingType === "teams" && (
+                                <span className="teams-badge">
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M20.25 12.75V18c0 .41-.34.75-.75.75H18v-6.5l.5-.5h1.25c.41 0 .75.34.75.75zM18 6.5h-4v2.25h4V6.5zM18 11.5h-4v2.25h4V11.5zM11.5 6.5H3.75c-.41 0-.75.34-.75.75v9.5c0 .41.34.75.75.75H11.5V6.5zm-.75 3.25h-3v1.5h3v-1.5zm0 3h-3v1.5h3v-1.5z" />
+                                  </svg>
+                                  Microsoft Teams Meeting
+                                </span>
+                              )}
+                              {app.meetingType === "other" && (
+                                <span className="other-meeting-badge">
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z" />
+                                  </svg>
+                                  Online Meeting
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="interview-actions">
+                              <a
+                                href={app.interviewLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="interview-link-button"
+                              >
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                >
+                                  <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+                                </svg>
+                                {app.meetingType === "teams"
+                                  ? "Join Teams Meeting"
+                                  : "Join Meeting"}
+                              </a>
+
+                              <button
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    app.interviewLink || "",
+                                  )
+                                }
+                                className="copy-link-button"
+                                title="Copy meeting link"
+                              >
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                >
+                                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                </svg>
+                                Copy Link
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       {app.interviewNotes && (
                         <div className="interview-notes">
-                          <strong>Additional Notes:</strong>
+                          <strong>📝 Additional Notes:</strong>
                           <p>{app.interviewNotes}</p>
                         </div>
                       )}
 
-                      {app.interviewLink && (
-                        <div className="interview-actions">
-                          <a
-                            href={app.interviewLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="interview-link"
-                          >
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
-                            </svg>
-                            Join Interview
-                          </a>
-                        </div>
-                      )}
+                      {/* Interview Preparation Tips */}
+                      <div className="interview-tips">
+                        <h5>💡 Interview Preparation Tips:</h5>
+                        <ul>
+                          <li>Join the meeting 5-10 minutes early</li>
+                          <li>Test your camera and microphone beforehand</li>
+                          <li>Prepare questions about the role and company</li>
+                          <li>Have your CV and portfolio ready to reference</li>
+                          {app.meetingType === "teams" && (
+                            <li>
+                              Make sure you have Microsoft Teams installed or
+                              use the web version
+                            </li>
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 )}
