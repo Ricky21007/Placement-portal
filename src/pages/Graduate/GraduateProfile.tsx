@@ -121,7 +121,7 @@ const GraduateProfile = () => {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
-        refresh_token: token,
+        refresh_token: null,
       });
 
       const filePath = `${user.uid}/profile-${Date.now()}-${file.name}`;
@@ -167,7 +167,7 @@ const GraduateProfile = () => {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
-        refresh_token: token,
+        refresh_token: null,
       });
 
       const filePath = `${user.uid}/cv-${Date.now()}-${file.name}`;
@@ -175,7 +175,6 @@ const GraduateProfile = () => {
         .from("cv-uploads")
         .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: true,
         });
 
       if (uploadError) throw uploadError;
@@ -220,7 +219,7 @@ const GraduateProfile = () => {
       const token = await user.getIdToken();
       await supabase.auth.setSession({
         access_token: token,
-        refresh_token: token,
+        refresh_token: null,
       });
 
       const filePath = `${user.uid}/${field}-${Date.now()}-${file.name}`;
@@ -228,7 +227,7 @@ const GraduateProfile = () => {
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: field === "profilePicUrl",
+          upsert: field === "profilePicUrl" && bucket !== "cv-uploads",
         });
 
       if (uploadError) throw uploadError;
