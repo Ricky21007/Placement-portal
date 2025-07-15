@@ -156,7 +156,9 @@ const GraduateProfile = () => {
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (error: any) {
       console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
+      const errorMessage =
+        error?.message || error?.error?.message || "Unknown error occurred";
+      alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -214,7 +216,9 @@ const GraduateProfile = () => {
       }
     } catch (error: any) {
       console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
+      const errorMessage =
+        error?.message || error?.error?.message || "Unknown error occurred";
+      alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
     }
