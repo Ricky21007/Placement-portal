@@ -113,52 +113,6 @@ const GraduateProfile = () => {
     setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
   };
 
-  const handleProfilePicUpload = async (file: File) => {
-    if (!user) return;
-    setLoading(true);
-
-    try {
-      const token = await user.getIdToken();
-      await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: null,
-      });
-
-      const filePath = `${user.uid}/profile-${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from("profile-pictures")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (error) throw error;
-
-      const { data: publicData } = supabase.storage
-        .from("profile-pictures")
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicData?.publicUrl;
-      if (!publicUrl) throw new Error("Failed to get profile picture URL");
-
-      setProfilePicUrl(publicUrl);
-
-      await setDoc(
-        doc(db, "graduates", user.uid),
-        { profilePicUrl: publicUrl },
-        { merge: true },
-      );
-
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 3000);
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Failed to upload profile picture.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleCvUpload = async (file: File) => {
     if (!user) return;
     setLoading(true);
@@ -242,6 +196,8 @@ const GraduateProfile = () => {
       if (field === "cvUrl") {
         setCvUrl(publicUrl);
         setCvFileName(file.name);
+      } else if (field === "profilePicUrl") {
+        setProfilePicUrl(publicUrl);
       }
 
       await setDoc(
@@ -250,9 +206,12 @@ const GraduateProfile = () => {
         { merge: true },
       );
 
-      alert(
-        `${field === "cvUrl" ? "CV" : "Profile picture"} uploaded successfully!`,
-      );
+      if (field === "profilePicUrl") {
+        setProfileSaved(true);
+        setTimeout(() => setProfileSaved(false), 3000);
+      } else {
+        alert("CV uploaded successfully!");
+      }
     } catch (error: any) {
       console.error("Upload failed:", error);
       alert("Upload failed. Please try again.");
@@ -390,7 +349,8 @@ const GraduateProfile = () => {
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) handleProfilePicUpload(file);
+                  if (file)
+                    handleUpload(file, "profile-pictures", "profilePicUrl");
                 }}
                 style={{ display: "none" }}
               />
