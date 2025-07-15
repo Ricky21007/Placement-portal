@@ -205,7 +205,6 @@ const GraduateProfile = () => {
         filePath,
         bucket,
         userId: user.uid,
-        supabaseUserId: supabaseUser.id,
       });
       const { error: uploadError } = await supabase.storage
         .from(bucket)
