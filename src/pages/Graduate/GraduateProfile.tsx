@@ -409,8 +409,10 @@ const GraduateProfile = () => {
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file)
-                    handleUpload(file, "profile-pictures", "profilePicUrl");
+                  if (file) {
+                    // Use cv-uploads bucket temporarily since profile-pictures has RLS issues
+                    handleUpload(file, "cv-uploads", "profilePicUrl");
+                  }
                 }}
                 style={{ display: "none" }}
               />
