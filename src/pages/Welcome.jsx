@@ -203,9 +203,9 @@ const Welcome = () => {
               className="welcome-select"
             >
               <option value="">Select Your Role</option>
-              <option value="Graduate">🎓 Graduate</option>
-              <option value="Employer">💼 Employer</option>
-              <option value="Admin">📊 Admin</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Employer">Employer</option>
+              <option value="Admin">Admin</option>
             </select>
 
             <button
