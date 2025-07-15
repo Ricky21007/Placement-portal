@@ -118,28 +118,7 @@ const GraduateProfile = () => {
     setLoading(true);
 
     try {
-      const token = await user.getIdToken();
-
-      // Set Supabase session with Firebase token
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.setSession({
-          access_token: token,
-          refresh_token: null,
-        });
-
-      if (sessionError) {
-        console.error("Session error:", sessionError);
-        throw new Error(`Authentication failed: ${sessionError.message}`);
-      }
-
-      // Verify the session was set properly
-      const {
-        data: { user: supabaseUser },
-      } = await supabase.auth.getUser();
-      if (!supabaseUser) {
-        throw new Error("Failed to authenticate with Supabase");
-      }
-
+      // Skip Supabase session setup - using direct storage upload
       const filePath = `${user.uid}/cv-${Date.now()}-${file.name}`;
       console.log("CV Upload details:", { filePath, userId: user.uid });
 
