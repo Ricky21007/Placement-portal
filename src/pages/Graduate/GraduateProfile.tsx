@@ -231,7 +231,14 @@ const GraduateProfile = () => {
         throw new Error("Failed to authenticate with Supabase");
       }
 
+      // Use user UID as the path to comply with RLS policies
       const filePath = `${user.uid}/${field}-${Date.now()}-${file.name}`;
+      console.log("Upload details:", {
+        filePath,
+        bucket,
+        userId: user.uid,
+        supabaseUserId: supabaseUser.id,
+      });
       const { error: uploadError } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
@@ -239,7 +246,15 @@ const GraduateProfile = () => {
           upsert: field === "profilePicUrl" && bucket !== "cv-uploads",
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Upload error details:", uploadError);
+        if (uploadError.message?.includes("policy")) {
+          throw new Error(
+            "Storage permission denied. Please check if you are properly authenticated.",
+          );
+        }
+        throw uploadError;
+      }
 
       const { data: publicData } = supabase.storage
         .from(bucket)
