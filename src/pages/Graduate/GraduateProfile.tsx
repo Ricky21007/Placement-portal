@@ -156,8 +156,29 @@ const GraduateProfile = () => {
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (error: any) {
       console.error("Upload failed:", error);
-      const errorMessage =
-        error?.message || error?.error?.message || "Unknown error occurred";
+      console.error("Error details:", JSON.stringify(error, null, 2));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.statusText) {
+        errorMessage = error.statusText;
+      } else {
+        // Fallback to stringify the entire error for debugging
+        try {
+          errorMessage = JSON.stringify(error);
+        } catch {
+          errorMessage = String(error);
+        }
+      }
+
       alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
@@ -216,8 +237,29 @@ const GraduateProfile = () => {
       }
     } catch (error: any) {
       console.error("Upload failed:", error);
-      const errorMessage =
-        error?.message || error?.error?.message || "Unknown error occurred";
+      console.error("Error details:", JSON.stringify(error, null, 2));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.statusText) {
+        errorMessage = error.statusText;
+      } else {
+        // Fallback to stringify the entire error for debugging
+        try {
+          errorMessage = JSON.stringify(error);
+        } catch {
+          errorMessage = String(error);
+        }
+      }
+
       alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
