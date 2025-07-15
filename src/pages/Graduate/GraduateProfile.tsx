@@ -141,13 +141,23 @@ const GraduateProfile = () => {
       }
 
       const filePath = `${user.uid}/cv-${Date.now()}-${file.name}`;
+      console.log("CV Upload details:", { filePath, userId: user.uid });
+
       const { error: uploadError } = await supabase.storage
         .from("cv-uploads")
         .upload(filePath, file, {
           cacheControl: "3600",
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("CV Upload error details:", uploadError);
+        if (uploadError.message?.includes("policy")) {
+          throw new Error(
+            "CV storage permission denied. Please check if you are properly authenticated.",
+          );
+        }
+        throw uploadError;
+      }
 
       const { data: publicData } = supabase.storage
         .from("cv-uploads")
