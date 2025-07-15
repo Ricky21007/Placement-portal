@@ -286,9 +286,6 @@ const Welcome = () => {
               <p className="welcome-footer-copyright">
                 © 2025 CAPACITI Programme. All rights reserved.
               </p>
-              <p className="welcome-footer-location">
-                Made with ❤️ in South Africa
-              </p>
             </div>
           </div>
 
