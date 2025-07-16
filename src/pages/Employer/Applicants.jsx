@@ -531,12 +531,18 @@ const MarkOutcomeButtons = ({
 
   const handleMarkHired = () => {
     markAsHired(applicant);
-    setMarked(true);
+    setHiringStatus((prev) => ({
+      ...prev,
+      [applicant.id]: "hired",
+    }));
   };
 
   const handleMarkNotHired = () => {
     markAsNotHired(applicant);
-    setMarked(true);
+    setHiringStatus((prev) => ({
+      ...prev,
+      [applicant.id]: "not_hired",
+    }));
   };
 
   return (
