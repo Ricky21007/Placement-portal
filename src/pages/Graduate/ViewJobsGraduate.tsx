@@ -158,6 +158,8 @@ const ViewJobsGraduate = () => {
 
       closeModal();
       alert("Application submitted successfully!");
+      // Remove the applied job from the list
+      setJobs((prev) => prev.filter((j) => j.id !== selectedJob.id));
     } catch (error) {
       console.error("Error applying for job:", error);
       alert("Failed to submit application.");
