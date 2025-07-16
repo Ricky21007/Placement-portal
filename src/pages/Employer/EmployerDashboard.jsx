@@ -27,7 +27,6 @@ const EmployerDashboard = () => {
   const [activeJobs, setActiveJobs] = useState(0);
   const [applicants, setApplicants] = useState(0);
   const [interviews, setInterviews] = useState(0);
-  const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,84 +71,8 @@ const EmployerDashboard = () => {
         );
         const interviewsSnapshot = await getDocs(interviewsQuery);
         setInterviews(interviewsSnapshot.size);
-
-        // Fetch recent activity
-        const activities = [];
-
-        // Add recent job postings
-        const recentJobsQuery = query(
-          collection(db, "jobs"),
-          where("employerId", "==", user.uid),
-        );
-        const recentJobsSnapshot = await getDocs(recentJobsQuery);
-
-        // Sort and limit in JavaScript to avoid composite index requirement
-        const sortedJobs = recentJobsSnapshot.docs
-          .map((doc) => ({ id: doc.id, ...doc.data() }))
-          .sort((a, b) => {
-            const dateA = a.createdAt?.toDate() || new Date(0);
-            const dateB = b.createdAt?.toDate() || new Date(0);
-            return dateB - dateA;
-          })
-          .slice(0, 3);
-
-        sortedJobs.forEach((jobData) => {
-          const date = jobData.createdAt?.toDate();
-          const timeAgo = date ? getTimeAgo(date) : "recently";
-          activities.push(
-            `Job "${jobData.jobTitle || jobData.title}" posted ${timeAgo}`,
-          );
-        });
-
-        // Add recent applications
-        if (jobIds.length > 0) {
-          const recentAppsQuery = query(
-            collection(db, "applications"),
-            where("jobId", "in", jobIds.slice(0, 10)), // Limit to avoid "in" query limit
-          );
-          const recentAppsSnapshot = await getDocs(recentAppsQuery);
-
-          // Sort and limit in JavaScript to avoid composite index requirement
-          const sortedApps = recentAppsSnapshot.docs
-            .map((doc) => ({ id: doc.id, ...doc.data() }))
-            .sort((a, b) => {
-              const dateA = a.createdAt?.toDate() || new Date(0);
-              const dateB = b.createdAt?.toDate() || new Date(0);
-              return dateB - dateA;
-            })
-            .slice(0, 3);
-
-          for (const appData of sortedApps) {
-            const jobDoc = await getDoc(doc(db, "jobs", appData.jobId));
-            const jobTitle = jobDoc.exists()
-              ? jobDoc.data().jobTitle || jobDoc.data().title
-              : "Unknown Position";
-            const date = appData.createdAt?.toDate();
-            const timeAgo = date ? getTimeAgo(date) : "recently";
-            activities.push(`New applicant for "${jobTitle}" ${timeAgo}`);
-          }
-        }
-
-        // Add recent interviews
-        const recentInterviewsQuery = query(
-          collection(db, "interviews"),
-          where("employerId", "==", user.uid),
-          orderBy("date", "desc"),
-          limit(2),
-        );
-        const recentInterviewsSnapshot = await getDocs(recentInterviewsQuery);
-        recentInterviewsSnapshot.forEach((doc) => {
-          const interviewData = doc.data();
-          const date = interviewData.date?.toDate();
-          const timeAgo = date ? getTimeAgo(date) : "recently";
-          activities.push(`Interview scheduled ${timeAgo}`);
-        });
-
-        // Sort activities by most recent and limit to 5
-        setRecentActivity(activities.slice(0, 5));
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        setRecentActivity(["Error loading recent activity"]);
       } finally {
         setLoading(false);
       }
@@ -207,7 +130,7 @@ const EmployerDashboard = () => {
           style={{
             gridTemplateColumns: "repeat(4, 1fr)",
             maxWidth: "1000px",
-            margin: "0 auto",
+            margin: "0 auto 4rem auto",
           }}
         >
           <button
@@ -259,28 +182,6 @@ const EmployerDashboard = () => {
             </div>
             <div className="employer-stat-label">Interviews Scheduled</div>
           </div>
-        </div>
-
-        <div className="employer-activity-section">
-          <h3 className="employer-activity-title">Recent Activity</h3>
-          {loading ? (
-            <div className="employer-loading">
-              <div className="employer-loading-spinner"></div>
-              <p>Loading activity...</p>
-            </div>
-          ) : recentActivity.length === 0 ? (
-            <div className="employer-empty-state">
-              <p>No recent activity. Start by posting your first job!</p>
-            </div>
-          ) : (
-            <ul className="employer-activity-list">
-              {recentActivity.map((activity, index) => (
-                <li key={index} className="employer-activity-item">
-                  {activity}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       </div>
     </div>
