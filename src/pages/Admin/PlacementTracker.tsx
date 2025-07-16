@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import "../../styles/PlacementTracker.css";
 
@@ -49,7 +56,7 @@ const PlacementTracker: React.FC = () => {
       try {
         // Fetch graduates
         const gradsSnapshot = await getDocs(collection(db, "graduates"));
-        const gradsData: Graduate[] = gradsSnapshot.docs.map(doc => ({
+        const gradsData: Graduate[] = gradsSnapshot.docs.map((doc) => ({
           id: doc.id,
           fullName: doc.data().fullName || "N/A",
           stream: doc.data().stream || "N/A",
@@ -59,7 +66,7 @@ const PlacementTracker: React.FC = () => {
 
         // Fetch applications
         const appsSnapshot = await getDocs(collection(db, "applications"));
-        const appsData: Application[] = appsSnapshot.docs.map(doc => ({
+        const appsData: Application[] = appsSnapshot.docs.map((doc) => ({
           id: doc.id,
           graduateId: doc.data().graduateId,
           jobId: doc.data().jobId,
@@ -67,20 +74,31 @@ const PlacementTracker: React.FC = () => {
         }));
         setApplications(appsData);
 
-        // Fetch jobs and map by id
+        // Fetch jobs and employers
         const jobsSnapshot = await getDocs(collection(db, "jobs"));
+        const employersSnapshot = await getDocs(collection(db, "employers"));
+
+        // Create employers map
+        const employersMap = new Map();
+        employersSnapshot.docs.forEach((doc) => {
+          employersMap.set(doc.id, doc.data());
+        });
+
         const jobsMapTemp = new Map<string, Job>();
-        jobsSnapshot.docs.forEach(doc => {
+        jobsSnapshot.docs.forEach((doc) => {
           const data = doc.data();
-          console.log("Job doc id:", doc.id, "companyName:", data.companyName);
+          // Get company name from employers collection
+          const employerData = employersMap.get(data.employerId);
+          const companyName = employerData?.companyName || "N/A";
+
+          console.log("Job doc id:", doc.id, "companyName:", companyName);
           jobsMapTemp.set(doc.id, {
             id: doc.id,
-            companyName: data.companyName || "N/A",
+            companyName,
             jobTitle: data.jobTitle || "N/A",
           });
         });
         setJobsMap(jobsMapTemp);
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -93,22 +111,22 @@ const PlacementTracker: React.FC = () => {
     // Join graduates with applications and jobs
     const data: PlacementData[] = [];
 
-    graduates.forEach(grad => {
+    graduates.forEach((grad) => {
       // Find applications for this graduate
-      const gradApps = applications.filter(app => app.graduateId === grad.id);
+      const gradApps = applications.filter((app) => app.graduateId === grad.id);
       if (gradApps.length === 0) {
         // No application, still show graduate with empty company and status
-          data.push({
-            id: grad.id,
-            fullName: grad.fullName,
-            stream: grad.stream,
-            cohort: grad.cohort,
-            companyName: "N/A",
-            status: "No Application",
-            placed: "No",
-          });
+        data.push({
+          id: grad.id,
+          fullName: grad.fullName,
+          stream: grad.stream,
+          cohort: grad.cohort,
+          companyName: "N/A",
+          status: "No Application",
+          placed: "No",
+        });
       } else {
-        gradApps.forEach(app => {
+        gradApps.forEach((app) => {
           const job = jobsMap.get(app.jobId);
           data.push({
             id: grad.id,
@@ -133,7 +151,7 @@ const PlacementTracker: React.FC = () => {
     });
   };
 
-  const filteredData = placementData.filter(item => {
+  const filteredData = placementData.filter((item) => {
     return (
       (filters.stream === "" || item.stream === filters.stream) &&
       (filters.companyName === "" || item.companyName === filters.companyName)
@@ -151,25 +169,39 @@ const PlacementTracker: React.FC = () => {
   };
 
   // Extract unique filter options
-  const streams = Array.from(new Set(graduates.map(g => g.stream)));
-  const cohorts = Array.from(new Set(graduates.map(g => g.cohort)));
-  const companies = Array.from(new Set(placementData.map(d => d.companyName)));
+  const streams = Array.from(new Set(graduates.map((g) => g.stream)));
+  const cohorts = Array.from(new Set(graduates.map((g) => g.cohort)));
+  const companies = Array.from(
+    new Set(placementData.map((d) => d.companyName)),
+  );
 
   return (
     <div className="placement-tracker-container">
       <h1>Graduate Placement Tracker</h1>
       <div className="filters">
-        <select name="stream" value={filters.stream} onChange={handleFilterChange}>
+        <select
+          name="stream"
+          value={filters.stream}
+          onChange={handleFilterChange}
+        >
           <option value="">All Streams</option>
-          {streams.map(stream => (
-            <option key={stream} value={stream}>{stream}</option>
+          {streams.map((stream) => (
+            <option key={stream} value={stream}>
+              {stream}
+            </option>
           ))}
         </select>
         {/* Removed cohort filter */}
-        <select name="companyName" value={filters.companyName} onChange={handleFilterChange}>
+        <select
+          name="companyName"
+          value={filters.companyName}
+          onChange={handleFilterChange}
+        >
           <option value="">All Companies</option>
-          {companies.map(company => (
-            <option key={company} value={company}>{company}</option>
+          {companies.map((company) => (
+            <option key={company} value={company}>
+              {company}
+            </option>
           ))}
         </select>
       </div>
@@ -179,7 +211,7 @@ const PlacementTracker: React.FC = () => {
             <th>Name</th>
             <th>Stream</th>
             {/* Removed Cohort header */}
-          <th>Position Applied For</th>
+            <th>Position Applied For</th>
             <th>Status</th>
             <th>Placed</th>
           </tr>
@@ -187,19 +219,68 @@ const PlacementTracker: React.FC = () => {
         <tbody>
           {filteredData.map((item, index) => (
             <React.Fragment key={`${item.id}-${index}`}>
-              <tr onClick={() => toggleRow(`${item.id}-${index}`)} style={{ cursor: "pointer" }}>
-                <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }}>{item.fullName}</td>
-                <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }}>{item.stream}</td>
-              {/* Removed cohort column */}
-              <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }}>{item.companyName}</td>
-              <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }}>{item.status}</td>
-              <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }}>{item.placed}</td>
+              <tr
+                onClick={() => toggleRow(`${item.id}-${index}`)}
+                style={{ cursor: "pointer" }}
+              >
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.fullName}
+                </td>
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.stream}
+                </td>
+                {/* Removed cohort column */}
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.companyName}
+                </td>
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.status}
+                </td>
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.placed}
+                </td>
               </tr>
               {expandedRows.has(`${item.id}-${index}`) && (
                 <tr className="expanded-row">
                   <td colSpan={5} style={{ whiteSpace: "normal" }}>
                     <strong>Full Stream:</strong> {item.stream} <br />
-                    <strong>Full Company Name:</strong> {item.companyName} <br />
+                    <strong>Full Company Name:</strong> {item.companyName}{" "}
+                    <br />
                     <strong>Full Status:</strong> {item.status} <br />
                     <strong>Placed:</strong> {item.placed}
                   </td>
