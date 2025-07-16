@@ -208,8 +208,29 @@ const PlacementTracker: React.FC = () => {
         });
       }
 
-      // Refresh data
-      window.location.reload();
+      // Update local state immediately
+      setGraduates((prev) =>
+        prev.map((grad) =>
+          grad.id === editData.id
+            ? {
+                ...grad,
+                fullName: editData.fullName,
+                stream: editData.stream,
+                cohort: editData.cohort,
+              }
+            : grad,
+        ),
+      );
+
+      if (app) {
+        setApplications((prev) =>
+          prev.map((application) =>
+            application.id === app.id
+              ? { ...application, status: editData.status }
+              : application,
+          ),
+        );
+      }
 
       setEditingRow(null);
       setEditData(null);
