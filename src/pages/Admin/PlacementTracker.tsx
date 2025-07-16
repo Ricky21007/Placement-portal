@@ -76,7 +76,9 @@ const PlacementTracker: React.FC = () => {
 
         // Fetch jobs and employers
         const jobsSnapshot = await getDocs(collection(db, "jobs"));
-        const employersSnapshot = await getDocs(collection(db, "employers"));
+        const employersSnapshot = await getDocs(
+          collection(db, "employersignup"),
+        );
 
         // Create employers map
         const employersMap = new Map();
