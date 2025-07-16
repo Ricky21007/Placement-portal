@@ -521,6 +521,16 @@ const GraduateProfile = () => {
                   placeholder="Enter your location"
                 />
               </div>
+              <div className="form-group">
+                <label className="form-label">Portfolio URL</label>
+                <input
+                  type="url"
+                  className="form-input"
+                  value={portfolioUrl}
+                  onChange={(e) => setPortfolioUrl(e.target.value)}
+                  placeholder="https://your-portfolio.com"
+                />
+              </div>
               <div className="form-group form-group-full">
                 <label className="form-label">Professional Summary</label>
                 <textarea
