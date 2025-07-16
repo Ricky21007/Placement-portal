@@ -65,6 +65,7 @@ const Applicants = () => {
                 name: gradData.fullName || "Unknown",
                 email: gradData.email || "Unknown",
                 cvUrl: appData.cvUrl || "",
+                portfolioUrl: gradData.portfolioUrl || "",
                 jobTitle: jobData.jobTitle || "Unknown",
                 motivation: appData.motivation,
                 status: appData.status || "pending",
