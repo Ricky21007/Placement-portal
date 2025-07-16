@@ -33,7 +33,8 @@ interface Job {
 }
 
 interface PlacementData {
-  id: string;
+  id: string; // graduate ID
+  applicationId?: string; // application ID for specific placement entries
   fullName: string;
   stream: string;
   cohort: string;
