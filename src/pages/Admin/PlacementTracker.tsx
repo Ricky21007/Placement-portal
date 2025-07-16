@@ -245,55 +245,78 @@ const PlacementTracker: React.FC = () => {
   };
 
   const handleDelete = async (item: PlacementData) => {
-    if (
-      !confirm(
-        `Are you sure you want to remove ${item.fullName} from the placement tracker? This will delete their graduate record and all associated applications.`,
-      )
-    ) {
+    let confirmMessage = "";
+
+    if (item.applicationId) {
+      // Specific application entry
+      confirmMessage = `Are you sure you want to remove this specific placement entry for ${item.fullName} (${item.jobTitle} at ${item.companyName})?`;
+    } else {
+      // Graduate with no applications
+      confirmMessage = `Are you sure you want to completely remove ${item.fullName} from the system? This will delete their graduate record.`;
+    }
+
+    if (!confirm(confirmMessage)) {
       return;
     }
 
     try {
-      // Find and delete applications for this graduate
-      const gradApps = applications.filter((app) => app.graduateId === item.id);
-      for (const app of gradApps) {
-        await deleteDoc(doc(db, "applications", app.id));
+      if (item.applicationId) {
+        // Remove only the specific application
+        await deleteDoc(doc(db, "applications", item.applicationId));
+
+        // Find the specific job ID for this application
+        const targetApp = applications.find(
+          (app) => app.id === item.applicationId,
+        );
+
+        if (targetApp) {
+          // Remove related interviews for this specific application
+          const interviewsQuery = query(
+            collection(db, "interviews"),
+            where("graduateId", "==", item.id),
+            where("jobId", "==", targetApp.jobId),
+          );
+          const interviewsSnapshot = await getDocs(interviewsQuery);
+          for (const interviewDoc of interviewsSnapshot.docs) {
+            await deleteDoc(interviewDoc.ref);
+          }
+
+          // Remove related placements for this specific application
+          const placementsQuery = query(
+            collection(db, "placements"),
+            where("graduateId", "==", item.id),
+            where("jobId", "==", targetApp.jobId),
+          );
+          const placementsSnapshot = await getDocs(placementsQuery);
+          for (const placementDoc of placementsSnapshot.docs) {
+            await deleteDoc(placementDoc.ref);
+          }
+        }
+
+        // Update local state to remove only this specific application
+        setApplications((prev) =>
+          prev.filter((app) => app.id !== item.applicationId),
+        );
+        setPlacementData((prev) =>
+          prev.filter((data) => data.applicationId !== item.applicationId),
+        );
+
+        alert("Placement entry removed successfully!");
+      } else {
+        // Graduate with no applications - remove the entire graduate record
+        await deleteDoc(doc(db, "graduates", item.id));
+
+        // Update local state to remove the graduate
+        setGraduates((prev) => prev.filter((grad) => grad.id !== item.id));
+        setPlacementData((prev) =>
+          prev.filter((data) => data.id !== item.id && !data.applicationId),
+        );
+
+        alert("Graduate removed from system successfully!");
       }
-
-      // Delete any interviews for this graduate
-      const interviewsQuery = query(
-        collection(db, "interviews"),
-        where("graduateId", "==", item.id),
-      );
-      const interviewsSnapshot = await getDocs(interviewsQuery);
-      for (const interviewDoc of interviewsSnapshot.docs) {
-        await deleteDoc(interviewDoc.ref);
-      }
-
-      // Delete any placements for this graduate
-      const placementsQuery = query(
-        collection(db, "placements"),
-        where("graduateId", "==", item.id),
-      );
-      const placementsSnapshot = await getDocs(placementsQuery);
-      for (const placementDoc of placementsSnapshot.docs) {
-        await deleteDoc(placementDoc.ref);
-      }
-
-      // Delete the graduate record itself
-      await deleteDoc(doc(db, "graduates", item.id));
-
-      // Update local state immediately to reflect the deletion
-      setGraduates((prev) => prev.filter((grad) => grad.id !== item.id));
-      setApplications((prev) =>
-        prev.filter((app) => app.graduateId !== item.id),
-      );
-      setPlacementData((prev) => prev.filter((data) => data.id !== item.id));
-
-      alert("Graduate removed from placement tracker successfully!");
     } catch (error) {
       console.error("Error deleting data:", error);
-      alert("Failed to remove graduate from placement tracker.");
+      alert("Failed to remove entry from placement tracker.");
     }
   };
 
