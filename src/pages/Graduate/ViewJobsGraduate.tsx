@@ -40,7 +40,7 @@ const ViewJobsGraduate = () => {
         const querySnapshot = await getDocs(q);
 
         // Fetch all employers data
-        const employersRef = collection(db, "employers");
+        const employersRef = collection(db, "employersignup");
         const employersSnap = await getDocs(employersRef);
         const employersMap = new Map();
         employersSnap.forEach((doc) => {
