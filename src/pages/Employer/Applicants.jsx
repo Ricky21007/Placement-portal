@@ -35,6 +35,7 @@ const Applicants = () => {
 
         const appSnap = await getDocs(collection(db, "applications"));
         const relevantApplicants = [];
+        const statusData = {};
 
         for (const appDoc of appSnap.docs) {
           const appData = appDoc.data();
@@ -61,6 +62,28 @@ const Applicants = () => {
               const gradSnap = await getDoc(gradRef);
               const gradData = gradSnap.exists() ? gradSnap.data() : {};
 
+              // Check for hiring status in interviews collection
+              const interviewQuery = query(
+                collection(db, "interviews"),
+                where("graduateId", "==", appData.graduateId),
+                where("jobId", "==", appData.jobId),
+              );
+              const interviewSnap = await getDocs(interviewQuery);
+
+              let hiringStatus = null;
+              if (!interviewSnap.empty) {
+                const interviewData = interviewSnap.docs[0].data();
+                if (interviewData.status === "Hired") {
+                  hiringStatus = "hired";
+                } else if (interviewData.status === "Not Hired") {
+                  hiringStatus = "not_hired";
+                }
+              }
+
+              if (hiringStatus) {
+                statusData[appDoc.id] = hiringStatus;
+              }
+
               relevantApplicants.push({
                 id: appDoc.id,
                 name: gradData.fullName || "Unknown",
@@ -78,6 +101,7 @@ const Applicants = () => {
         }
 
         setApplicants(relevantApplicants);
+        setHiringStatus(statusData);
       } catch (error) {
         console.error("Error fetching applicants:", error);
         alert("Failed to load applicants.");
