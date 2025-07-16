@@ -350,56 +350,134 @@ const Applicants = () => {
                     border: "1px solid rgba(255, 111, 97, 0.2)",
                   }}
                 >
-                  <h4
-                    style={{
-                      color: "var(--accent-coral)",
-                      margin: "0 0 var(--spacing-md) 0",
-                      fontSize: "var(--font-size-base)",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Next Steps
-                  </h4>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "var(--spacing-sm)",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <button
-                      className="employer-button-primary"
-                      onClick={() => {
-                        console.log(
-                          "Schedule Interview clicked for applicant:",
-                          applicant.id,
-                        );
-                        setShowInterviewFor(applicant.id);
-                      }}
+                  {hiringStatus[applicant.id] ? (
+                    // Show status message after hiring decision
+                    <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "var(--spacing-xs)",
+                        textAlign: "center",
+                        padding: "var(--spacing-lg)",
                       }}
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
+                      {hiringStatus[applicant.id] === "hired" ? (
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "2rem",
+                              marginBottom: "var(--spacing-sm)",
+                            }}
+                          >
+                            🎉
+                          </div>
+                          <h3
+                            style={{
+                              color: "#10b981",
+                              margin: "0 0 var(--spacing-sm) 0",
+                              fontSize: "var(--font-size-lg)",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Candidate Placed
+                          </h3>
+                          <p
+                            style={{
+                              color: "#374151",
+                              margin: 0,
+                              fontSize: "var(--font-size-sm)",
+                            }}
+                          >
+                            This candidate has been successfully hired for the
+                            position.
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "2rem",
+                              marginBottom: "var(--spacing-sm)",
+                            }}
+                          >
+                            📋
+                          </div>
+                          <h3
+                            style={{
+                              color: "#dc2626",
+                              margin: "0 0 var(--spacing-sm) 0",
+                              fontSize: "var(--font-size-lg)",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Not Placed
+                          </h3>
+                          <p
+                            style={{
+                              color: "#374151",
+                              margin: 0,
+                              fontSize: "var(--font-size-sm)",
+                            }}
+                          >
+                            This candidate was not selected for the position.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    // Show original next steps section
+                    <>
+                      <h4
+                        style={{
+                          color: "var(--accent-coral)",
+                          margin: "0 0 var(--spacing-md) 0",
+                          fontSize: "var(--font-size-base)",
+                          fontWeight: "600",
+                        }}
                       >
-                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
-                      </svg>
-                      Schedule Interview
-                    </button>
-                  </div>
+                        Next Steps
+                      </h4>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "var(--spacing-sm)",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <button
+                          className="employer-button-primary"
+                          onClick={() => {
+                            console.log(
+                              "Schedule Interview clicked for applicant:",
+                              applicant.id,
+                            );
+                            setShowInterviewFor(applicant.id);
+                          }}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "var(--spacing-xs)",
+                          }}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                          </svg>
+                          Schedule Interview
+                        </button>
+                      </div>
 
-                  <MarkOutcomeButtons
-                    applicant={applicant}
-                    markAsHired={markAsHired}
-                    markAsNotHired={markAsNotHired}
-                    showInterviewFor={showInterviewFor}
-                  />
+                      <MarkOutcomeButtons
+                        applicant={applicant}
+                        markAsHired={markAsHired}
+                        markAsNotHired={markAsNotHired}
+                        showInterviewFor={showInterviewFor}
+                        hiringStatus={hiringStatus}
+                        setHiringStatus={setHiringStatus}
+                      />
+                    </>
+                  )}
                 </div>
               )}
             </div>
