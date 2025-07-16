@@ -18,6 +18,7 @@ interface Job {
   jobType: string;
   salary: string;
   deadline?: any;
+  companyName?: string;
 }
 
 const ViewJobsGraduate = () => {
