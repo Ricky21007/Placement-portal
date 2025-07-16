@@ -82,7 +82,7 @@ export const ApplicationTracker: React.FC = () => {
 
             let companyName = "Unknown Company";
             if (jobData.employerId) {
-              const companyRef = doc(db, "employers", jobData.employerId);
+              const companyRef = doc(db, "employersignup", jobData.employerId);
               const companySnap = await getDoc(companyRef);
               if (companySnap.exists()) {
                 companyName =
@@ -203,7 +203,11 @@ export const ApplicationTracker: React.FC = () => {
               if (jobSnap.exists()) {
                 const jobData = jobSnap.data();
                 if (jobData.employerId) {
-                  const companyRef = doc(db, "employers", jobData.employerId);
+                  const companyRef = doc(
+                    db,
+                    "employersignup",
+                    jobData.employerId,
+                  );
                   const companySnap = await getDoc(companyRef);
                   if (companySnap.exists()) {
                     companyName =
