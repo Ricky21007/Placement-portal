@@ -391,6 +391,13 @@ select.form-input option {
   background-color: white !important;
 }
 
+/* Placeholder styling for better visibility */
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #6b7280 !important;
+  opacity: 1;
+}
+
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
