@@ -35,6 +35,7 @@ interface PlacementData {
   fullName: string;
   stream: string;
   cohort: string;
+  jobTitle: string;
   companyName: string;
   status: string;
   placed: string;
@@ -123,6 +124,7 @@ const PlacementTracker: React.FC = () => {
           fullName: grad.fullName,
           stream: grad.stream,
           cohort: grad.cohort,
+          jobTitle: "N/A",
           companyName: "N/A",
           status: "No Application",
           placed: "No",
@@ -135,7 +137,8 @@ const PlacementTracker: React.FC = () => {
             fullName: grad.fullName,
             stream: grad.stream,
             cohort: grad.cohort,
-            companyName: job ? job.jobTitle : "N/A",
+            jobTitle: job ? job.jobTitle : "N/A",
+            companyName: job ? job.companyName : "N/A",
             status: app.status,
             placed: app.status.toLowerCase() === "accepted" ? "Yes" : "No",
           });
@@ -213,7 +216,8 @@ const PlacementTracker: React.FC = () => {
             <th>Name</th>
             <th>Stream</th>
             {/* Removed Cohort header */}
-            <th>Position Applied For</th>
+            <th>Job Title</th>
+            <th>Company</th>
             <th>Status</th>
             <th>Placed</th>
           </tr>
@@ -246,6 +250,16 @@ const PlacementTracker: React.FC = () => {
                   {item.stream}
                 </td>
                 {/* Removed cohort column */}
+                <td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {item.jobTitle}
+                </td>
                 <td
                   style={{
                     whiteSpace: "nowrap",
