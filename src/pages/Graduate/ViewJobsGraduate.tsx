@@ -239,7 +239,9 @@ const ViewJobsGraduate = () => {
               <div className="job-header">
                 <div className="job-title-section">
                   <h3 className="jobTitle">{job.jobTitle}</h3>
-                  <p className="company-name">Company Position</p>
+                  <p className="company-name">
+                    {job.companyName || "Company Name Not Available"}
+                  </p>
                 </div>
                 <div className="job-type-badge">{job.jobType}</div>
               </div>
