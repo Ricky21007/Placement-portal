@@ -18,6 +18,8 @@ interface Job {
   jobType: string;
   salary: string;
   deadline?: any;
+  companyName?: string;
+  employerId?: string;
 }
 
 const ViewJobsGraduate = () => {
@@ -32,12 +34,33 @@ const ViewJobsGraduate = () => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
+        // Fetch all jobs
         const jobsRef = collection(db, "jobs");
         const q = query(jobsRef); // Get all jobs
         const querySnapshot = await getDocs(q);
+
+        // Fetch all employers data
+        const employersRef = collection(db, "employersignup");
+        const employersSnap = await getDocs(employersRef);
+        const employersMap = new Map();
+        employersSnap.forEach((doc) => {
+          employersMap.set(doc.id, doc.data());
+        });
+
         const jobsList: Job[] = [];
         querySnapshot.forEach((doc) => {
-          jobsList.push({ id: doc.id, ...doc.data() } as Job);
+          const jobData = doc.data();
+          // Get company name from employers collection
+          const employerData = employersMap.get(jobData.employerId);
+          const companyName =
+            employerData?.companyName || "Company Name Not Available";
+
+          jobsList.push({
+            id: doc.id,
+            ...jobData,
+            companyName,
+            employerId: jobData.employerId,
+          } as Job);
         });
         setJobs(jobsList);
       } catch (error) {
@@ -101,6 +124,7 @@ const ViewJobsGraduate = () => {
       await addDoc(collection(db, "applications"), {
         graduateId: user.uid,
         jobId: selectedJob.id,
+        jobTitle: selectedJob.jobTitle,
         motivation,
         status: "pending",
         createdAt: serverTimestamp(),
@@ -238,7 +262,9 @@ const ViewJobsGraduate = () => {
               <div className="job-header">
                 <div className="job-title-section">
                   <h3 className="jobTitle">{job.jobTitle}</h3>
-                  <p className="company-name">Company Position</p>
+                  <p className="company-name">
+                    {job.companyName || "Company Name Not Available"}
+                  </p>
                 </div>
                 <div className="job-type-badge">{job.jobType}</div>
               </div>
