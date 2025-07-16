@@ -71,7 +71,7 @@ const JobMatchingFeed: React.FC = () => {
         const jobSnap = await getDocs(jobsRef);
 
         // 3. Fetch all employers data
-        const employersRef = collection(db, "employers");
+        const employersRef = collection(db, "employersignup");
         const employersSnap = await getDocs(employersRef);
         const employersMap = new Map();
         employersSnap.forEach((doc) => {
