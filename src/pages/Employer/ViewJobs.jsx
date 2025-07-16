@@ -24,8 +24,33 @@ const ViewJobs = () => {
         const q = query(jobsRef, where("employerId", "==", user.uid));
         const querySnapshot = await getDocs(q);
         const jobsList = [];
+        const currentDate = new Date();
+
         querySnapshot.forEach((doc) => {
-          jobsList.push({ id: doc.id, ...doc.data() });
+          const jobData = doc.data();
+          let isExpired = false;
+
+          // Check if job has expired based on deadline
+          if (jobData.deadline) {
+            let deadlineDate;
+            if (jobData.deadline.toDate) {
+              // Firestore Timestamp
+              deadlineDate = jobData.deadline.toDate();
+            } else if (typeof jobData.deadline === "string") {
+              // String date
+              deadlineDate = new Date(jobData.deadline);
+            } else {
+              // Already a Date object
+              deadlineDate = new Date(jobData.deadline);
+            }
+
+            // Only include jobs that haven't passed their deadline
+            isExpired = deadlineDate < currentDate;
+          }
+
+          if (!isExpired) {
+            jobsList.push({ id: doc.id, ...jobData });
+          }
         });
         setJobs(jobsList);
       } catch (error) {
