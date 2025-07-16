@@ -177,6 +177,87 @@ const PlacementTracker: React.FC = () => {
     setExpandedRows(newExpandedRows);
   };
 
+  const handleEdit = (item: PlacementData, index: number) => {
+    setEditingRow(`${item.id}-${index}`);
+    setEditData({ ...item });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRow(null);
+    setEditData(null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editData) return;
+
+    try {
+      // Update graduate data
+      const gradRef = doc(db, "graduates", editData.id);
+      await updateDoc(gradRef, {
+        fullName: editData.fullName,
+        stream: editData.stream,
+        cohort: editData.cohort,
+      });
+
+      // Find and update application if exists
+      const app = applications.find((app) => app.graduateId === editData.id);
+      if (app) {
+        const appRef = doc(db, "applications", app.id);
+        await updateDoc(appRef, {
+          status: editData.status,
+        });
+      }
+
+      // Refresh data
+      window.location.reload();
+
+      setEditingRow(null);
+      setEditData(null);
+      alert("Data updated successfully!");
+    } catch (error) {
+      console.error("Error updating data:", error);
+      alert("Failed to update data.");
+    }
+  };
+
+  const handleDelete = async (item: PlacementData) => {
+    if (
+      !confirm(
+        `Are you sure you want to remove ${item.fullName} from the placement tracker?`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      // Find and delete applications for this graduate
+      const gradApps = applications.filter((app) => app.graduateId === item.id);
+      for (const app of gradApps) {
+        await deleteDoc(doc(db, "applications", app.id));
+      }
+
+      // Optionally delete the graduate record (commented out for safety)
+      // await deleteDoc(doc(db, "graduates", item.id));
+
+      // Refresh data
+      window.location.reload();
+
+      alert("Graduate removed from placement tracker successfully!");
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      alert("Failed to remove graduate from placement tracker.");
+    }
+  };
+
+  const handleEditDataChange = (field: keyof PlacementData, value: string) => {
+    if (editData) {
+      setEditData({
+        ...editData,
+        [field]: value,
+      });
+    }
+  };
+
   // Extract unique filter options
   const streams = Array.from(new Set(graduates.map((g) => g.stream)));
   const cohorts = Array.from(new Set(graduates.map((g) => g.cohort)));
