@@ -369,6 +369,7 @@ const Applicants = () => {
                     applicant={applicant}
                     markAsHired={markAsHired}
                     markAsNotHired={markAsNotHired}
+                    showInterviewFor={showInterviewFor}
                   />
                 </div>
               )}
