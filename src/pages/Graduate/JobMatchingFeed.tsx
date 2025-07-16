@@ -24,6 +24,7 @@ interface Job {
   salary?: string;
   deadline?: any;
   matchPercentage?: number;
+  employerId?: string;
 }
 
 const JobMatchingFeed: React.FC = () => {
@@ -69,6 +70,14 @@ const JobMatchingFeed: React.FC = () => {
         const jobsRef = collection(db, "jobs");
         const jobSnap = await getDocs(jobsRef);
 
+        // 3. Fetch all employers data
+        const employersRef = collection(db, "employers");
+        const employersSnap = await getDocs(employersRef);
+        const employersMap = new Map();
+        employersSnap.forEach((doc) => {
+          employersMap.set(doc.id, doc.data());
+        });
+
         const matches: Job[] = [];
 
         jobSnap.forEach((doc) => {
@@ -87,17 +96,24 @@ const JobMatchingFeed: React.FC = () => {
               requiredSkills,
               gradSkills,
             );
+
+            // Get company name from employers collection
+            const employerData = employersMap.get(jobData.employerId);
+            const companyName =
+              employerData?.companyName || "Company Name Not Available";
+
             matches.push({
               id: doc.id,
               title: jobData.title || jobData.jobTitle,
               description: jobData.description || jobData.jobDescription,
               requiredSkills: jobData.requiredSkills,
-              companyName: jobData.companyName || "Company Name",
+              companyName,
               location: jobData.location || "Location not specified",
               jobType: jobData.jobType || "Full-time",
               salary: jobData.salary || "Competitive",
               deadline: jobData.deadline,
               matchPercentage,
+              employerId: jobData.employerId,
             });
           }
         });
