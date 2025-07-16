@@ -501,9 +501,10 @@ const MarkOutcomeButtons = ({
   markAsHired,
   markAsNotHired,
   showInterviewFor,
+  hiringStatus,
+  setHiringStatus,
 }) => {
   const [interviewStatus, setInterviewStatus] = useState(null);
-  const [marked, setMarked] = useState(false);
 
   useEffect(() => {
     const fetchInterviewStatus = async () => {
