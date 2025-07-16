@@ -285,6 +285,25 @@ const Applicants = () => {
               </div>
 
               <div className="employer-item-detail">
+                <span className="employer-item-label">Portfolio:</span>
+                {applicant.portfolioUrl ? (
+                  <a
+                    href={applicant.portfolioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "var(--accent-coral)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    View Portfolio
+                  </a>
+                ) : (
+                  "No portfolio provided"
+                )}
+              </div>
+
+              <div className="employer-item-detail">
                 <span className="employer-item-label">Status:</span>
                 {applicant.status}
               </div>
