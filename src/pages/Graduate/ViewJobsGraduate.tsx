@@ -19,6 +19,7 @@ interface Job {
   salary: string;
   deadline?: any;
   companyName?: string;
+  employerId?: string;
 }
 
 const ViewJobsGraduate = () => {
@@ -33,12 +34,33 @@ const ViewJobsGraduate = () => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
+        // Fetch all jobs
         const jobsRef = collection(db, "jobs");
         const q = query(jobsRef); // Get all jobs
         const querySnapshot = await getDocs(q);
+
+        // Fetch all employers data
+        const employersRef = collection(db, "employers");
+        const employersSnap = await getDocs(employersRef);
+        const employersMap = new Map();
+        employersSnap.forEach((doc) => {
+          employersMap.set(doc.id, doc.data());
+        });
+
         const jobsList: Job[] = [];
         querySnapshot.forEach((doc) => {
-          jobsList.push({ id: doc.id, ...doc.data() } as Job);
+          const jobData = doc.data();
+          // Get company name from employers collection
+          const employerData = employersMap.get(jobData.employerId);
+          const companyName =
+            employerData?.companyName || "Company Name Not Available";
+
+          jobsList.push({
+            id: doc.id,
+            ...jobData,
+            companyName,
+            employerId: jobData.employerId,
+          } as Job);
         });
         setJobs(jobsList);
       } catch (error) {
