@@ -113,72 +113,30 @@ const GraduateProfile = () => {
     setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
   };
 
-  const handleProfilePicUpload = async (file: File) => {
-    if (!user) return;
-    setLoading(true);
-
-    try {
-      const token = await user.getIdToken();
-      await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token,
-      });
-
-      const filePath = `${user.uid}/profile-${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from("profile-pictures")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-
-      if (error) throw error;
-
-      const { data: publicData } = supabase.storage
-        .from("profile-pictures")
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicData?.publicUrl;
-      if (!publicUrl) throw new Error("Failed to get profile picture URL");
-
-      setProfilePicUrl(publicUrl);
-
-      await setDoc(
-        doc(db, "graduates", user.uid),
-        { profilePicUrl: publicUrl },
-        { merge: true },
-      );
-
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 3000);
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("Failed to upload profile picture.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleCvUpload = async (file: File) => {
     if (!user) return;
     setLoading(true);
 
     try {
-      const token = await user.getIdToken();
-      await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token,
-      });
-
+      // Skip Supabase session setup - using direct storage upload
       const filePath = `${user.uid}/cv-${Date.now()}-${file.name}`;
+      console.log("CV Upload details:", { filePath, userId: user.uid });
+
       const { error: uploadError } = await supabase.storage
         .from("cv-uploads")
         .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: true,
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("CV Upload error details:", uploadError);
+        if (uploadError.message?.includes("policy")) {
+          throw new Error(
+            "CV storage permission denied. Please check if you are properly authenticated.",
+          );
+        }
+        throw uploadError;
+      }
 
       const { data: publicData } = supabase.storage
         .from("cv-uploads")
@@ -203,7 +161,30 @@ const GraduateProfile = () => {
       setTimeout(() => setProfileSaved(false), 3000);
     } catch (error: any) {
       console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
+      console.error("Error details:", JSON.stringify(error, null, 2));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.statusText) {
+        errorMessage = error.statusText;
+      } else {
+        // Fallback to stringify the entire error for debugging
+        try {
+          errorMessage = JSON.stringify(error);
+        } catch {
+          errorMessage = String(error);
+        }
+      }
+
+      alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -217,21 +198,30 @@ const GraduateProfile = () => {
     if (!user) return;
     setLoading(true);
     try {
-      const token = await user.getIdToken();
-      await supabase.auth.setSession({
-        access_token: token,
-        refresh_token: token,
-      });
-
+      // Skip Supabase session setup - using direct storage upload
+      // Use user UID as the path to comply with RLS policies
       const filePath = `${user.uid}/${field}-${Date.now()}-${file.name}`;
+      console.log("Upload details:", {
+        filePath,
+        bucket,
+        userId: user.uid,
+      });
       const { error: uploadError } = await supabase.storage
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: "3600",
-          upsert: field === "profilePicUrl",
+          upsert: field === "profilePicUrl" && bucket !== "cv-uploads",
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Upload error details:", uploadError);
+        if (uploadError.message?.includes("policy")) {
+          throw new Error(
+            "Storage permission denied. Please check if you are properly authenticated.",
+          );
+        }
+        throw uploadError;
+      }
 
       const { data: publicData } = supabase.storage
         .from(bucket)
@@ -243,6 +233,8 @@ const GraduateProfile = () => {
       if (field === "cvUrl") {
         setCvUrl(publicUrl);
         setCvFileName(file.name);
+      } else if (field === "profilePicUrl") {
+        setProfilePicUrl(publicUrl);
       }
 
       await setDoc(
@@ -251,12 +243,38 @@ const GraduateProfile = () => {
         { merge: true },
       );
 
-      alert(
-        `${field === "cvUrl" ? "CV" : "Profile picture"} uploaded successfully!`,
-      );
+      if (field === "profilePicUrl") {
+        setProfileSaved(true);
+        setTimeout(() => setProfileSaved(false), 3000);
+      } else {
+        alert("CV uploaded successfully!");
+      }
     } catch (error: any) {
       console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
+      console.error("Error details:", JSON.stringify(error, null, 2));
+
+      let errorMessage = "Unknown error occurred";
+
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (error?.statusText) {
+        errorMessage = error.statusText;
+      } else {
+        // Fallback to stringify the entire error for debugging
+        try {
+          errorMessage = JSON.stringify(error);
+        } catch {
+          errorMessage = String(error);
+        }
+      }
+
+      alert(`Upload failed: ${errorMessage}. Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -391,7 +409,10 @@ const GraduateProfile = () => {
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) handleProfilePicUpload(file);
+                  if (file) {
+                    // Use cv-uploads bucket temporarily since profile-pictures has RLS issues
+                    handleUpload(file, "cv-uploads", "profilePicUrl");
+                  }
                 }}
                 style={{ display: "none" }}
               />

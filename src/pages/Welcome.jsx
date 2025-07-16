@@ -203,9 +203,9 @@ const Welcome = () => {
               className="welcome-select"
             >
               <option value="">Select Your Role</option>
-              <option value="Graduate">🎓 Graduate</option>
-              <option value="Employer">💼 Employer</option>
-              <option value="Admin">📊 Admin</option>
+              <option value="Graduate">Graduate</option>
+              <option value="Employer">Employer</option>
+              <option value="Admin">Admin</option>
             </select>
 
             <button
@@ -285,9 +285,6 @@ const Welcome = () => {
             <div className="welcome-footer-bottom">
               <p className="welcome-footer-copyright">
                 © 2025 CAPACITI Programme. All rights reserved.
-              </p>
-              <p className="welcome-footer-location">
-                Made with ❤️ in South Africa
               </p>
             </div>
           </div>

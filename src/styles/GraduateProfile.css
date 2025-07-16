@@ -378,6 +378,19 @@
   box-sizing: border-box;
 }
 
+/* Fix for dropdown text visibility */
+.form-input select,
+select.form-input {
+  color: #1f2937 !important;
+  background-color: white !important;
+}
+
+.form-input option,
+select.form-input option {
+  color: #1f2937 !important;
+  background-color: white !important;
+}
+
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
