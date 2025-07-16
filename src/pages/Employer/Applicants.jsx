@@ -19,6 +19,7 @@ const Applicants = () => {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showInterviewFor, setShowInterviewFor] = useState(null);
+  const [hiringStatus, setHiringStatus] = useState({}); // Track hiring status per applicant
   const navigate = useNavigate();
 
   useEffect(() => {
