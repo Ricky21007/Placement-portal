@@ -102,6 +102,7 @@ const ViewJobsGraduate = () => {
       await addDoc(collection(db, "applications"), {
         graduateId: user.uid,
         jobId: selectedJob.id,
+        jobTitle: selectedJob.jobTitle,
         motivation,
         status: "pending",
         createdAt: serverTimestamp(),
