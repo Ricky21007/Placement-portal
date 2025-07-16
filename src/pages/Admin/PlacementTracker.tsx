@@ -126,6 +126,7 @@ const PlacementTracker: React.FC = () => {
         // No application, still show graduate with empty company and status
         data.push({
           id: grad.id,
+          applicationId: undefined, // No application
           fullName: grad.fullName,
           stream: grad.stream,
           cohort: grad.cohort,
@@ -139,6 +140,7 @@ const PlacementTracker: React.FC = () => {
           const job = jobsMap.get(app.jobId);
           data.push({
             id: grad.id,
+            applicationId: app.id, // Include application ID
             fullName: grad.fullName,
             stream: grad.stream,
             cohort: grad.cohort,
