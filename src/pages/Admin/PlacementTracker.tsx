@@ -6,6 +6,8 @@ import {
   where,
   doc,
   getDoc,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import "../../styles/PlacementTracker.css";
@@ -51,6 +53,8 @@ const PlacementTracker: React.FC = () => {
     companyName: "",
   });
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [editingRow, setEditingRow] = useState<string | null>(null);
+  const [editData, setEditData] = useState<PlacementData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
