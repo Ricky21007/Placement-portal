@@ -141,10 +141,6 @@ const Applicants = () => {
         createdAt: serverTimestamp(),
       });
 
-      setHiringStatus((prev) => ({
-        ...prev,
-        [application.id]: "hired",
-      }));
       alert("Graduate marked as hired.");
     } catch (err) {
       console.error(err);
