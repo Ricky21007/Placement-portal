@@ -557,6 +557,24 @@ const GraduateProfile = () => {
                 <strong>Location:</strong>{" "}
                 <span>{location || "Not provided"}</span>
               </div>
+              <div className="info-item">
+                <strong>Portfolio:</strong>{" "}
+                {portfolioUrl ? (
+                  <a
+                    href={portfolioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "var(--accent-coral)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    View Portfolio
+                  </a>
+                ) : (
+                  <span>Not provided</span>
+                )}
+              </div>
               {summary && (
                 <div className="info-item full-width">
                   <strong>Summary:</strong> <span>{summary}</span>
