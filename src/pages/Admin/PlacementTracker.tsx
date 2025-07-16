@@ -202,8 +202,15 @@ const PlacementTracker: React.FC = () => {
         cohort: editData.cohort,
       });
 
-      // Find and update application if exists
-      const app = applications.find((app) => app.graduateId === editData.id);
+      // Find and update the specific application if it exists
+      let app = null;
+      if (editData.applicationId) {
+        app = applications.find((app) => app.id === editData.applicationId);
+      } else {
+        // If no specific application ID, find any application for this graduate
+        app = applications.find((app) => app.graduateId === editData.id);
+      }
+
       if (app) {
         const appRef = doc(db, "applications", app.id);
         await updateDoc(appRef, {
