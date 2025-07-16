@@ -7,6 +7,7 @@ import {
   getDoc,
   getDocs,
   query,
+  where,
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -66,11 +67,23 @@ const JobMatchingFeed: React.FC = () => {
         const gradSkills = gradSnap.data().skills || [];
         setUserSkills(gradSkills);
 
-        // 2. Fetch all jobs
+        // 2. Get list of jobs the graduate has already applied to
+        const applicationsRef = collection(db, "applications");
+        const applicationQuery = query(
+          applicationsRef,
+          where("graduateId", "==", user.uid),
+        );
+        const applicationsSnap = await getDocs(applicationQuery);
+        const appliedJobIds = new Set();
+        applicationsSnap.forEach((doc) => {
+          appliedJobIds.add(doc.data().jobId);
+        });
+
+        // 3. Fetch all jobs
         const jobsRef = collection(db, "jobs");
         const jobSnap = await getDocs(jobsRef);
 
-        // 3. Fetch all employers data
+        // 4. Fetch all employers data
         const employersRef = collection(db, "employersignup");
         const employersSnap = await getDocs(employersRef);
         const employersMap = new Map();
@@ -83,6 +96,11 @@ const JobMatchingFeed: React.FC = () => {
         jobSnap.forEach((doc) => {
           const jobData = doc.data();
           const requiredSkills = jobData.requiredSkills || [];
+
+          // Skip jobs that the graduate has already applied to
+          if (appliedJobIds.has(doc.id)) {
+            return;
+          }
 
           const gradSkillsLower = gradSkills.map((s: string) =>
             s.toLowerCase(),
