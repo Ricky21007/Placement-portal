@@ -388,7 +388,12 @@ const Applicants = () => {
   );
 };
 
-const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
+const MarkOutcomeButtons = ({
+  applicant,
+  markAsHired,
+  markAsNotHired,
+  showInterviewFor,
+}) => {
   const [interviewStatus, setInterviewStatus] = useState(null);
   const [marked, setMarked] = useState(false);
 
@@ -407,7 +412,12 @@ const MarkOutcomeButtons = ({ applicant, markAsHired, markAsNotHired }) => {
     fetchInterviewStatus();
   }, [applicant.graduateId, applicant.jobId]);
 
-  if (interviewStatus !== "Scheduled" || marked) return null;
+  // Show buttons if interview is being scheduled OR if interview is already scheduled
+  if (
+    (interviewStatus !== "Scheduled" && showInterviewFor !== applicant.id) ||
+    marked
+  )
+    return null;
 
   const handleMarkHired = () => {
     markAsHired(applicant);
