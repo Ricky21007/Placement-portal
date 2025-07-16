@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   collection,
   query,
+  where,
   getDocs,
   addDoc,
   serverTimestamp,
@@ -34,6 +35,24 @@ const ViewJobsGraduate = () => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
+        const user = auth.currentUser;
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        // Get list of jobs the graduate has already applied to
+        const applicationsRef = collection(db, "applications");
+        const applicationQuery = query(
+          applicationsRef,
+          where("graduateId", "==", user.uid),
+        );
+        const applicationsSnap = await getDocs(applicationQuery);
+        const appliedJobIds = new Set();
+        applicationsSnap.forEach((doc) => {
+          appliedJobIds.add(doc.data().jobId);
+        });
+
         // Fetch all jobs
         const jobsRef = collection(db, "jobs");
         const q = query(jobsRef); // Get all jobs
@@ -50,6 +69,12 @@ const ViewJobsGraduate = () => {
         const jobsList: Job[] = [];
         querySnapshot.forEach((doc) => {
           const jobData = doc.data();
+
+          // Skip jobs that the graduate has already applied to
+          if (appliedJobIds.has(doc.id)) {
+            return;
+          }
+
           // Get company name from employers collection
           const employerData = employersMap.get(jobData.employerId);
           const companyName =
