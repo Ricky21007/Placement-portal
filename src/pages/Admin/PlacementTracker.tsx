@@ -305,6 +305,7 @@ const PlacementTracker: React.FC = () => {
             <th>Company</th>
             <th>Status</th>
             <th>Placed</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
