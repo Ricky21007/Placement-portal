@@ -282,9 +282,11 @@ const EmployerAuth: React.FC<Props> = ({ mode }) => {
           {error && <div className="auth-error">{error}</div>}
           {success && <div className="auth-success">{success}</div>}
 
-          <Link to="/forgot-password" className="auth-link">
-            Forgot password?
-          </Link>
+          <div style={{ textAlign: "center", margin: "1rem 0" }}>
+            <Link to="/forgot-password" className="auth-link">
+              Forgot password?
+            </Link>
+          </div>
 
           <div className="auth-switch">
             {mode === "login" ? (

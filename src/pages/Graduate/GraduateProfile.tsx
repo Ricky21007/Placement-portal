@@ -30,6 +30,7 @@ const GraduateProfile = () => {
   const [experience, setExperience] = useState("");
   const [summary, setSummary] = useState("");
   const [stream, setStream] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState<Record<Section, boolean>>({
     personal: false,
@@ -67,6 +68,7 @@ const GraduateProfile = () => {
         setExperience(data.experience || "");
         setSummary(data.summary || "");
         setStream(data.stream || "");
+        setPortfolioUrl(data.portfolioUrl || "");
         setProfilePicUrl(data.profilePicUrl || "");
       } else {
         setEmail(user.email || "");
@@ -96,6 +98,7 @@ const GraduateProfile = () => {
           setExperience(data.experience || "");
           setSummary(data.summary || "");
           setStream(data.stream || "");
+          setPortfolioUrl(data.portfolioUrl || "");
         }
       };
       fetchProfile();
@@ -306,6 +309,7 @@ const GraduateProfile = () => {
         experience,
         summary,
         stream,
+        portfolioUrl,
         profilePicUrl,
         isProfileComplete: true,
         updatedAt: new Date().toISOString(),
@@ -517,6 +521,16 @@ const GraduateProfile = () => {
                   placeholder="Enter your location"
                 />
               </div>
+              <div className="form-group">
+                <label className="form-label">Portfolio URL</label>
+                <input
+                  type="url"
+                  className="form-input"
+                  value={portfolioUrl}
+                  onChange={(e) => setPortfolioUrl(e.target.value)}
+                  placeholder="https://your-portfolio.com"
+                />
+              </div>
               <div className="form-group form-group-full">
                 <label className="form-label">Professional Summary</label>
                 <textarea
@@ -542,6 +556,24 @@ const GraduateProfile = () => {
               <div className="info-item">
                 <strong>Location:</strong>{" "}
                 <span>{location || "Not provided"}</span>
+              </div>
+              <div className="info-item">
+                <strong>Portfolio:</strong>{" "}
+                {portfolioUrl ? (
+                  <a
+                    href={portfolioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "var(--accent-coral)",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    View Portfolio
+                  </a>
+                ) : (
+                  <span>Not provided</span>
+                )}
               </div>
               {summary && (
                 <div className="info-item full-width">

@@ -202,25 +202,36 @@
 
 /* Password Toggle */
 .password-toggle {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-md);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute !important;
+  right: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: none !important;
+  border: none !important;
+  color: var(--text-muted) !important;
+  cursor: pointer !important;
+  padding: var(--spacing-xs) !important;
+  border-radius: var(--radius-md) !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: auto !important;
+  z-index: 10 !important;
 }
 
 .password-toggle:hover {
-  color: var(--accent-coral);
-  background: rgba(255, 111, 97, 0.1);
+  color: var(--accent-coral) !important;
+  background: rgba(255, 111, 97, 0.1) !important;
+}
+
+/* Override any conflicting button styles */
+.input-group .password-toggle {
+  position: absolute !important;
+  right: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
 }
 
 /* Auth Button */

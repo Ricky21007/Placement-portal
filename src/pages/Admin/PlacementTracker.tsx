@@ -6,6 +6,8 @@ import {
   where,
   doc,
   getDoc,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import "../../styles/PlacementTracker.css";
@@ -31,7 +33,8 @@ interface Job {
 }
 
 interface PlacementData {
-  id: string;
+  id: string; // graduate ID
+  applicationId?: string; // application ID for specific placement entries
   fullName: string;
   stream: string;
   cohort: string;
@@ -51,6 +54,8 @@ const PlacementTracker: React.FC = () => {
     companyName: "",
   });
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [editingRow, setEditingRow] = useState<string | null>(null);
+  const [editData, setEditData] = useState<PlacementData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +126,7 @@ const PlacementTracker: React.FC = () => {
         // No application, still show graduate with empty company and status
         data.push({
           id: grad.id,
+          applicationId: undefined, // No application
           fullName: grad.fullName,
           stream: grad.stream,
           cohort: grad.cohort,
@@ -134,6 +140,7 @@ const PlacementTracker: React.FC = () => {
           const job = jobsMap.get(app.jobId);
           data.push({
             id: grad.id,
+            applicationId: app.id, // Include application ID
             fullName: grad.fullName,
             stream: grad.stream,
             cohort: grad.cohort,
@@ -171,6 +178,162 @@ const PlacementTracker: React.FC = () => {
       newExpandedRows.add(id);
     }
     setExpandedRows(newExpandedRows);
+  };
+
+  const handleEdit = (item: PlacementData, index: number) => {
+    setEditingRow(`${item.id}-${index}`);
+    setEditData({ ...item });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRow(null);
+    setEditData(null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editData) return;
+
+    try {
+      // Update graduate data
+      const gradRef = doc(db, "graduates", editData.id);
+      await updateDoc(gradRef, {
+        fullName: editData.fullName,
+        stream: editData.stream,
+        cohort: editData.cohort,
+      });
+
+      // Find and update the specific application if it exists
+      let app = null;
+      if (editData.applicationId) {
+        app = applications.find((app) => app.id === editData.applicationId);
+      } else {
+        // If no specific application ID, find any application for this graduate
+        app = applications.find((app) => app.graduateId === editData.id);
+      }
+
+      if (app) {
+        const appRef = doc(db, "applications", app.id);
+        await updateDoc(appRef, {
+          status: editData.status,
+        });
+      }
+
+      // Update local state immediately
+      setGraduates((prev) =>
+        prev.map((grad) =>
+          grad.id === editData.id
+            ? {
+                ...grad,
+                fullName: editData.fullName,
+                stream: editData.stream,
+                cohort: editData.cohort,
+              }
+            : grad,
+        ),
+      );
+
+      if (app) {
+        setApplications((prev) =>
+          prev.map((application) =>
+            application.id === app.id
+              ? { ...application, status: editData.status }
+              : application,
+          ),
+        );
+      }
+
+      setEditingRow(null);
+      setEditData(null);
+      alert("Data updated successfully!");
+    } catch (error) {
+      console.error("Error updating data:", error);
+      alert("Failed to update data.");
+    }
+  };
+
+  const handleDelete = async (item: PlacementData) => {
+    let confirmMessage = "";
+
+    if (item.applicationId) {
+      // Specific application entry
+      confirmMessage = `Are you sure you want to remove this specific placement entry for ${item.fullName} (${item.jobTitle} at ${item.companyName})?`;
+    } else {
+      // Graduate with no applications
+      confirmMessage = `Are you sure you want to completely remove ${item.fullName} from the system? This will delete their graduate record.`;
+    }
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      if (item.applicationId) {
+        // Remove only the specific application
+        await deleteDoc(doc(db, "applications", item.applicationId));
+
+        // Find the specific job ID for this application
+        const targetApp = applications.find(
+          (app) => app.id === item.applicationId,
+        );
+
+        if (targetApp) {
+          // Remove related interviews for this specific application
+          const interviewsQuery = query(
+            collection(db, "interviews"),
+            where("graduateId", "==", item.id),
+            where("jobId", "==", targetApp.jobId),
+          );
+          const interviewsSnapshot = await getDocs(interviewsQuery);
+          for (const interviewDoc of interviewsSnapshot.docs) {
+            await deleteDoc(interviewDoc.ref);
+          }
+
+          // Remove related placements for this specific application
+          const placementsQuery = query(
+            collection(db, "placements"),
+            where("graduateId", "==", item.id),
+            where("jobId", "==", targetApp.jobId),
+          );
+          const placementsSnapshot = await getDocs(placementsQuery);
+          for (const placementDoc of placementsSnapshot.docs) {
+            await deleteDoc(placementDoc.ref);
+          }
+        }
+
+        // Update local state to remove only this specific application
+        setApplications((prev) =>
+          prev.filter((app) => app.id !== item.applicationId),
+        );
+        setPlacementData((prev) =>
+          prev.filter((data) => data.applicationId !== item.applicationId),
+        );
+
+        alert("Placement entry removed successfully!");
+      } else {
+        // Graduate with no applications - remove the entire graduate record
+        await deleteDoc(doc(db, "graduates", item.id));
+
+        // Update local state to remove the graduate
+        setGraduates((prev) => prev.filter((grad) => grad.id !== item.id));
+        setPlacementData((prev) =>
+          prev.filter((data) => data.id !== item.id && !data.applicationId),
+        );
+
+        alert("Graduate removed from system successfully!");
+      }
+    } catch (error) {
+      console.error("Error deleting data:", error);
+      alert("Failed to remove entry from placement tracker.");
+    }
+  };
+
+  const handleEditDataChange = (field: keyof PlacementData, value: string) => {
+    if (editData) {
+      setEditData({
+        ...editData,
+        [field]: value,
+      });
+    }
   };
 
   // Extract unique filter options
@@ -220,89 +383,230 @@ const PlacementTracker: React.FC = () => {
             <th>Company</th>
             <th>Status</th>
             <th>Placed</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item, index) => (
             <React.Fragment key={`${item.id}-${index}`}>
               <tr
-                onClick={() => toggleRow(`${item.id}-${index}`)}
-                style={{ cursor: "pointer" }}
+                style={{
+                  cursor:
+                    editingRow === `${item.id}-${index}`
+                      ? "default"
+                      : "pointer",
+                }}
               >
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.fullName}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.stream}
-                </td>
-                {/* Removed cohort column */}
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.jobTitle}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.companyName}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.status}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.placed}
-                </td>
+                {editingRow === `${item.id}-${index}` ? (
+                  // Edit mode
+                  <>
+                    <td>
+                      <input
+                        type="text"
+                        value={editData?.fullName || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("fullName", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      />
+                    </td>
+                    <td>
+                      <select
+                        value={editData?.stream || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("stream", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      >
+                        <option value="">Select Stream</option>
+                        <option value="Software Development">
+                          Software Development
+                        </option>
+                        <option value="Full Stack Development">
+                          Full Stack Development
+                        </option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Data Analytics">Data Analytics</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Artificial Intelligence">
+                          Artificial Intelligence
+                        </option>
+                        <option value="Cloud Computing">Cloud Computing</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                        <option value="DevOps">DevOps</option>
+                        <option value="Mobile Development">
+                          Mobile Development
+                        </option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                      </select>
+                    </td>
+                    <td>{item.jobTitle}</td>
+                    <td>{item.companyName}</td>
+                    <td>
+                      <select
+                        value={editData?.status || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("status", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="declined">Declined</option>
+                        <option value="No Application">No Application</option>
+                      </select>
+                    </td>
+                    <td>{editData?.status === "accepted" ? "Yes" : "No"}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                          onClick={handleSaveEdit}
+                          style={{
+                            background: "#10b981",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          style={{
+                            background: "#6b7280",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </td>
+                  </>
+                ) : (
+                  // View mode
+                  <>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.fullName}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.stream}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.jobTitle}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.companyName}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.status}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.placed}
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                          onClick={() => handleEdit(item, index)}
+                          style={{
+                            background: "#3b82f6",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item)}
+                          style={{
+                            background: "#dc2626",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </td>
+                  </>
+                )}
               </tr>
-              {expandedRows.has(`${item.id}-${index}`) && (
-                <tr className="expanded-row">
-                  <td colSpan={6} style={{ whiteSpace: "normal" }}>
-                    <strong>Full Stream:</strong> {item.stream} <br />
-                    <strong>Job Title:</strong> {item.jobTitle} <br />
-                    <strong>Full Company Name:</strong> {item.companyName}{" "}
-                    <br />
-                    <strong>Full Status:</strong> {item.status} <br />
-                    <strong>Placed:</strong> {item.placed}
-                  </td>
-                </tr>
-              )}
+              {expandedRows.has(`${item.id}-${index}`) &&
+                editingRow !== `${item.id}-${index}` && (
+                  <tr className="expanded-row">
+                    <td colSpan={7} style={{ whiteSpace: "normal" }}>
+                      <strong>Full Stream:</strong> {item.stream} <br />
+                      <strong>Job Title:</strong> {item.jobTitle} <br />
+                      <strong>Full Company Name:</strong> {item.companyName}{" "}
+                      <br />
+                      <strong>Full Status:</strong> {item.status} <br />
+                      <strong>Placed:</strong> {item.placed}
+                    </td>
+                  </tr>
+                )}
             </React.Fragment>
           ))}
         </tbody>

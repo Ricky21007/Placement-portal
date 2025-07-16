@@ -80,12 +80,20 @@ const EmployerDashboard = () => {
         const recentJobsQuery = query(
           collection(db, "jobs"),
           where("employerId", "==", user.uid),
-          orderBy("createdAt", "desc"),
-          limit(3),
         );
         const recentJobsSnapshot = await getDocs(recentJobsQuery);
-        recentJobsSnapshot.forEach((doc) => {
-          const jobData = doc.data();
+
+        // Sort and limit in JavaScript to avoid composite index requirement
+        const sortedJobs = recentJobsSnapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .sort((a, b) => {
+            const dateA = a.createdAt?.toDate() || new Date(0);
+            const dateB = b.createdAt?.toDate() || new Date(0);
+            return dateB - dateA;
+          })
+          .slice(0, 3);
+
+        sortedJobs.forEach((jobData) => {
           const date = jobData.createdAt?.toDate();
           const timeAgo = date ? getTimeAgo(date) : "recently";
           activities.push(
@@ -98,13 +106,20 @@ const EmployerDashboard = () => {
           const recentAppsQuery = query(
             collection(db, "applications"),
             where("jobId", "in", jobIds.slice(0, 10)), // Limit to avoid "in" query limit
-            orderBy("createdAt", "desc"),
-            limit(3),
           );
           const recentAppsSnapshot = await getDocs(recentAppsQuery);
 
-          for (const appDoc of recentAppsSnapshot.docs) {
-            const appData = appDoc.data();
+          // Sort and limit in JavaScript to avoid composite index requirement
+          const sortedApps = recentAppsSnapshot.docs
+            .map((doc) => ({ id: doc.id, ...doc.data() }))
+            .sort((a, b) => {
+              const dateA = a.createdAt?.toDate() || new Date(0);
+              const dateB = b.createdAt?.toDate() || new Date(0);
+              return dateB - dateA;
+            })
+            .slice(0, 3);
+
+          for (const appData of sortedApps) {
             const jobDoc = await getDoc(doc(db, "jobs", appData.jobId));
             const jobTitle = jobDoc.exists()
               ? jobDoc.data().jobTitle || jobDoc.data().title
