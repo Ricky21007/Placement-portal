@@ -30,6 +30,7 @@ const GraduateProfile = () => {
   const [experience, setExperience] = useState("");
   const [summary, setSummary] = useState("");
   const [stream, setStream] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState<Record<Section, boolean>>({
     personal: false,
@@ -67,6 +68,7 @@ const GraduateProfile = () => {
         setExperience(data.experience || "");
         setSummary(data.summary || "");
         setStream(data.stream || "");
+        setPortfolioUrl(data.portfolioUrl || "");
         setProfilePicUrl(data.profilePicUrl || "");
       } else {
         setEmail(user.email || "");
@@ -96,6 +98,7 @@ const GraduateProfile = () => {
           setExperience(data.experience || "");
           setSummary(data.summary || "");
           setStream(data.stream || "");
+          setPortfolioUrl(data.portfolioUrl || "");
         }
       };
       fetchProfile();
@@ -306,6 +309,7 @@ const GraduateProfile = () => {
         experience,
         summary,
         stream,
+        portfolioUrl,
         profilePicUrl,
         isProfileComplete: true,
         updatedAt: new Date().toISOString(),
