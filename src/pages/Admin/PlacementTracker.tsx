@@ -516,18 +516,19 @@ const PlacementTracker: React.FC = () => {
                   </>
                 )}
               </tr>
-              {expandedRows.has(`${item.id}-${index}`) && (
-                <tr className="expanded-row">
-                  <td colSpan={6} style={{ whiteSpace: "normal" }}>
-                    <strong>Full Stream:</strong> {item.stream} <br />
-                    <strong>Job Title:</strong> {item.jobTitle} <br />
-                    <strong>Full Company Name:</strong> {item.companyName}{" "}
-                    <br />
-                    <strong>Full Status:</strong> {item.status} <br />
-                    <strong>Placed:</strong> {item.placed}
-                  </td>
-                </tr>
-              )}
+              {expandedRows.has(`${item.id}-${index}`) &&
+                editingRow !== `${item.id}-${index}` && (
+                  <tr className="expanded-row">
+                    <td colSpan={7} style={{ whiteSpace: "normal" }}>
+                      <strong>Full Stream:</strong> {item.stream} <br />
+                      <strong>Job Title:</strong> {item.jobTitle} <br />
+                      <strong>Full Company Name:</strong> {item.companyName}{" "}
+                      <br />
+                      <strong>Full Status:</strong> {item.status} <br />
+                      <strong>Placed:</strong> {item.placed}
+                    </td>
+                  </tr>
+                )}
             </React.Fragment>
           ))}
         </tbody>
