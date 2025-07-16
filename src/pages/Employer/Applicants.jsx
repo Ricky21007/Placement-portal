@@ -522,9 +522,10 @@ const MarkOutcomeButtons = ({
   }, [applicant.graduateId, applicant.jobId]);
 
   // Show buttons if interview is being scheduled OR if interview is already scheduled
+  // Hide if hiring decision has been made
   if (
     (interviewStatus !== "Scheduled" && showInterviewFor !== applicant.id) ||
-    marked
+    hiringStatus[applicant.id]
   )
     return null;
 
