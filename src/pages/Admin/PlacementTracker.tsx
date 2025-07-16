@@ -312,70 +312,209 @@ const PlacementTracker: React.FC = () => {
           {filteredData.map((item, index) => (
             <React.Fragment key={`${item.id}-${index}`}>
               <tr
-                onClick={() => toggleRow(`${item.id}-${index}`)}
-                style={{ cursor: "pointer" }}
+                style={{
+                  cursor:
+                    editingRow === `${item.id}-${index}`
+                      ? "default"
+                      : "pointer",
+                }}
               >
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.fullName}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.stream}
-                </td>
-                {/* Removed cohort column */}
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.jobTitle}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.companyName}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.status}
-                </td>
-                <td
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {item.placed}
-                </td>
+                {editingRow === `${item.id}-${index}` ? (
+                  // Edit mode
+                  <>
+                    <td>
+                      <input
+                        type="text"
+                        value={editData?.fullName || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("fullName", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      />
+                    </td>
+                    <td>
+                      <select
+                        value={editData?.stream || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("stream", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      >
+                        <option value="">Select Stream</option>
+                        <option value="Software Development">
+                          Software Development
+                        </option>
+                        <option value="Full Stack Development">
+                          Full Stack Development
+                        </option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Data Analytics">Data Analytics</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Artificial Intelligence">
+                          Artificial Intelligence
+                        </option>
+                        <option value="Cloud Computing">Cloud Computing</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                        <option value="DevOps">DevOps</option>
+                        <option value="Mobile Development">
+                          Mobile Development
+                        </option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                      </select>
+                    </td>
+                    <td>{item.jobTitle}</td>
+                    <td>{item.companyName}</td>
+                    <td>
+                      <select
+                        value={editData?.status || ""}
+                        onChange={(e) =>
+                          handleEditDataChange("status", e.target.value)
+                        }
+                        style={{ width: "100%", padding: "4px" }}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="declined">Declined</option>
+                        <option value="No Application">No Application</option>
+                      </select>
+                    </td>
+                    <td>{editData?.status === "accepted" ? "Yes" : "No"}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                          onClick={handleSaveEdit}
+                          style={{
+                            background: "#10b981",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          style={{
+                            background: "#6b7280",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </td>
+                  </>
+                ) : (
+                  // View mode
+                  <>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.fullName}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.stream}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.jobTitle}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.companyName}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.status}
+                    </td>
+                    <td
+                      onClick={() => toggleRow(`${item.id}-${index}`)}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "150px",
+                      }}
+                    >
+                      {item.placed}
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: "4px" }}>
+                        <button
+                          onClick={() => handleEdit(item, index)}
+                          style={{
+                            background: "#3b82f6",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item)}
+                          style={{
+                            background: "#dc2626",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </td>
+                  </>
+                )}
               </tr>
               {expandedRows.has(`${item.id}-${index}`) && (
                 <tr className="expanded-row">
